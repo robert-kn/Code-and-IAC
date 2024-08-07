@@ -1,17 +1,17 @@
-Exercise 3: Submit a dummy DAG
-For the purpose of monitoring, let's create a dummy DAG with three tasks.
+# Exercise 3: Submit a dummy DAG
+# For the purpose of monitoring, let's create a dummy DAG with three tasks.
 
-Task1 does nothing but sleep for 1 second.
+# Task1 does nothing but sleep for 1 second.
 
-Task2 sleeps for 2 seconds.
+# Task2 sleeps for 2 seconds.
 
-Task3 sleeps for 3 seconds.
+# Task3 sleeps for 3 seconds.
 
-This DAG is scheduled to run every 1 minute.
+# This DAG is scheduled to run every 1 minute.
 
-Using Menu->File->New File create a new file named dummy_dag.py.
+# Using Menu->File->New File create a new file named dummy_dag.py.
 
-Copy and paste the code below into it and save the file.
+# Copy and paste the code below into it and save the file.
 
 # import the libraries
 

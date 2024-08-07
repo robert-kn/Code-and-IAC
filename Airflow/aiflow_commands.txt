@@ -1,0 +1,7 @@
+airflow dags list
+
+airflow tasks list XXXXXX
+
+airflow dags unpause XXXX
+
+airflow dags pause XXXX

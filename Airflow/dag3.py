@@ -1,6 +1,6 @@
-Let's create a DAG that runs daily, and extracts user information from /etc/passwd file, transforms it, and loads it into a file.
+# Let's create a DAG that runs daily, and extracts user information from /etc/passwd file, transforms it, and loads it into a file.
 
-This DAG will have two tasks extract that extracts fields from /etc/passwd file and transform_and_load that transforms and loads data into a file.
+# This DAG will have two tasks extract that extracts fields from /etc/passwd file and transform_and_load that transforms and loads data into a file.
 
 # import the libraries
 
@@ -54,11 +54,11 @@ transform_and_load = BashOperator(
 extract >> transform_and_load
 
 
-Submitting a DAG is as simple as copying the DAG Python file into the dags folder in the AIRFLOW_HOME directory.
+# Submitting a DAG is as simple as copying the DAG Python file into the dags folder in the AIRFLOW_HOME directory.
 
-Airflow searches for Python source files within the specified DAGS_FOLDER. The location of DAGS_FOLDER can be located in the airflow.cfg file, where it has been configured as /home/project/airflow/dags.
+# Airflow searches for Python source files within the specified DAGS_FOLDER. The location of DAGS_FOLDER can be located in the airflow.cfg file, where it has been configured as /home/project/airflow/dags.
 
 
-Airflow will load the Python source files from this designated location. It will process each file, execute its contents, and subsequently load any DAG objects present in the file.
+# Airflow will load the Python source files from this designated location. It will process each file, execute its contents, and subsequently load any DAG objects present in the file.
 
-Therefore, when submitting a DAG, it is essential to position it within this directory structure. Alternatively, the AIRFLOW_HOME directory, representing the structure /home/project/airflow, can also be utilized for DAG submission.
+# Therefore, when submitting a DAG, it is essential to position it within this directory structure. Alternatively, the AIRFLOW_HOME directory, representing the structure /home/project/airflow, can also be utilized for DAG submission.

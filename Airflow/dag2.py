@@ -1,38 +1,38 @@
-Practice exercise
-Write a DAG named ETL_Server_Access_Log_Processing that will extract a file from a remote server and then transform the content and load it into a file.
+# Practice exercise
+# Write a DAG named ETL_Server_Access_Log_Processing that will extract a file from a remote server and then transform the content and load it into a file.
 
-The file URL is given below:
-https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Apache%20Airflow/Build%20a%20DAG%20using%20Airflow/web-server-access-log.txt
+# The file URL is given below:
+# https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Apache%20Airflow/Build%20a%20DAG%20using%20Airflow/web-server-access-log.txt
 
-The server access log file contains these fields.
+# The server access log file contains these fields.
 
-a. timestamp - TIMESTAMP
-b. latitude - float
-c. longitude - float
-d. visitorid - char(37)
-e. accessed_from_mobile - boolean
-f. browser_code - int
+# a. timestamp - TIMESTAMP
+# b. latitude - float
+# c. longitude - float
+# d. visitorid - char(37)
+# e. accessed_from_mobile - boolean
+# f. browser_code - int
 
-Tasks
-Add tasks in the DAG file to download the file, read the file, and extract the fields timestamp and visitorid from the web-server-access-log.txt.
+# Tasks
+# Add tasks in the DAG file to download the file, read the file, and extract the fields timestamp and visitorid from the web-server-access-log.txt.
 
-Capitalize the visitorid for all the records and store it in a local variable.
+# Capitalize the visitorid for all the records and store it in a local variable.
 
-Load the data into a new file capitalized.txt.
+# Load the data into a new file capitalized.txt.
 
-Create the imports block.
+# Create the imports block.
 
-Create the DAG Arguments block. You can use the default settings.
+# Create the DAG Arguments block. You can use the default settings.
 
-Create the DAG definition block. The DAG should run daily.
+# Create the DAG definition block. The DAG should run daily.
 
-Create the tasks extract, transform, and load to call the Python script.
+# Create the tasks extract, transform, and load to call the Python script.
 
-Create the task pipeline block.
+# Create the task pipeline block.
 
-Submit the DAG.
+# Submit the DAG.
 
-Verify if the DAG is submitted.
+# Verify if the DAG is submitted.
 
 # Import the libraries
 from datetime import timedelta
