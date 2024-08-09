@@ -93,14 +93,12 @@ int main(int argc, char *argv[])
 int count_bytes(FILE * fp)
 {
     int ch, count = 0;
-    while(1)
+    do
     {
         ch = getc(fp);
-        if(ch == EOF)
-            break;
-        else
+        if(ch != EOF)
             count++;
-    }
+    }while(ch != EOF);
     return count;
 }
 
