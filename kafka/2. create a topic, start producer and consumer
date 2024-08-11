@@ -1,0 +1,30 @@
+Create a topic
+
+Open a new terminal and cd into the extracted kafka directory
+
+bin/kafka-topics.sh --create --topic news --bootstrap-server localhost:9092       (To create a topic named news)
+
+
+Create the producer
+
+bin/kafka-console-producer.sh   --bootstrap-server localhost:9092   --topic news  (You need a producer to send messages to Kafka. Run the command to start a producer.)
+
+(After the producer starts, and you get the '>' prompt, type any text message and press enter. The messages to Kafka will be sent to the kafka topic.)
+
+
+Create the consumer
+
+Open a new terminal and cd into the extracted kafka directory
+
+bin/kafka-console-consumer.sh   --bootstrap-server localhost:9092   --topic news   --from-beginning (Run the command to listen to the messages in the topic news)
+
+You should see all the messages you sent from the producer appear here.
+
+You can go back to the producer terminal and type some more messages, one message per line, and you will see them appear here.
+
+To stop the consumer
+In the terminal where you are running consumer, press CTRL+C.
+
+To stop the producer
+In the terminal where you are running producer, press CTRL+C.
+

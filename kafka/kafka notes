@@ -1,0 +1,22 @@
+what is kafka?
+
+kafka has a distributed client-server architecture. On the server side, kafka is a cluster with many associated servers called brokers, which act as "databases" to receive, store and distribute events. It also has some servers that run "kafka connect" to import and export data as event stream.
+
+I do not understand the functionality of kafka connect i.e. to import and export data as event stream. What does this mean?
+
+All of the brokers until versions 2.8 relied on a distributed system called zookeper for management and to ensure that all brokers work in an efficient and collaborative way.
+
+However, kafka raft (kraft) is now used to eliminate kafka's reliance on zookeper for metadata management. It is a consensus protocol (what does this mean?) that streamlines kafka's architecture by consolidating metadata responsibilities within kafka itself using kafka controllers (I don't understand this statement).
+
+producers publish data to a topic and consumers subscribe to the topic to receive data. kafka uses a tcp based network communication protocol to exchange data between clients and servers.
+
+for the client side, kafka provides different types of clients such as:
+
+- kafka cli: a collection of shell scripts to communicate with the kafka server
+- many high level programming apis such as python, java and scala
+- rest apis
+- specific third party clients made by kafka community
+
+you can choose different clients based on your requirements.
+
+![alt text](image.png)

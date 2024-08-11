@@ -12,3 +12,11 @@ sudo ufw allow 22
 sudo ufw allow 5900:5901/tcp
 
 sudo ufw enable
+
+
+Creating and using an SSH tunnel for network traffic
+
+ssh-keygen                                                      (to generate ssh keys that will be used for logging in)
+ssh-copy-id USER_NAME@IP_ADDRESS                                (copy public key to remote server)
+ssh -f USER_NAME@IP_ADDRESS -L 2000:IP_ADDRESS:PORT_NUMBER -N   (Creates ssh tunnel and sends it to background (-f) and specifies that connections on localhost:2000 should be forwarded to the remote host port. -N option is for not executing a remote command)
+curl localhost:2000                                             (command will be forwarded to remote host port per above)
