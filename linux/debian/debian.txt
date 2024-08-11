@@ -1,0 +1,14 @@
+Configuring host firewall on debian based systems
+
+sudo apt update
+systemctl list-units --type=service --state=active | grep firewall    (will list installed firewalls)
+sudo ufw status verbose
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+To allow a port or a range of ports for a particular protocol yu can run
+
+sudo ufw allow 22
+sudo ufw allow 5900:5901/tcp
+
+sudo ufw enable
