@@ -1,0 +1,9 @@
+sudo su - [USER]            --> switch to user account 
+ssh-keygen                  --> generate public-private keys that will be used authorisation
+ssh-copy-id                 --> copy public key to remote server
+scp *.gz <server ip>:~/     --> copy all files ending with gz to a remote server
+host <domain>               --> utility for performing dns lookups
+hostnamectl                 --> utility to determine distro
+lsb_release_a               --> utility to determine distro
+find . -name "" -exec grep -l "pattern to match" {} \;
+sudo -i                     --> change to root user (must know passwd)
