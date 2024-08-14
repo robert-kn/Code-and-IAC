@@ -115,3 +115,4 @@ for msg in consumer:
     print(msg.value.decode("utf-8"))
 
 Note: The above consuming message operation is equivalent to using kafka-console-consumer.sh --topic in Kafka CLI client.
+
