@@ -1,0 +1,32 @@
+The early founders of compression were not thinking about data. They were thinking about statistics. They were looking for, and found, different ways to manipulate the probablity distributions of symbols in data sets so that they could produce smaller data sets with the same meaning.
+
+Compressions is about the most compact represntation of data.
+
+Data compression algorithms fall into a few buckets; they are - variable length codes, statistical compression, dictionary encodings, context modeling, and multicontext modeling. Each of these five high level buckets contains a horde of algorithm variations , which is a good thing. Each variation differs slightly in intended input data, performance, memory constraints, and output sizes. Picking the correct variant means carrying out tests on your data and the encoders to find the one that works best.
+
+Now you can use these buckets together, because some buckets contain algorithms whose entire purpose is to transform the data so that another bucket can be more efficient at compressing it.
+
+You need to understand the buckets, how they fit together, and what types of variants to use from which bucket for your own data sets.
+
+Messages can be encoded in many ways, think alphabet or morse code, but for every message, there is a most efficient way to encode it. Where efficient means using the fewest possible letters or symbols (or bits or units of information). What fewest boils down to depends on the information content of the message. Shannon invented a way of measuring the information content of a message and called it information entropy.
+
+Data compression is a practical application of Shannon's research, which asks, "How compact can we make a message before we can no longer recover it?"
+
+It's important to note that according to modern information theory, there is a point at which removing any more bits removes the ability for you to uniquely recover your data stream properly. So the goal of compression is to remove as many bits as possible to get to this point, and then remove no more.
+
+The only thing you need to know about data compression; data compression works via two simple ideas:
+1. reduce the number of unique symbols in your data (smallest possible "alphabet")
+2. encode more frequent symbols with fewer bits (fewest bits for most common "letters")
+
+What makes applied data compression so complex is that there are many ways to do these two things, depending on what kind of data you have. You will need to take the following into consideration:
+
+1. different data will need to be treated differently. Words in a book and floating point numbers for example respond effectively to very different algorithms.
+2. some data can be transformed first to make it more compressible
+3. data might be skewed. for example, temperature data taken in summer might be skewed toward high temperatures.
+
+Your challenge as a programmer is to figure out the best way, or combination of ways for compressing any block of data that a user throws at your application. And your challenge as a content developer is to figure out how to throw data at your users and not break their bank accounts.
+
+Compression and the economy:
+Compressed files are smaller files meaning it takes less time to transfer them, and it costs less to do so as well. Distributors pay less to distribute, and customer pay less to consume. In a modern world in which computing time is literally money, compression represents the most economically viable way to shortedn the gap between content distributors and consumers.
+
+Everything in data compression is about reducing the number of bits used to represent a given data set
