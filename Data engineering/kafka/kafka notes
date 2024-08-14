@@ -1,5 +1,45 @@
 what is kafka?
 
+Distributed event streaming platform components.
+
+what is an event? in the context of event streaming, an event is a type of data which describes an entity's observable state at a time e.g. the gps coordinates of a car, temperature of a room, blood pressure of a patient etc. The format of the event can be primitive e.g. string, a key value pair, a key value with a timestamp. Event streaming occurs from one event source to a destination. This is called event streaming. In a real world scenario, you have many different event sources streaming to different destinations.
+
+Data transfer pipelines may also be based on different communication protocols adding to the complexity. To overcome the challenge of handling different event sources and destinations, you need to use an event streaming platform such as apache kafka. An event streaming platform acts as a middle layer between event sources and destinations. All sources send events to the esp as opposed to the destinations.
+
+![alt text](image-1.png)
+
+ESP's have different architectures and components. Below is a diagram of common ESP components:
+
+![alt text](image-2.png)
+
+The event broker is designed to receive and consume events. It is the core component of an ESP. The event stroage component is used to store events received from event sources. The analytic and query engine is used to analyse the stored events.
+
+A kafka cluster has one or many brokers. A broker is dedicated server to receive, store, process and distribute events. Brokers are synchronised and use kraft controller nodes that use the consensus protocol to manage the kafka metadata log that contains information about each change to the cluster metadata. Each broker contains one or more topics. You can think of each topic as a database to store specific types of events such as logs, transactions etc.
+
+![alt text](image-3.png)
+
+Brokers distributes saved events to subscribed consumers. Kafka uses topic partitions and replications to increase fault tolerance and throughput so that event publication and consumption can be done in parallel with multiple brokers. In addition, if some brokers are down, kafka clients are still able to work with target topics replicated in other working brokers.
+
+![alt text](image-4.png)
+
+The kafka cli provides a collection of script files for users to build an event streaming pipeline. The most common one you will use will be the kafka-topics script e.g.
+
+![alt text](image-5.png)
+
+kafka producers are client applications that publish events to a topic partition according to the same order that they are published. An event to be published can be optionally associated with a key. Events associated to the same key will be published to the same topic partition. Events not associated to any key will be published to topic partitions in rotation.
+
+![alt text](image-6.png)
+
+![alt text](image-7.png)
+
+kafka consumers are clients subscribed to topics. They read data in the same order they are published. Store an offset record for each partition and can read all events by resetting the offset to zero.
+
+![alt text](image-8.png)
+
+![alt text](image-9.png)
+
+Kafka streams api is a client library to facilitate data processing in event streaming pipelines. It processes and analyses data stored in kafka topics hence the input and output of the streams api are kafka topics.
+
 kafka has a distributed client-server architecture. On the server side, kafka is a cluster with many associated servers called brokers, which act as "databases" to receive, store and distribute events. It also has some servers that run "kafka connect" to import and export data as event stream.
 
 I do not understand the functionality of kafka connect i.e. to import and export data as event stream. What does this mean?
@@ -13,7 +53,7 @@ producers publish data to a topic and consumers subscribe to the topic to receiv
 for the client side, kafka provides different types of clients such as:
 
 - kafka cli: a collection of shell scripts to communicate with the kafka server
-- many high level programming apis such as python, java and scala
+- many high level programming apis such as python, java and scala, go, c/c++
 - rest apis
 - specific third party clients made by kafka community
 
@@ -116,3 +156,8 @@ for msg in consumer:
 
 Note: The above consuming message operation is equivalent to using kafka-console-consumer.sh --topic in Kafka CLI client.
 
+<<<<<<< HEAD:Data engineering/kafka/kafka notes
+=======
+
+
+>>>>>>> refs/remotes/origin/main:kafka/kafka notes
