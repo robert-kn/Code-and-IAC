@@ -2,7 +2,7 @@ The early founders of compression were not thinking about data. They were thinki
 
 Compressions is about the most compact represntation of data.
 
-Data compression algorithms fall into a few buckets; they are - variable length codes, statistical compression, dictionary encodings, context modeling, and multicontext modeling. Each of these five high level buckets contains a horde of algorithm variations , which is a good thing. Each variation differs slightly in intended input data, performance, memory constraints, and output sizes. Picking the correct variant means carrying out tests on your data and the encoders to find the one that works best.
+Data compression algorithms fall into a few buckets; they are - variable length codes, statistical compression, dictionary encodings, context modeling, and multicontext modeling. Each of these five high level buckets contains a horde of algorithm variations, which is a good thing. Each variation differs slightly in intended input data, performance, memory constraints, and output sizes. Picking the correct variant means carrying out tests on your data and the encoders to find the one that works best.
 
 Now you can use these buckets together, because some buckets contain algorithms whose entire purpose is to transform the data so that another bucket can be more efficient at compressing it.
 
