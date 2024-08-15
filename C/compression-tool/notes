@@ -29,4 +29,36 @@ Your challenge as a programmer is to figure out the best way, or combination of 
 Compression and the economy:
 Compressed files are smaller files meaning it takes less time to transfer them, and it costs less to do so as well. Distributors pay less to distribute, and customer pay less to consume. In a modern world in which computing time is literally money, compression represents the most economically viable way to shortedn the gap between content distributors and consumers.
 
-Everything in data compression is about reducing the number of bits used to represent a given data set
+Everything in data compression is about reducing the number of bits used to represent a given data set.
+
+information theory: the mathematical study of the coding of information in the form of sequences of symbols, impulses etc.. and how rapidly such information can be trasmitted e.g. through computer circuits or telecommunication channels.
+
+According to information theory, the information content of a number is equal to the number of binary (yes/no) decisions that you need to make before you can uniquely identify that number in a set. I now understand this statement.
+
+if given a number, it is not immediately obvious how many bits it will require without going through the process of binary conversion which is tedious. The following mathematical formulae makes it easy for us to figure this out
+
+log₂(x) = -(log(x)/log(2)) = number of binary digits needed to represent a number
+
+e.g. log₂(10) = 3.321 bits. Of course, you cannot represent 3.321 bits on modern computer hardware (there are no fractions for bits), so we are forced to round up to the next whole integer, using the ceiling function i.e.
+
+log₂(x) = ceil(log(x)/log(2))
+
+Now there is another problem, we are off by one bit for powers of two e.g.
+
+log₂(2) = ceil(log(2)/log(2)) = 1
+
+log₂(4) = ceil(log(4)/log(2)) = 2
+
+the results are true from a mathematics perspective but fails in the fact that we need two and three bits to represent numbers 2 (10) and 4 (100) on our systems. As such, we add a slight skewing to our method to ensure that our log results are accurate for powers of two.
+
+log₂(x) = ceil(log(x+1)/log(2))
+
+so given any decimal integer number, we can easily determine the minimum number of bits needed to represent it in binary by calculating its log₂. Shannon defined this log₂ of a variable as its entropy, or rather the least number of bits required to represent that value.
+
+the log₂ form of numbers is efficient but not practical for the way we build computer components. why? the issue lies between representing the number in the least bits possible, confussion on how to decode a binary string of numbers (without knowing their log₂ lengths), and performance in hardware execution. I don't fully inderstand the preceding statement.
+
+Modern computers compromise by using fixed-length buckets of bits for numbers of different sizes. The fundamental bucket is one byte, which is made up of eight bits. And the integer buckets typically available in modern programming languages are a short with 16 bits, an integer with 32 bits, and a long with 64 bits. As such, our deci‐ mal number 10, converted to binary as 1010, would be a short and represented as 0000000000001010. This is a lot of wasted bits.
+
+The point here is that the majority of algorithms we use in the development of modern applications all tend to use defined bit ranges rather than the LOG2 size. Which is basically the difference between information theory and implementation practicality. Any bit stream we have will always be rounded up to the next byte- aligned size in computer memory. This can get confusing: for example, when we’ve just saved 7 bits of data, our machine reports that our data still remains the same number of bytes long.
+
+The goal in practical data compression is to get as close as possible to the theoretical limit of compressibility. That’s why, to learn and understand compression algorithms, moving forward with the rest of this book, we will only think in terms of LOG2.

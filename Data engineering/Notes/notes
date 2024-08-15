@@ -10,3 +10,15 @@ What are some data transformation techniques? see dataTransformationTechniques.p
 
 Examples of data loading techniques? see dataLoadingTechniques.png
 
+What are data pipelines? see introductiontodatapipelines.png
+
+What are the key data pipeline processes? see keydatapipelineprocesses.png also see handlingunbalancedloads.png and stagesynchronisation.png
+
+what are differences between batch versus streaming data pipelines? see batchVersusStreaming.png 
+
+What is a lambda architecture? see lambdaArchitecture1.png and lambdaArchitecture2.png
+
+What are the features of modern data pipeline tools? see featuresOfModernDataPipelines.png
+
+What are some open source data pipeline tools? see all openSourceDataPipelineToolsX.png
+
