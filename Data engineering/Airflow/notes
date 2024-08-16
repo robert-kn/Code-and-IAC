@@ -23,3 +23,40 @@ EmailOperator - sends an email
 The other core operators available include:
 
 BaseBranchOperator - A base class for creating operators with branching functionality
+
+BranchDateTimeOperator
+
+EmptyOperator - Operator that does nothing
+
+GenericTransfer - Moves data from on database connection to another.
+
+LatestOnlyOperator - Skip tasks that are not running during the most recent schedule interval.
+
+TriggerDagRunOperator - Triggers a DAG run for a specified dag_id.
+
+Besides these, there are also many community provided operators. Some of the popular and useful ones are:
+
+HttpOperator
+
+MySqlOperator
+
+PostgresOperator
+
+MsSqlOperator
+
+OracleOperator
+
+JdbcOperator
+
+DockerOperator
+
+HiveOperator
+
+S3FileTransformOperator
+
+PrestoToMySqlOperator
+
+SlackAPIOperator
+
+In addition to operators, you also have sensors and decorators that allow you to combine bash and Python. You can find more information regarding the same in this https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/index.html
+
