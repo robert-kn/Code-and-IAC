@@ -1,0 +1,25 @@
+what is apache airflow? see airflow.png
+
+lifecycle of an apache airflow task state? see airflowjobstatus.png
+
+apache airflow features? see airflowFeatures1.png airflowFeatures2.png
+
+what is a dag? see whatisadag1.png and whatisadag2.png
+
+tasks and operators? see tasksandoperators.png
+
+dag definition components? see dagdefcomponents1.png and dagdefcomponents2.png
+
+Apache Airflow is a Python framework that helps create workflows using multiple technologies using both CLI and a user-friendly WebUI. An Apache Airflow Directed Acyclic Graph (DAG) is a Python program where you define the tasks and the pipeline with the order in which the tasks will be executed.
+
+Airflow offers a wide range of operators, including many that are built into the core or are provided by pre-installed providers. Some popular core operators include:
+
+BashOperator - executes a bash command
+
+PythonOperator - calls an arbitrary Python function
+
+EmailOperator - sends an email
+
+The other core operators available include:
+
+BaseBranchOperator - A base class for creating operators with branching functionality
