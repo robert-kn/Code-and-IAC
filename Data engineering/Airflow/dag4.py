@@ -23,7 +23,8 @@
 
 # Create the load task. The load task must compress the extracted and transformed data.
 
-# Create the task pipeline block. The pipeline block should schedule the task in the order listed below:
+# Create the task pipeline block. The pipeline block should schedule the task in the order 
+# listed below:
 
 # download
 # extract
