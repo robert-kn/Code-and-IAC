@@ -141,7 +141,7 @@ int count_chars(FILE * fp)
         ch = getc(fp);
         if(ch == EOF)
             break;
-        else if(isalnum(ch) || isspace(ch) || ispunct(ch))
+        else if(isascii(ch))
             count++;
     }
     return count;
