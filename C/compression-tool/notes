@@ -62,3 +62,5 @@ Modern computers compromise by using fixed-length buckets of bits for numbers of
 The point here is that the majority of algorithms we use in the development of modern applications all tend to use defined bit ranges rather than the LOG2 size. Which is basically the difference between information theory and implementation practicality. Any bit stream we have will always be rounded up to the next byte- aligned size in computer memory. This can get confusing: for example, when we’ve just saved 7 bits of data, our machine reports that our data still remains the same number of bytes long.
 
 The goal in practical data compression is to get as close as possible to the theoretical limit of compressibility. That’s why, to learn and understand compression algorithms, moving forward with the rest of this book, we will only think in terms of LOG2.
+
+compression algorithms that always reproduce the same data when a file is decompressed are known as lossless. Algorithms that return close approximations of the original data are called lossy. 
