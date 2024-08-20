@@ -7,3 +7,12 @@ hostnamectl                 --> utility to determine distro
 lsb_release_a               --> utility to determine distro
 find . -name "" -exec grep -l "pattern to match" {} \;
 sudo -i                     --> change to root user (must know passwd)
+sudo systemctl [status/enable/disable] service-name --now
+sudo yum list installed | grep service-name --> list all of the services installed on a box
+sudo remove service-name -y
+sudo firewall-cmd --list-all --> lists services, ports, protocols etc enabled on box
+sudo firewall-cmd --permanent --add-service=https   --> add https to the list of allowed services
+sudo firewall-cmd --reload
+sudo getenforce
+sudo setenforce 1
+rsync -avzh path-to-files cloud_user@ip-address:/home/cloud_user/data    --> send files to remote box for backup 

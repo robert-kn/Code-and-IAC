@@ -1,0 +1,15 @@
+wget https://downloads.apache.org/kafka/3.7.0/kafka_2.12-3.7.0.tgz
+
+tar -xzf kafka_2.12-3.7.0.tgz
+
+cd kafka_2.12-3.7.0
+
+KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+
+bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c config/kraft/server.properties
+
+bin/kafka-server-start.sh config/kraft/server.properties
+
+cd kafka_2.12-3.7.0
+
+pip3 install kafka-python

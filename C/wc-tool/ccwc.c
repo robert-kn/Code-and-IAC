@@ -3,11 +3,12 @@
  The 'wc' (word count) command counts lines, words, and bytes (or characters) in text files.
  This simplified version will support basic options for counting lines, words, characters, and bytes.
  */
-
+#define __STDC_WANT_LIB_EXT1__ 1
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 int count_bytes(FILE * fp);
 int count_lines(FILE * fp);
@@ -24,7 +25,7 @@ int main(int argc, char *argv[])
     if(argc == 3)
     {
         
-        fp = fopen(argv[2], "r");
+        fp = fopen_s(argv[2], "r");
 
         if(fp == NULL)
         {
@@ -63,7 +64,7 @@ int main(int argc, char *argv[])
     }
     
     
-    if(argc == 2)
+    else if(argc == 2)
     {
         if(argv[1][1] == 'l' || argv[1][1] == 'c' || argv[1][1] == 'w' || argv[1][1] == 'm') /* user wants to supply input from stdin */
         {
@@ -150,7 +151,7 @@ int count_chars(FILE * fp)
  void read_text(char c)
  {
     char *buffer;
-    size_t buffer_size = 200;
+    size_t buffer_size = 100;
     size_t characters;
 
     buffer = (char *)malloc(buffer_size * sizeof(char));
@@ -161,7 +162,7 @@ int count_chars(FILE * fp)
         exit(EXIT_FAILURE);
     }
 
-    while(1)
+    while(true)
     {
         characters = getline(&buffer, &buffer_size, stdin);
 
