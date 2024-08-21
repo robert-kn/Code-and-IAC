@@ -5,3 +5,5 @@ airflow tasks list XXXXXX
 airflow dags unpause XXXX
 
 airflow dags pause XXXX
+
+airflow dags list-import-errors   --> There might be some errors, which could stop the submission of your DAG. You can view the errors by running the following command:
