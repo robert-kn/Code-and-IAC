@@ -164,6 +164,11 @@ In order to allow the automatic detection of the byte order, it has become custo
 as the Byte-Order Mark (BOM). Its byte-swapped equivalent U+FFFE is not a valid Unicode character, therefore 
 it helps to unambiguously distinguish the Bigendian and Littleendian variants of UTF-16 and UTF-32.
 
+****************************************************************************************************************
+
+
+
+
 
 
 
