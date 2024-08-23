@@ -1,8 +1,8 @@
-extracted_path = "/home/project/extracted"
-csv_data = "/home/project/extracted-files/csv_data.csv"
+extracted_path = "./extracted"
+csv_data = "./processed-files/csv_data.csv"
 
 def extract_data_from_csv():
-    with open(f"{extracted_path}/vehicle-data.csv", 'r') as infile, open(f"{csv_data}", 'w') as outfile:
+    with open(f"{extracted_path}/vehicle-data.csv", 'r') as infile, open(csv_data, 'w') as outfile:
         for line in infile:
             fields = line.split(',')
             if len(fields) >= 5:

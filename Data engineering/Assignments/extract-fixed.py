@@ -1,6 +1,6 @@
 import pandas as pd
-extracted_path = "/home/project/extracted"
-fixed_width_data = "/home/project/extracted-files/fixed_width_data.csv"
+extracted_path = "./extracted"
+fixed_width_data = "./processed-files/fixed_width_data.csv"
 
 def extract_data_from_fixed_width():
     col_positions = [(58,61),(62,67)]

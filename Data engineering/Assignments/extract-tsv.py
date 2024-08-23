@@ -1,5 +1,5 @@
-extracted_path = "/home/project/extracted"
-tsv_data = "/home/project/extracted-files/tsv_data.csv"
+extracted_path = "./extracted"
+tsv_data = "./processed-files/tsv_data.csv"
 
 def extract_data_from_tsv():
     with open(f"{extracted_path}/tollplaza-data.tsv", 'r') as infile, open(f"{tsv_data}", 'w') as outfile:

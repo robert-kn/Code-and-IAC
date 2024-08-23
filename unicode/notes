@@ -156,7 +156,7 @@ range U-00000000 to U-0010FFFF.
 
 No endianess is implied by the encoding names UCS-2, UCS-4, UTF-16, and UTF-32, though ISO 10646-1 says that 
 Bigendian should be preferred unless otherwise agreed. It has become customary to append the letters “BE” 
-(Bigendian, high-byte first) and “LE” (Littleendian, low-byte first) to the encoding names in order to 
+(Bigendian, high-byte first) and “LE” (Little endian, low-byte first) to the encoding names in order to 
 explicitly specify a byte order.
 
 In order to allow the automatic detection of the byte order, it has become customary on some platforms 
@@ -167,8 +167,58 @@ it helps to unambiguously distinguish the Bigendian and Littleendian variants of
 ****************************************************************************************************************
 
 
+Computers were originally built to process numbers. Over the last few decades, they have become increasingly
+better at handling text as well, but the transition to from human scribbling and typography to bits and bytes
+has been complicated. Going from a paper document to a computerised representation of that document means 
+learning about how the computer handles text, and requires learning about characters, character codes, fonts
+and encodings.
+
+Computers use two basic data types in most of their processing: characters and numbers. These basic types are
+combined in various ways to create strings, arrays, records and other data structures. Inside the computer 
+characters are numbers but the way these numbers are handled is very different from numbers meant for calculation.
+
+Computers internally work on numbers. This means that characters need to be coded as numbers. A typical 
+arrangement is to use numbers from 0 to 255 (one octet) because that range fits into a basic unit of data storage.
+
+When you define how those numbers correspond to characters, you define a character code. There are quite a 
+number of character codes defined and used in the world. Most of them have the same assignments for numbers 
+0 to 127, used for characters that appear in english as well as many other languages. the letters a–z plus 
+their uppercase equivalents, the digits 0–9, and a few punctuation marks.
+
+For French texts, for example, you need additional characters such as accented letters These can be provided 
+by using code numbers in the range 128–255 in addition to the ASCII range, and this gives room for letters 
+used in most other Western European languages as well. Thus, you can use a single character code, called 
+Latin 1, even for a text containing a mixture of English, French, Spanish, and German, because these languages 
+all use the Latin characters with relatively few additions.
+
+However, you quickly run out of numbers if you try to cover too many languages within 256 characters. For this
+reason, different character codes were developed. For example, Latin 1 is for Western European languages, 
+Latin 2 for several languages spoken in Central and Eastern Europe, and additional character codes exist for 
+Greek, Cyrillic, Arabic, etc.
+
+Character codes that use only the code numbers from 0 to 255 are called 8-bit codes, since such code numbers 
+can be represented using 8 bits.
+
+Things change when you need to combine languages in one document and the lan- guages are fundamentally 
+different in their use of characters. In an English-German or French-Spanish glossary, for example, you can 
+use Latin 1. In English-Greek data, you can use one of the character codes developed for Greek, since these 
+codes contain the ASCII characters. But what about French-Greek? That’s not possible the same way, since the 
+character codes discussed above do not support such a combination. A code either has Latin accented letters 
+in the “upper half” (the range of 128–255), or it has Greek letters (α, β, γ, etc.) there. It would be 
+impractical, and often impossible, to define 256-character codes for all the possible language combinations.
 
 
+As you probably know, the number of characters needed for Chinese and Japanese is very large. They just would 
+not fit into a set with only 256 characters. Therefore, different strategies are used. For example, 2 bytes 
+(octets) instead of one might be used for one character. This would give 65,536 possible numbers for a 
+character. On the other hand, the character codes developed for the needs of East Asian languages do not 
+contain all the characters used in the world.
 
+The solution to such problems, and many other problems in the world of growing information exchange, is the 
+introduction of a character code that gives every character of every language a unique number.
 
+This number does not depend on the language used in the text, the font used to display the character, the 
+software, the operating system, or the device. It is universal and kept unchanged. The range of possible 
+numbers is set sufficiently high to cover all the current and future needs of all languages.
 
+The solution is called Unicode

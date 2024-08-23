@@ -4,7 +4,7 @@ from airflow.operators.python import PythonOperator
 
 from airflow.utils.dates import days_ago
 import requests
-import xtarfile as tarfile
+import shutil
 import pandas as pd
 
 destination = "/home/project/airflow/dags/python_etl/staging"
@@ -13,7 +13,8 @@ extracted_path = "/home/project/airflow/dags/python_etl/staging/extracted"
 csv_data = "/home/project/airflow/dags/python_etl/staging/csv_data.csv"
 tsv_data = "/home/project/airflow/dags/python_etl/staging/tsv_data.csv"
 fixed_width_data = "/home/project/airflow/dags/python_etl/staging/fixed_width_data.csv"
-final_file = "/home/project/airflow/dags/python_etl/staging/extracted_data.csv"
+combined_extract_file = "/home/project/airflow/dags/python_etl/staging/extracted_data.csv"
+transformed_file = "/home/project/airflow/dags/python_etl/staging/transformed_data.csv"
 
 def download_dataset():
     url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz"
@@ -23,12 +24,10 @@ def download_dataset():
         print("File downloaded successfully")
 
 def untar_dataset():
-    file = tarfile.open(f"{destination}/{download_path}", mode="r:gz")
-    file.extractall(f"{extracted_path}")
-    file.close() 
+    shutil.unpack_archive(f"{destination}/{download_path}", extracted_path, "gztar") 
 
 def extract_data_from_csv():
-    with open(f"{extracted_path}/vehicle-data.csv", 'r') as infile, open(csv_data, 'w') as outfile:
+    with open(f"{extracted_path}/vehicle-data.csv", "r") as infile, open(csv_data, "w") as outfile:
         for line in infile:
             fields = line.split(',')
             if len(fields) >= 5:
@@ -39,7 +38,7 @@ def extract_data_from_csv():
                 outfile.write(field_1 + "," + field_2 + "," + field_3 + "," + field_4 + "\n")
 
 def extract_data_from_tsv():
-    with open(f"{extracted_path}/tollplaza-data.tsv", 'r') as infile, open(tsv_data, 'w') as outfile:
+    with open(f"{extracted_path}/tollplaza-data.tsv", "r") as infile, open(tsv_data, "w") as outfile:
         for line in infile:
             fields = line.split('\t')
             if len(fields) > 6:
@@ -58,7 +57,12 @@ def consolidate_data():
     df_toll = pd.read_csv(tsv_data)
     df_fixed_width = pd.read_csv(fixed_width_data)
     concatenated_df = pd.concat([df_vehicle, df_toll, df_fixed_width], axis=1)
-    concatenated_df.to_csv(final_file, index=False)
+    concatenated_df.to_csv(combined_extract_file, index=False)
+
+def transform_data():
+    df = pd.read_csv(combine_extract_file, header=None)
+    df.iloc[:,3] = df.iloc[:,3].apply(lambda x: x.upper())
+    df.to_csv(transformed_file, index=False, header=False)
 
 default_args = {
     "owner": "robertkn",
@@ -83,37 +87,37 @@ download_data = PythonOperator(
 )
 
 unzip_data = PythonOperator(
-    task_id='unzip download',
+    task_id='unzip',
     python_callable=untar_dataset,
     dag=dag,
 )
 
 extract_data_from_csv = PythonOperator(
-    task_id='extract data from csv',
+    task_id='extractCsv',
     python_callable=extract_data_from_csv,
     dag=dag,
 )
 
 extract_data_from_tsv = PythonOperator(
-    task_id='extract data from tsv',
+    task_id='extractTsv',
     python_callable=extract_data_from_tsv,
     dag=dag,
 )
 
 extract_data_from_fixed_width = PythonOperator(
-    task_id='extract_data_from_fixed_width',
+    task_id='extractFixedWidth',
     python_callable=extract_data_from_fixed_width,
     dag=dag,
 )
 
 consolidate_data = PythonOperator(
-    task_id='consolidate_data',
+    task_id='consolidateData',
     python_callable=consolidate_data,
     dag=dag,
 )
 
 transform_data = PythonOperator(
-    task_id='transform_data',
+    task_id='transformData',
     python_callable=transform_data,
     dag=dag,
 )

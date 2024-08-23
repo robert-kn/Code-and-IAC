@@ -1,8 +1,9 @@
 import requests
 
-destination = "/home/project/"
+#destination = "/home/project/"
 download_path = "tolldata.tgz"
-extracted_path = "/home/project/extracated"
+#extracted_path = "/home/project/extracated"
+destination = "./download"
 
 def download_dataset():
     url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz"

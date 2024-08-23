@@ -1,14 +1,12 @@
-import gzip
 import shutil
 
-destination = "/home/project/"
-download_path = "tolldata.tgz"
-extracted_path = "/home/project/extracted"
+# destination = "/home/project/"
+file_name = "tolldata.tgz"
+# extracted_path = "/home/project/extracted"
+destination = "./download"
+extracted_path = "./extracted"
 
 def untar_dataset():
-    with gzip.open(f"{destination}/{download_path}", "rt") as gz:
-        data = gz.read()
-        print(data)
-        #shutil.unpack_archive(data, extracted_path )
+    shutil.unpack_archive(f"{destination}/{file_name}", f"{extracted_path}", "gztar")
 
 untar_dataset()
