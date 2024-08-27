@@ -1,3 +1,11 @@
+"""
+When run as an airflow job, this python script will download a gzip compressed tar file, extract it's contents
+and proceed to retrieve particular columns from files as described by the functions that commence with extract 
+below in the code. The files are then combined into one before one of the columns characters are converted to
+uppercase. This was the final project from the coursera course titled ETL and Data Pipelines with Shell, Airflow and Kafka.
+The downloaded tar file can be found in the downloads folder with the name tolldata.tgz
+
+"""
 from datetime import timedelta
 from airflow.models import DAG
 from airflow.operators.python import PythonOperator
