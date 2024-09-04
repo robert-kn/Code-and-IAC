@@ -125,7 +125,7 @@ int * process(FILE * fp, ...)
     va_end(arg_ptr);
 
     pStr = fgets(buffer, buffer_size, fp);
-    printf("finished successfully %s\n", pStr);
+    printf("finished successfully %s\n", str);
     while(pStr != NULL)
     {
         if(str)
