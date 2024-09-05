@@ -8,97 +8,66 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <stdbool.h>
 #include <stdarg.h>
 
 int count_bytes(char * pStr);
 int count_lines(char * pStr);
 int count_words(char * pStr);
 int count_chars(char * pStr);
-void read_text(char c);
+void file_count_lines(FILE * fp);
+void file_count_words(FILE * fp);
+void file_count_bytes(FILE * fp);
 FILE * open_file(char * file_name, char * mode);
-int * process(FILE * fp,...);
+void read_input(int arg_count,...);
+void process(char * pStr, int process, int char_option, ...);
+void init_buffer(void);
 
-char delimiters[] = " \n\r";
+
+static char delimiters[] = " \n\r";
 static int count = 0;
-FILE * fp;
-char *buffer;
+static int count_output[3] = {0};
+static FILE * fp;
+static char *buffer;
+static size_t buffer_size = 100;
+
+#define FILE_PROCESS 1
+#define FILE_NO_PROCESS 0
 
 int main(int argc, char *argv[])
 {
 
     if(argc == 3)
     {
-        
         fp = open_file(argv[2], "r");
-        int * output = process(fp, argv[1][1]);
+        read_input(3, argv[1][1], fp); 
 
-        // char *buffer;
-        // size_t buffer_size = 100;
-        // buffer = (char *) calloc(buffer_size, sizeof(char));
-        // char * pStr;
-
-        // pStr = fgets(buffer, buffer_size, fp);
-
-        // while(pStr != NULL)
-        // {
-
-        //     switch(argv[1][1])
-        //     {
-
-        //         case 'c':
-        //             count += count_bytes(pStr);
-        //         break;
-
-        //         case 'l':
-        //             count += count_lines(pStr); 
-        //         break;
-
-        //         case 'w':
-        //             count += count_words(pStr); 
-        //         break;
-
-        //         case 'm':
-        //             count += count_chars(pStr); 
-        //         break;
-
-        //         default:
-        //             printf("Invalid command line option. Needs to be one of [l | w | m | c]\n");
-        //             exit(EXIT_FAILURE);
-        //         break;
-        //     }
-                
-        //     pStr = fgets(buffer, buffer_size, fp);
-        // } 
-
-        free(buffer);
-        buffer = NULL; 
-
-        
-        printf("%d %s\n", output[0], argv[2]);
+        printf("%d %s\n", count_output[0], argv[2]);
         fclose(fp);
-        exit(EXIT_SUCCESS);
     }
 
     else if(argc == 2)
     {
-        if(argv[1][1] == 'l' || argv[1][1] == 'c' || argv[1][1] == 'w' || argv[1][1] == 'm') /* user wants to supply input from stdin */
+        if(argv[1][0] == '-' && isalpha(argv[1][1])) /* user wants to supply input from stdin */
         {
-            read_text(argv[1][1]);
-            exit(EXIT_SUCCESS);
+            read_input(2, argv[1][1]);
+            printf("%d\n", count_output[0]);
         }
         else
         {
             fp = open_file(argv[1], "r");
-
+            init_buffer();
+            file_count_lines(fp);
+            fseek(fp, 0, SEEK_SET);
+            file_count_words(fp);
+            fseek(fp, 0, SEEK_SET);
+            file_count_bytes(fp);
+            printf("%d %d %d %s\n", count_output[0], count_output[1], count_output[2], argv[1]);
             fclose(fp);
-            exit(EXIT_SUCCESS);
-
         }
-
-        return 2;
     }
-    
+    free(buffer);
+    buffer = NULL;
+    exit(EXIT_SUCCESS);
 }
 
 FILE * open_file(char * file_name, char * mode)
@@ -112,59 +81,115 @@ FILE * open_file(char * file_name, char * mode)
     return fp;
 }
 
-int * process(FILE * fp, ...)
-{
-    size_t buffer_size = 100;
-    buffer = (char *) calloc(buffer_size, sizeof(char));
-    char * pStr;
-    static int count_output[3] = {0};
-    char * str;
-    va_list arg_ptr;
-    va_start(arg_ptr, fp);
-    str = va_arg(arg_ptr, char *);
-    va_end(arg_ptr);
+void read_input(int arg_count, ...)
+{ 
+    init_buffer();
+    char * pStr;                                                       
+    int char_option = 0;
+    va_list arg;
+    va_start(arg, arg_count);
+    char_option = va_arg(arg, int);
 
-    pStr = fgets(buffer, buffer_size, fp);
-    printf("finished successfully %s\n", str);
-    while(pStr != NULL)
+    if(arg_count == 3)
     {
-        if(str)
-        {
-            switch(str[0])
-            {
-
-                case 'c':
-                    count_output[0] += count_bytes(pStr);
-                break;
-
-                case 'l':
-                    count_output[0] += count_lines(pStr); 
-                break;
-
-                case 'w':
-                    count_output[0] += count_words(pStr); 
-                break;
-
-                case 'm':
-                    count_output[0] += count_chars(pStr); 
-                break;
-
-                default:
-                    printf("Invalid command line option. Needs to be one of [l | w | m | c]\n");
-                    exit(EXIT_FAILURE);
-                break;
-            }
-        }
-        else
-        {
-
-        }
-        pStr = fgets(buffer, buffer_size, fp);
+        static FILE * fp = NULL;
+        fp = va_arg(arg, FILE *);
     }
     
-    
-    return count_output;
+    va_end(arg);
+
+    if(char_option && arg_count == 3)
+    {
+        pStr = fgets(buffer, buffer_size, fp);
+        process(pStr, FILE_PROCESS, char_option, fp);
+        
+    }
+    else if(char_option && arg_count == 2)
+    {
+        pStr = fgets(buffer, buffer_size, stdin);
+        process(pStr, FILE_NO_PROCESS, char_option);
+        
+    }
 }
+
+void process(char * pStr, int process, int char_option, ...)
+{
+    if(process)
+    {
+        static FILE * fp;
+        va_list arg;
+        va_start(arg, char_option);
+        fp = va_arg(arg, FILE *);
+        va_end(arg);
+
+    }
+
+   
+    while(pStr != NULL)
+    {
+             
+        switch(char_option)
+        {
+
+            case 'c':
+                count_output[0] += count_bytes(pStr);
+            break;
+
+            case 'l':
+                count_output[0] += count_lines(pStr); 
+            break;
+
+            case 'w':
+                count_output[0] += count_words(pStr); 
+            break;
+
+            case 'm':
+                count_output[0] += count_chars(pStr); 
+            break;
+
+            default:
+                printf("Invalid command line option. Needs to be one of [l | w | m | c]\n");
+                exit(EXIT_FAILURE);
+            break;
+        }
+
+        if(process)
+            pStr = fgets(buffer, buffer_size, fp);
+        else
+            pStr = fgets(buffer, buffer_size, stdin);
+    }
+}
+
+void file_count_lines(FILE * fp)
+{
+    char * pStr = fgets(buffer, buffer_size, fp);
+    while(pStr != NULL)
+    {
+        count_output[0] += count_lines(pStr);
+        pStr = fgets(buffer, buffer_size, fp);
+    }
+}
+
+void file_count_words(FILE * fp)
+{
+    char * pStr = fgets(buffer, buffer_size, fp);
+    while(pStr != NULL)
+    {
+        count_output[1] += count_words(pStr);
+        pStr = fgets(buffer, buffer_size, fp);
+    }
+}
+
+void file_count_bytes(FILE * fp)
+{
+    char * pStr = fgets(buffer, buffer_size, fp);
+    while(pStr != NULL)
+    {
+        count_output[2] += count_bytes(pStr);
+        pStr = fgets(buffer, buffer_size, fp);
+    }
+}
+
 
 int count_bytes(char * pStr)
 {
@@ -217,37 +242,12 @@ int count_chars(char * pStr)
     return count;
 }
 
-void read_text(char c)
+void init_buffer(void)
 {
-    char *buffer;
-    size_t buffer_size = 100;
-    char * pStr;
-
     buffer = (char *) calloc(buffer_size, sizeof(char));
-
-    if(buffer == NULL)
-    {
-        printf("Unable to allocate buffer\n");
-        exit(EXIT_FAILURE);
-    }
-
-
-    while(true)
-    {
-        pStr = fgets(buffer, buffer_size, stdin);
-
-        if( pStr != NULL)
-        {
-            
-        }
-        else
-        {
-            printf("Error related to input\n");
-            break;
-        }    
-        
-    }
 }
+
+
 
 
  
