@@ -1,0 +1,506 @@
+What is the purpose of this lab?
+
+learn how to organise and analyse large datasets using warehousing techniques. These are essential skills for making
+informed business decisions, optimising data retrieval, and enhancing understanding of data relationships.
+
+In this lab, I will design a data warehouse for a cloud service provider (CSP). The CSP has given me access to their billing data in the csv file cloud-billing-dataset.csv. The file contains billing data for the past decade. It has the following fields/ columns:
+
+Field Name	    Details
+customerid	    Id of the customer
+category	    Category of the customer. Example: Individual or Company
+country	        Country of the customer
+industry	    Which domain/industry the customer belongs to. Example: Legal, Engineering
+month	        The billed month, stored as YYYY-MM. Example: 2009-01 refers to the month January in the year 2009
+billedamount	Amount charged by the cloud services provided for that month in USD
+
+I need to design a data warehouse that can support the queries listed below:
+
+average billing per customer
+billing by country
+top 10 customers
+top 10 countries
+billing by industry
+billing by category
+billing by year
+billing by month
+billing by quarter
+average billing per industry per month
+average billing per industry per quarter
+average billing per country per quarter
+average billing per country per industry per quarter
+
+Here are five rows picked at random from the csv file. see csv-rows.png
+
+--------------------------------------------------
+Designing the fact table(s) for the star schema
+--------------------------------------------------
+
+The fact in this data is the bill which is generated monthly. The fields customerid and billedamount are the important fields in the fact table. I also need to identify the additinal customer information, other than the id, and date information. I will fields that refer to the customer and data information in other tables.
+
+The final fact table for the bill would look somehting like this:
+
+Field Name	        Details
+billid	            Primary key - Unique identifier for every bill
+customerid	        Foreign Key - Id of the customer
+monthid	Foreign     Key - Id of the month. We can resolve the billed month info using this
+billedamount	    Amount charged by the cloud services provided for that month in USD
+
+There are two dimensions to our fact(monthly bill)
+
+1. customer inforamtion
+2. date information
+
+the below fields give information about the customer in a dimension table
+
+Field Name	Details
+customerid	Primary Key - Id of the customer
+category	Category of the customer. Example: Individual or Company
+country	    Country of the customer
+industry	Which domain/industry the customer belongs to. Example: Legal, Engineering
+
+the below fields give information about the date of the bill
+
+Field Name	Details
+monthid	    Primary Key - Id of the month
+year	    Year derived from the month field of the original data. Example: 2010
+month	    Month number derived from the month field of the original data. Example: 1, 2, 3
+monthname	Month name derived from the month field of the original data. Example: March
+quarter	    Quarter number derived from the month field of the original data. Example: 1, 2, 3, 4
+quartername	Quarter name derived from the month field of the original data. Example: Q1, Q2, Q3, Q4
+
+
+Based on the above, I now have 3 tables which are identified below
+
+Table Name	    Type	    Details
+FactBilling	    Fact	    This table contains the billing amount, and the foreign keys to customer and month data
+DimCustomer	    Dimension	This table contains all the information related the customer
+DimMonth	    Dimension	This table contains all the information related the month of billing
+
+Arranging the above tables in star schema style I arrive at a table structure that looks as follows see star-diagram.png
+
+The image shows the fact and dimension tables along with the relationships between them.
+
+------------------------------------------
+Creating the schema on the data warehouse
+------------------------------------------
+
+this will be done on postgresql server
+
+Firstly, run the command below to set your PostgreSQL password for authentication. Replace <your_password> with your actual PostgreSQL password, and then execute the command:
+
+export PGPASSWORD=<your_password>
+
+Now, run the command below to create a database named billingDW.
+
+createdb -h postgres -U postgres -p 5432 billingDW
+
+In the above command, -h mentions that the database server is accessible using the hostname “postgres”, -U mentions that we are using the user name postgres to log into the database, -p mentions that the database server is running on port number 5432
+
+Download the schema .sql file.
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0260EN-SkillsNetwork/labs/Working%20with%20Facts%20and%20Dimension%20Tables/star-schema.sql
+
+the above schema is as follows
+
+BEGIN;
+
+
+CREATE TABLE public."FactBilling"
+(
+    rowid integer NOT NULL,
+    customerid integer NOT NULL,
+    monthid integer NOT NULL,
+    billedamount integer NOT NULL,
+    PRIMARY KEY (rowid)
+);
+
+CREATE TABLE public."DimMonth"
+(
+    monthid integer NOT NULL,
+    year integer NOT NULL,
+    month integer NOT NULL,
+    monthname "char" NOT NULL,
+    quarter integer NOT NULL,
+    quartername "char" NOT NULL,
+    PRIMARY KEY (monthid)
+);
+
+CREATE TABLE public."DimCustomer"
+(
+    customerid integer NOT NULL,
+    category "char" NOT NULL,
+    country "char" NOT NULL,
+    industry "char" NOT NULL,
+    PRIMARY KEY (customerid)
+);
+
+ALTER TABLE public."FactBilling"
+    ADD FOREIGN KEY (customerid)
+    REFERENCES public."DimCustomer" (customerid)
+    NOT VALID;
+
+
+ALTER TABLE public."FactBilling"
+    ADD FOREIGN KEY (monthid)
+    REFERENCES public."DimMonth" (monthid)
+    NOT VALID;
+
+END;
+
+Run the command below to create the schema in the under billingDW database.
+
+psql  -h postgres -U postgres -p 5432 billingDW < star-schema.sql
+
+
+
+
+Practice exercise
+
+In this practice exercise, you will analyze the below csv file, which contains data about the daily sales at different stores of an international fashion retailer. see sales-csv.png
+
+Design the schema for the fact table FactSales.
+
+Field Name	Details
+rowid	    Primary key - Unique identifier for every row
+storeid	    Foreign Key - Id of the store
+dateid	    Foreign Key - Id of the date
+totalsales	Total sales
+
+
+Design the schema for the dimension table DimStore.
+
+Field Name	Details
+storeid	    Primary key - Unique identifier for every store
+city	    City where the store is located.
+country	    Country where the store is located.
+
+
+Design the schema for the dimension table DimDate.
+
+Field Name	    Details
+dateid	        Primary Key - Id of the date
+day	            Day derived from the date field of the original data. Example: 13, 19
+weekday	        Weekday derived from the date field of the original data. Example: 1, 2, 3, 4, 5, 6, 7. 1 for sunday, 7 for saturday
+weekdayname	    Weekday name derived from the date field of the original data. Example: Sunday, Monday
+year	        Year derived from the date field of the original data. Example: 2010
+month	        Month number derived from the date field of the original data. Example: 1, 2, 3
+monthname	    Month name derived from the date field of the original data. Example: March
+quarter	        Quarter number derived from the date field of the original data. Example: 1, 2, 3, 4
+quartername	    Quarter name derived from the date field of the original data. Example: Q1, Q2, Q3, Q4
+
+
+---------------------------------
+Setting up a staging area
+---------------------------------
+
+Create Database
+
+Using the createdb command of the PostgreSQL server, we can directly create the database from the terminal.
+
+Before that, export your password
+
+export PGPASSWORD=<your_password>;
+
+Then run the below command which will create a database named billingDW.
+
+createdb -h postgres -U postgres -p 5432 billingDW
+
+In the above command
+
+-h mentions that the database server is accessible using the hostname “postgres”
+-U mentions that we are using the user name postgres to log into the database
+-p mentions that the database server is running on port number 5432
+
+Create data warehouse schema 
+
+Run the commands below to download and extract the schema files.
+
+1. wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0260EN-SkillsNetwork/labs/Setting%20up%20a%20staging%20area/billing-datawarehouse.tgz
+2. tar -xvzf billing-datawarehouse.tgz
+
+Run the command below to create the schema in the billingDW database.
+
+psql  -h postgres -U postgres -p 5432 billingDW < star-schema.sql
+
+When we load data into the tables, it is a good practice to load the data into dimension tables first.
+
+Load data into DimCustomer table
+
+Run the command below to load the data into DimCustomer table in billingDW database.
+
+psql  -h postgres -U postgres -p 5432 billingDW < DimCustomer.sql
+
+Load data into DimMonth table
+
+Run the command below to load the data into DimMonth table in billingDW database.
+
+psql  -h postgres -U postgres -p 5432 billingDW < DimMonth.sql
+
+Load data into FactBilling table
+
+Run the command below to load the data into FactBilling table in billingDW database.
+
+psql  -h postgres -U postgres -p 5432 billingDW < FactBilling.sql
+
+Run the command below to check the number of rows in all the tables in the billingDW database.
+
+psql  -h postgres -U postgres -p 5432 billingDW < verify.sql
+
+----------------------
+END OF LAB
+----------------------
+
+what is data quality verification? see dataVerification1.png dataVerification2.png dataVerification3.png dataVerification4.png
+
+Expanding on data quality concerns? see dataQuality1.png dataQuality2.png dataQuality3.png dataQuality4.png dataQuality5.png dataQuality6.png dataQuality7.png dataQuality8.png dataQuality9.png dataQuality10.png
+dataQuality11.png dataQuality12.png
+
+--------------------------------------------------------------------------------------------------------------------
+The primary purpose of this lab is to instruct participants on the process of conducting thorough data quality checks in a data warehousing environment. It focuses on using a Python-based framework within a PostgreSQL database to validate data integrity. Key areas of emphasis include identifying null values, duplicates, and invalid entries, as well as verifying data ranges. The lab aims to equip learners with the necessary skills to set up and utilize a testing framework for data validation, ensuring data accuracy and consistency.  
+--------------------------------------------------------------------------------------------------------------------
+
+In this lab, you will:
+
+Check Null values
+Check Duplicate values
+Check Min Max
+Check Invalid values
+Generate a report on data quality
+
+Run the command below to download the staging area setup script.
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0260EN-SkillsNetwork/labs/Verifying%20Data%20Quality%20for%20a%20Data%20Warehouse/setup_staging_area.sh
+
+Run the setup script.
+
+Run the command below to execute the staging area setup script.
+
+bash setup_staging_area.sh (before running the script, first export the password of the database instance as a shell variable and then replace localhost in the script with postgres which is the name of the database server)
+
+Getting the testing framework ready
+
+You can perform most of the data quality checks by manually running sql queries on the data warehouse.
+
+It is a good idea to automate these checks using custom programs or tools. Automation helps you to easily
+
+create new tests,
+run tests,
+and schedule tests.
+We will be using a python based framework to run the data quality tests.
+
+Step 1: Download the framework.
+
+Run the commands below to download the framework
+
+wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0260EN-SkillsNetwork/labs/Verifying%20Data%20Quality%20for%20a%20Data%20Warehouse/dataqualitychecks.py
+
+Install the python driver for Postgresql.
+
+Run the command below to install the python driver for Postgresql database
+
+python3 -m pip install psycopg2
+
+Update Password in dbconnect.py
+
+Once done, save the file.
+
+Test database connectivity.
+
+Now we need to check
+
+if the Postgresql python driver is installed properly.
+if Postgresql server is up and running.
+if our micro framework can connect to the database.
+The command below to check all the above cases.
+
+python3 dbconnect.py
+
+If all goes well, you should a message Successfully connected to database.
+
+The command also disconnects from the server with a message Connection closed.
+
+Create a sample data quality report
+
+Run the command below to install pandas.
+
+python3 -m pip install pandas tabulate
+
+Run the command below to generate a sample data quality report.
+
+python3 generate-data-quality-report.py
+
+You should see a list of tests that were run and their status.
+
+Explore the data quality tests
+
+Open the file mytests.py in the editor
+
+The file mytests.py contains all the data quality tests.
+
+It provides a quick and easy way to author and run new data quality tests.
+
+The testing framework provides the following tests:
+
+check_for_nulls - this test will check for nulls in a column
+check_for_min_max - this test will check if the values in a column are with a range of min and max values
+check_for_valid_values - this test will check for any invalid values in a column
+check_for_duplicates - this test will check for duplicates in a column
+Each test can be authored by mentioning a minimum of 4 parameters.
+
+testname - The human readable name of the test for reporting purposes
+test - The actual test name that the testing micro framework provides
+table - The table name on which the test is to be performed
+column - The table name on which the test is to be performed
+
+Let us now see what a check_for_nulls test looks like.
+
+Here is a sample check_for_nulls test:
+
+test1={
+    "testname":"Check for nulls",
+    "test":check_for_nulls,
+    "column": "monthid",
+    "table": "DimMonth"
+}
+
+All tests must be named as test following by a unique number to identify the test.
+
+Give an easy to understand description for testname
+mention check_for_nulls for test
+mention the column name on which you wish to check for nulls
+mention the table name where this column exists
+Let us now create a new check_for_nulls test and run it.
+
+The test below checks if there are any null values in the column year in the table DimMonth.
+
+The test fails if nulls exist.
+
+Copy and paste the code below at the end of mytests.py file.
+
+Save the file using Menu -> File -> Save
+
+Run the command below to generate the new data quality report.
+
+python3 generate-data-quality-report.py
+
+Let us now see what a check_for_min_max test looks like.
+
+Here is a sample check_for_min_max test
+
+test2={
+    "testname":"Check for min and max",
+    "test":check_for_min_max,
+    "column": "monthid",
+    "table": "DimMonth",
+    "minimum":1,
+    "maximum":12
+}
+
+In addition to the usual fields, you have two more fields here.
+
+minimum is the lowest valid value for this column. (Example 1 in case of month number)
+maximum is the highest valid value for this column. (Example 12 in case of month number)
+Let us now create a new check_for_min_max test and run it.
+
+The test below checks for minimum of 1 and maximum of 4 in the column quarter in the table DimMonth.
+
+The test fails if there any values less than minimum or more than maximum.
+
+Copy and paste the code below at the end of mytests.py file.
+
+test6={
+    "testname":"Check for min and max",
+    "test":check_for_min_max,
+    "column": "quarter",
+    "table": "DimMonth",
+    "minimum":1,
+    "maximum":4
+}
+
+Save the file 
+
+Run the command below to generate the new data quality report.
+
+python3 generate-data-quality-report.py
+
+Let us now see what a check_for_valid_values test looks like.
+
+Here is a sample check_for_valid_values test:
+
+test3={
+    "testname":"Check for valid values",
+    "test":check_for_valid_values,
+    "column": "category",
+    "table": "DimCustomer",
+    "valid_values":{'Individual','Company'}
+}
+
+In addition to the usual fields, you have an additional field here.
+
+use the field valid_values to mention what are the valid values for this column.
+Let us now create a new check_for_valid_values test and run it.
+
+The test below checks for valid values in the column quartername in the table DimMonth.
+
+The valid values are Q1,Q2,Q3,Q4
+
+The test fails if there any values less than minimum or more than maximum.
+
+Copy and paste the code below at the end of mytests.py file.
+
+Save the file
+
+Run the command below to generate the new data quality report.
+
+python3 generate-data-quality-report.py
+
+Check for duplicate entries
+Let us now see what a check_for_duplicates test looks like.
+
+Here is a sample check_for_duplicates test
+
+test4={
+    "testname":"Check for duplicates",
+    "test":check_for_duplicates,
+    "column": "monthid",
+    "table": "DimMonth"
+}
+
+Let us now create a new check_for_duplicates test and run it.
+
+The test below checks for any duplicate values in the column customerid in the table DimCustomer.
+
+The test fails if duplicates exist.
+
+Copy and paste the code below at the end of mytests.py file.
+
+test8={
+    "testname":"Check for duplicates",
+    "test":check_for_duplicates,
+    "column": "customerid",
+    "table": "DimCustomer"
+}
+
+Save the file
+
+Run the command below to generate the new data quality report.
+
+python3 generate-data-quality-report.py
+
+Practice exercises
+Problem:
+Create a check_for_nulls test on column billedamount in the table FactBilling
+
+
+Problem:
+Create a check_for_duplicates test on column billid in the table FactBilling
+
+
+Problem:
+Create a check_for_valid_values test on column quarter in the table DimMonth. The valid values are 1, 2, 3, 4
+
+-------------------------------
+end of lab
+-------------------------------
+
+populating a data warehouse populatingDataWarehouse1.png populatingDataWarehouse2.png populatingDataWarehouse3.png populatingDataWarehouse4.png populatingDataWarehouse5.png populatingDataWarehouse6.png populatingDataWarehouse7.png populatingDataWarehouse8.png populatingDataWarehouse9.png populatingDataWarehouse10.png populatingDataWarehouse11.png populatingDataWarehouse12.png populatingDataWarehouse13.png populatingDataWarehouse14.png populatingDataWarehouse15.png 
