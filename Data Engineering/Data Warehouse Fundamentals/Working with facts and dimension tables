@@ -504,3 +504,251 @@ end of lab
 -------------------------------
 
 populating a data warehouse populatingDataWarehouse1.png populatingDataWarehouse2.png populatingDataWarehouse3.png populatingDataWarehouse4.png populatingDataWarehouse5.png populatingDataWarehouse6.png populatingDataWarehouse7.png populatingDataWarehouse8.png populatingDataWarehouse9.png populatingDataWarehouse10.png populatingDataWarehouse11.png populatingDataWarehouse12.png populatingDataWarehouse13.png populatingDataWarehouse14.png populatingDataWarehouse15.png 
+
+
+-------------------------------------------------------------------------------------------------------------------
+The lab is designed to provide hands-on experience in creating and managing a production database using PostgreSQL within the IBM Skills Network Labs (SN Labs) Cloud IDE. You will learn how to launch a PostgreSQL server instance, utilize the pgAdmin graphical user interface (GUI) for database operations, and execute essential tasks like creating a database, designing tables, and loading data. The lab focuses on building a foundation in database management by guiding learners through the process of setting up a 'Production' database and populating it with data following a star schema design.
+
+Engaging in this lab offers significant benefits for learners seeking to deepen their understanding of database management systems, particularly PostgreSQL. By working through the lab, you will gain practical skills in SQL, database creation, table design, and data manipulation, which are crucial for roles in data engineering, database administration, and data science. The hands-on approach helps in consolidating knowledge of database schemas and SQL queries, thereby enhancing the learner's ability to manage and analyze data effectively in real-world scenarios. Additionally, familiarity with tools like pgAdmin and the Cloud IDE environment adds valuable experience to your skill set, preparing you for advanced database projects and tasks.
+-------------------------------------------------------------------------------------------------------------------
+
+Production database is used in this lab.
+The production database contains:
+
+DimCustomer
+DimMonth
+FactBilling
+Objectives
+In this lab you will:
+
+Create production related database and tables in a PostgreSQL instance.
+Populate the production data warehouse byloading the tables from Scripts.
+
+The following are the SQL data files used in this lab.
+
+The production database contains (find them in folder):
+
+DimCustomer
+DimMonth
+FactBilling
+Star Schema
+
+Create a database
+
+First, to create a database on a PostgreSQL server instance, you'll first want to actually launch a PostgreSQL server instance.
+
+Once the pgAdmin GUI opens, click on the Servers tab on the left side of the page. You will be prompted to enter a password. see pgAdmin0.png pgAdmin1.png
+
+Retrieve your password, and paste it in the UI to access the pgAdmin GUI tool.
+
+In the left tree-view, right-click on Databases> Create > Database. see create1.png
+
+In the Database box, type Production as the name for your new database, and then click Save. Proceed to Task B. create2.png
+
+Now, that you have your PostgreSQL service active and have created the Production database using pgAdmin, let's go ahead and create a few tables to populate the database and store the data that we wish to eventually upload into it.
+
+Click on the Production database and in the top of the page go to Query tool and then click on Open File. Next a new page pops up called Select File. Click on Upload icon as shown in the screenshot. see addSchemas1.png
+
+Note: Ensure that you upload the files to this path: /var/lib/pgadmin/
+
+In the new blank page that appears drag and drop the star-schema.sql, DimCustomer.sql, DimMonth.sql, and FactBilling.sql.
+
+Once all the schema files are successfully loaded, click on the X icon on the right hand side of the page as shown in the screenshot. addSchemas2.png
+
+Once you click on the X icon a new page appears showing all schemas. Select the each schema in turn and click the run command as shown in the screenshot. see runSchema1.png runSchema2.png
+
+Next, right-click on the Production database and click on the Refresh option from the dropdown. see refresh.png
+
+After the database is refreshed the 3 tables (DimCustomer, DimMonth,FactBilling) are created under the Databases > Production > Schemas > Public > Tables. see refresh.png
+
+Let's run the command below on the PostgreSQL Tool.
+
+select count(*) from public."DimMonth";
+
+You should see an output as see example1.png
+
+Using the PostgreSQL tool, find the count of rows in the table FactBilling
+
+select count(*) from public."FactBilling";
+
+Using the PostgreSQL tool, create a simple Materialized views named avg_customer_bill with fields customerid and averagebillamount.
+
+CREATE MATERIALIZED VIEW  avg_customer_bill (customerid, averagebillamount) AS
+(select customerid, avg(billedamount)
+from public."FactBilling"
+group by customerid
+);
+
+Refresh the newly created Materialized views
+
+REFRESH MATERIALIZED VIEW avg_customer_bill;
+
+Using the newly created Materialized views find the customers whose average billing is more than 11000.
+
+select * from avg_customer_bill where averagebillamount > 11000;
+
+---------------------------------
+end of lab
+---------------------------------
+
+see queryingData.png
+
+
+-----------------------------------------------------------------------------------------------------
+The purpose of this lab is to provide hands-on experience in advanced SQL query techniques using PostgreSQL in a Cloud IDE environment. The lab focuses on teaching how to create grouping sets, rollups, and cubes for data aggregation and summarization, as well as how to implement and utilize Materialized Query Tables (Materialized views) for efficient data querying. These skills are essential for managing and analyzing large datasets, particularly in data warehousing and business intelligence contexts.
+
+By completing this lab, you will gain valuable insights into the practical application of complex SQL queries and data manipulation techniques. The knowledge of grouping sets, rollups, and cubes will enable learners to effectively summarize and analyze data, which is crucial in making informed business decisions. Understanding and implementing Materialized views provides an efficient way to handle large-scale data by reducing the computational load during frequent query executions. These skills are highly beneficial for careers in data analysis, database administration, and business intelligence, enhancing your ability to manage and analyze data in real-world scenarios.
+----------------------------------------------------------------------------------------------------
+
+In this lab you will learn how to create:
+
+Grouping sets
+Rollup
+Cube
+Materialized views
+
+This lab requires that you complete the previous lab Populate a Data Warehouse.
+
+If you have not finished the Populate a Data Warehouse Lab yet, please finish it before you continue.
+
+GROUPING SETS, CUBE, and ROLLUP allow us to easily create subtotals and grand totals in a variety of ways. All these operators are used along with the GROUP BY operator.
+
+GROUPING SETS operator allows us to group data in a number of different ways in a single SELECT statement.
+
+The ROLLUP operator is used to create subtotals and grand totals for a set of columns. The summarized totals are created based on the columns passed to the ROLLUP operator.
+
+The CUBE operator produces subtotals and grand totals. In addition, it produces subtotals and grand totals for every permutation of the columns provided to the CUBE operator.
+
+After you launch a PostgreSQL server instance on Cloud IDE and open up the pgAdmin Graphical User Interface run the below query.
+
+To create a grouping set for three columns labeled year, category, and sum of billedamount, run the sql statement below.
+
+select year,category, sum(billedamount) as totalbilledamount
+from "FactBilling"
+left join "DimCustomer"
+on "FactBilling".customerid = "DimCustomer".customerid
+left join "DimMonth"
+on "FactBilling".monthid="DimMonth".monthid
+group by grouping sets(year,category);
+
+To create a rollup using the three columns year, category and sum of billedamount, run the sql statement below.
+
+select year,category, sum(billedamount) as totalbilledamount
+from "FactBilling"
+left join "DimCustomer"
+on "FactBilling".customerid = "DimCustomer".customerid
+left join "DimMonth"
+on "FactBilling".monthid="DimMonth".monthid
+group by rollup(year,category)
+order by year, category;
+
+To create a cube using the three columns labeled year, category, and sum of billedamount, run the sql statement below.
+
+select year,category, sum(billedamount) as totalbilledamount
+from "FactBilling"
+left join "DimCustomer"
+on "FactBilling".customerid = "DimCustomer".customerid
+left join "DimMonth"
+on "FactBilling".monthid="DimMonth".monthid
+group by cube(year,category)
+order by year, category;
+
+Create a Materialized Query Table(Materialized views)
+
+In pgAdmin we can implement materialized views using Materialized Query Tables.
+
+Step 1: Create the Materialized views.
+Execute the sql statement below to create an Materialized views named countrystats.
+
+CREATE MATERIALIZED VIEW countrystats (country, year, totalbilledamount) AS
+(select country, year, sum(billedamount)
+from "FactBilling"
+left join "DimCustomer"
+on "FactBilling".customerid = "DimCustomer".customerid
+left join "DimMonth"
+on "FactBilling".monthid="DimMonth".monthid
+group by country,year);
+
+The above command creates an Materialized views named countrystats that has 3 columns.
+
+Country
+Year
+totalbilledamount
+
+The Materialized views is essentially the result of the below query, which gives you the year, quartername and the sum of billed amount grouped by year and quartername.
+
+
+select year, quartername, sum(billedamount) as totalbilledamount
+from "FactBilling"
+left join "DimCustomer"
+on "FactBilling".customerid = "DimCustomer".customerid
+left join "DimMonth"
+on "FactBilling".monthid="DimMonth".monthid
+group by grouping sets(year, quartername);
+
+Step 2: Populate/refresh data into the Materialized views.
+Execute the sql statement below to populate the Materialized views countrystats.
+
+REFRESH MATERIALIZED VIEW countrystats;
+
+The command above populates the Materialized views with relevant data.
+
+Step 3: Query the Materialized views.
+
+Once an Materialized views is refreshed, you can query it.
+
+Execute the sql statement below to query the Materialized views countrystats.
+
+select * from countrystats;
+
+Problem 1: Create a grouping set for the columns year, quartername, sum(billedamount).
+
+select year, quartername, sum(billedamount) as totalbilledamount
+from "FactBilling"
+left join "DimCustomer"
+on "FactBilling".customerid = "DimCustomer".customerid
+left join "DimMonth"
+on "FactBilling".monthid="DimMonth".monthid
+group by grouping sets(year, quartername);
+
+
+Problem 2: Create a rollup for the columns country, category, sum(billedamount).
+
+SELECT country, category, SUM(billedamount) AS totalbilledamount
+FROM "FactBilling"
+LEFT JOIN "DimCustomer"
+ON "FactBilling".customerid = "DimCustomer".customerid
+LEFT JOIN "DimMonth"
+ON "FactBilling".monthid = "DimMonth".monthid
+GROUP BY ROLLUP(country, category)
+ORDER BY country, category;
+
+
+Problem 3: Create a cube for the columns year,country, category, sum(billedamount).
+
+SELECT year, country, category, SUM(billedamount) AS totalbilledamount
+FROM "FactBilling"
+LEFT JOIN "DimCustomer" 
+ON "FactBilling".customerid = "DimCustomer".customerid
+LEFT JOIN "DimMonth" 
+ON "FactBilling".monthid = "DimMonth".monthid
+GROUP BY CUBE(year, country, category);
+
+
+Problem 4: Create an Materialized views named average_billamount with columns year, quarter, category, country, average_bill_amount.
+
+CREATE MATERIALIZED VIEW average_billamount (year,quarter,category,country, average_bill_amount) AS
+    (select   year,quarter,category,country, avg(billedamount) as average_bill_amount
+    from "FactBilling"
+    left join  "DimCustomer"
+    on "FactBilling".customerid =  "DimCustomer".customerid
+    left join "DimMonth"
+    on "FactBilling".monthid="DimMonth".monthid
+    group by year,quarter,category,country
+    );
+
+refresh MATERIALIZED VIEW average_billamount;
+
+---------------------------------
+end of lab
+---------------------------------
