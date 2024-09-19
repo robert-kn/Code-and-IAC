@@ -8,7 +8,7 @@ In this lab, I will design a data warehouse for a cloud service provider (CSP). 
 Field Name	    Details
 customerid	    Id of the customer
 category	    Category of the customer. Example: Individual or Company
-country	        Country of the customer
+country	        Country of the customer 
 industry	    Which domain/industry the customer belongs to. Example: Legal, Engineering
 month	        The billed month, stored as YYYY-MM. Example: 2009-01 refers to the month January in the year 2009
 billedamount	Amount charged by the cloud services provided for that month in USD
