@@ -3,7 +3,7 @@ What is the purpose of this lab?
 learn how to organise and analyse large datasets using warehousing techniques. These are essential skills for making
 informed business decisions, optimising data retrieval, and enhancing understanding of data relationships.
 
-In this lab, I will design a data warehouse for a cloud service provider (CSP). The CSP has given me access to their billing data in the csv file cloud-billing-dataset.csv. The file contains billing data for the past decade. It has the following fields/ columns:
+In this lab, I will design a data warehouse for a cloud service provider (CSP). The CSP has given me access to their billing data in the csv file cloud-billing-dataset.csv. The file contains billing data for the past decade. It has the following fields/columns:
 
 Field Name	    Details
 customerid	    Id of the customer

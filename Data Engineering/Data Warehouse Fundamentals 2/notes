@@ -1,0 +1,57 @@
+what is this final assignment about?
+
+This comprehensive lab is designed to provide hands-on experience in designing, implementing, and querying a data warehouse using PostgreSQL. It simulates a real-world scenario where you, as a data engineer, assist a waste management company in Brazil in managing and analyzing their solid waste collection data. The lab involves multiple stages, from designing and creating a star schema for the data warehouse, loading data, writing complex SQL queries for data aggregation, and creating materialized view for query optimization.
+
+What I will learn:
+
+Practical experience in data warehouse design: It provides hands-on experience in designing and implementing a star schema, which is crucial for any data warehousing project.
+
+SQL Query writing skills: Enhances your ability to write complex SQL queries, including grouping sets, rollups, and cubes, essential for data analysis and reporting.
+
+Data loading and transformation: Offers practice in data loading and transformation, an essential skill for managing data warehouses.
+
+Real-world scenario applications: The scenario-based approach of the lab ensures that the skills acquired are relevant and applicable in real-world data warehousing and business intelligence projects.
+
+Scenario
+
+You are a data engineer hired by a solid waste management company. It collects and recycles solid waste across major cities in the country of Brazil. They operate hundreds of trucks of different types to collect and transport solid waste. The company would like to create a data warehouse so that it can create reports like:
+
+Total waste collected per year per city
+Total waste collected per month per city
+Total waste collected per quarter per city
+Total waste collected per year per trucktype
+Total waste collected per trucktype per city
+Total waste collected per trucktype per station per city
+
+You will use your data warehousing skills to design and implement a data warehouse for the company.
+
+Learning objectives
+After completing this lab, you will be able to:
+
+Design a data warehouse.
+Load data into the data warehouse.
+Create a materialized view.
+
+About the data set
+The data set you would be using in this assignment is not a real-life data set. It was programmatically created for this assignment purpose.
+
+Prerequisites
+You need to use PostgreSQL Database to proceed with the assignment.
+
+This lab will guide you to understand how to create tables and load data in PostgreSQL using pgAdmin.
+
+Exercise 1: Design a data warehouse
+The solid waste management company has provided you the sample data they want to collect see sample-data.png
+
+You will start your project by designing a Star Schema warehouse by identifying the columns for the various dimensions and fact tables in the schema.
+
+Task 1: Design the dimension table MyDimDate
+
+Write down the fields in the MyDimDate table in any text editor, one field per line. The company is looking at a granularity of day, which means they would like to have the ability to generate the report on a yearly, monthly, daily, and weekday basis.
+
+dateid
+month
+monthname
+quarter
+quartername
+year
