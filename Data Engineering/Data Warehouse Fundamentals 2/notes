@@ -50,8 +50,89 @@ Task 1: Design the dimension table MyDimDate
 Write down the fields in the MyDimDate table in any text editor, one field per line. The company is looking at a granularity of day, which means they would like to have the ability to generate the report on a yearly, monthly, daily, and weekday basis.
 
 dateid
-month
-monthname
+date
+year
 quarter
 quartername
-year
+month
+monthname
+day
+weekday
+weekdayname
+
+Task 2: Design the dimension table MyDimWaste
+
+Write down the fields in the MyDimWaste table in any text editor, one field per line.
+
+Solution:
+In this task, you will design the dimension table MyDimWaste to store waste-related information.
+
+Fields in MyDimWaste table:
+
+wastetypeid
+wastetypename
+
+Task 3: Design the dimension table MyDimZone
+Write down the fields in the MyDimZone table in any text editor, one field per line.
+
+zoneid
+zonename
+zonecity
+
+Task 4: Design the fact table MyFactTrips
+Write down the fields in the MyFactTrips table in any text editor, one field per line.
+
+tripid
+dateid
+stationid
+truckid
+wastecollected
+
+
+Exercise 2 - Create schema for data warehouse on PostgreSQL
+
+In this exercise, you will create the tables you have designed in the previous exercise. Open pgAdmin and create a database named Project, then create the following tables.
+
+Task 5: Create the dimension table MyDimDate
+Create the MyDimDate table.
+
+CREATE TABLE MyDimDate (
+    dateid INT PRIMARY KEY,
+    date DATE,
+    year INT,
+    quarter INT,
+    quartername VARCHAR(4),
+    month INT,
+    monthname VARCHAR(20),
+    day INT,
+    weekday INT,
+    weekdayname VARCHAR(20)
+);
+
+Task 6: Create the dimension table MyDimWaste
+Create the MyDimWaste table.
+
+CREATE TABLE MyDimWaste (
+    wastetypeid INT PRIMARY KEY,
+    wastetypename VARCHAR(20)
+);
+
+Task 7: Create the dimension table MyDimZone
+Create the MyDimZone table.
+
+CREATE TABLE MyDimZone (
+    zoneid INT PRIMARY KEY,
+    zonename VARCHAR(50),
+    zonecity VARCHAR(20)
+);
+
+Task 8: Create the fact table MyFactTrips
+Create the MyFactTrips table.
+
+CREATE TABLE MyFactTrips (
+    tripid INT PRIMARY KEY,
+    FOREIGN KEY (dateid) REFERENCES  DimDate(dateid),
+    FOREIGN KEY (stationid) REFERENCES DimStation(stationid),
+    FOREIGN KEY (truckid) REFERENCES DimTruck(truckid),
+    wastecollected DECIMAL (10, 2) NOT NULL
+);
