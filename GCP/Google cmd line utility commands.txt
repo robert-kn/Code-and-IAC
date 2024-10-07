@@ -1,0 +1,331 @@
+
+gsutil -m cp -r [FILE/FOLDER] gs://[BUCKET-NAME]   --> UPLOADS FILES TO BUCKET
+
+gsutil iam ch user:[USER-EMAIL]:[ROLE1, ROLE2] gs://[BUCKET-NAME]   --> ASSIGN IAM ROLE TO BUCKET
+
+gsutil iam ch -d user:[USER-EMAIL]:[ROLE1, ROLE2] gs://[BUCKET-NAME]   --> REMOVE IAM ROLE FROM BUCKET
+
+gsutil iam ch -d user:[USER-EMAIL] gs://[BUCKET-NAME]   --> REMOVE ALL ROLES FROM BUCKET FOR A GIVEN USER
+
+gsutil iam ch allUsers:objectViewer gs://[BUCKET-NAME]   --> GIVE PUBLIC READ ACCESS TO A BUCKET
+
+gsutil acl ch -u [USER-EMAIL]:[O/R/W] gs://[BUCKET-NAME]/[OBJECT]   --> ASSIGN ACL ROLES TO BUCKETS AND OBJECTS
+
+gsutil acl ch -d [USER-EMAIL] gs://[BUCKET-NAME]/[OBJECT]   --> DELETE ACLs FOR USER
+
+gsutil defacl ch -u AllUsers:R gs://[BUCKET-NAME]   --> SET DEFAULT ACL FOR ALL NEW OBJECTS (PUBLIC READ ACCESS IN THIS CASE)
+
+gsutil iam get gs://[BUCKET-NAME] --> GET IAM ROLES ASSIGNED TO BUCKET
+
+gsutil acl ch -u AllUsers:R gs://YOUR-BUCKET-NAME/* ---> GRANT ALL USERS READ PERMISSION FOR THE OBJECTS IN YOUR BUCKET
+
+gsutil acl ch -d AllUsers gs://YOUR-BUCKET-NAME/* -----> REMOVE ALL USERS READ PERMISSION FOR THE OBJECTS IN YOUR BUCKET
+
+gsutil mb gs://$DEVSHELL_PROJECT_ID
+
+gsutil ls gs://$DEVSHELL_PROJECT_ID
+
+gsutil rm gs://YOUR-BUCKET-NAME/*
+
+gcloud compute addresses list --> see a list of static addresses available to a project
+
+gcloud compute instances describe [INSTANCE-NAME] --zone=$ZONE | grep natIP ---> get the external ip of the instance
+
+gcloud project list --sort-by projectId
+
+gcloud organizations list 
+
+gcloud secrets versions access 1 --secret="[SECRET NAME]" ---> retrieve secret version 1 from project
+
+USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}') ---> get the current authorised user
+
+gcloud compute target-vpn-gateways create [DESIRED-NAME] --network [NETWORK] --region [REGION] ---> creates a vpn gateway
+
+gcloud compute addresses create [DESIRED-NAME] --region [REGION] ---> create a static external ip address
+
+gcloud compute addresses describe [DESIRED-NAME] --region [REGION] --format='value(address)' ---> retrieve gateway ip address 
+----------------------------------------------------------------------------------------------------------------
+gcloud iam roles create editor --project $DEVSHELL_PROJECT_ID --file [NAME OF YAML FILE CONTAINING DEFINITION]
+
+title: "Role Editor"
+description: "Edit access for App Versions"
+stage: "ALPHA"
+includedPermissions:
+- appengine.versions.create
+- appengine.versions.delete
+
+-----------------------------------------------------------------------------------------------------------------
+
+gcloud iam roles create [ROLE NAME] --project $DEVSHELL_PROJECT_ID --title "Role Viewer" --description "Custom role description." --permissions compute.instances.get,compute.instances.list --stage ALPHA
+
+gcloud iam roles update [ROLE NAME] --project $DEVSHELL_PROJECT_ID --add-permissions storage.buckets.get,storage.buckets.list
+
+gcloud iam roles update [ROLE NAME] --project $DEVSHELL_PROJECT_ID --stage DISABLED ---> Disables a role
+
+gcloud iam roles delete [ROLE NAME] --project $DEVSHELL_PROJECT_ID  ---> deletes a custom role
+
+gcloud iam roles undelete [ROLE NAME] --project $DEVSHELL_PROJECT_ID ---> restores a custom role
+
+gcloud iam roles list --project $DEVSHELL_PROJECT_ID ---> list custom roles specifying either project-level or organisation-level (--organization)
+
+gcloud iam roles list --project $DEVSHELL_PROJECT_ID --show-deleted ---> list deleted roles
+
+gcloud iam roles list ---> list predefined roles
+
+gcloud iam list-testable-permissions //cloudresourcemanager.googleapis.com/projects/$DEVSHELL_PROJECT_ID --> get a list of permissions available for your project
+
+gcloud iam roles describe [ROLE_NAME] ---> view a role's metadata (includes the role id and permissions contained in the role)
+
+gcloud iam roles describe [ROLE_ID] --project $DEVSHELL_PROJECT_ID ---> Get the current definition for the role
+
+gcloud iam list-grantable-roles //cloudresourcemanager.googleapis.com/projects/$DEVSHELL_PROJECT_ID ---> list grantable roles from your project
+
+gcloud compute instances network-interfaces update [VM-NAME] --stack-type=IPV4_IPV6 --zone [ZONE-NAME] ---> modify instance for IPV6 use
+
+gcloud compute networks update [NETWORK-NAME] --switch-to-custom-subnet-mode
+
+gcloud compute networks subnets update [SUBNET-NAME] --stack-type=IPV4_IPV6 --ipv6-access-type=[EXTERNAL OR INTERNAL] --region [DESIRED-REGION] ----> update subnet to dual stack
+
+gcloud config set project [DESIRED-PROJECT]
+
+gcloud artifacts repositories create [NAME DESIRED] --repository-format=[DOCKER/APT ETC] --location=[us-central1] --description="Docker repository"
+
+gcloud config get-value compute/region
+
+gcloud config get-value project
+
+gcloud compute project-info describe --project $(gcloud config get-value project) ---> view details about a project
+
+gcloud config set compute/region [DESIRED-REGION]
+
+gcloud iam service-accounts create [SERVICE-ACCOUNT-NAME] --display-name [DISPLAY-NAME-FOR-SA] --> CREATE SA
+
+gcloud iam service-accounts delete [SA-NAME]@[PROJECT-ID].iam.gserviceaccount.com --> DELETE SA
+
+gcloud iam service-accounts keys create [SOMETHING.JSON] --iam-account [SA] --> CREATE USER MANAGED KEY FOR SA
+
+gcloud iam service-accounts keys list --iam-account [SA] --> LIST KEYS FOR SA
+
+gcloud iam service-accounts keys delete [KEY-ID] --iam-account [SA] --> DELETE KEY FOR SA
+
+gcloud iam service-accounts update [SA-NAME]@[PROJECT-ID].iam.gserviceaccount.com -- description
+"(UPDATED-SA-DESCRIPTION)" -- display-name "(UPDATED-DISPLAY-NAME)"  --> RENAME SA DESCRIPTION AND DISPLAY NAME
+
+gcloud iam service-accounts [disable/enable] [SA-NAME]@[PROJECT-ID].iam.gserviceaccount.com --> DISABLE/ENABLE SA
+
+gcloud projects add-iam-policy-binding [PROJECT-ID] --member serviceAccount:[SERVICE-ACCOUNT] --role roles/storage.objectViewer  --> GRANT STORAGE OBJECT VIEWER ROLE TO SA
+
+gsutil signurl -d [TIME-PERIOD] [KEY-FILE] gs://[BUCKET-NAME]/[OBJECT] --> GENERATE SIGNED URL ON OBJECT TO GRANT TIMED ACCESS
+
+gcloud kms keyrings add-iam-policy-binding [KEYRING_NAME] [--location global] --member user:[EMAIL] --role roles/cloudkms.cryptoKeyEncrypterDecrypter
+
+gcloud projects get-iam-policy [PROJECT-ID] -- format [FORMAT] > [FILE-PATH] --> DOWNLOAD A COPY OF THE IAM POLICY FOR THE PROJECT
+
+gcloud organizations get-iam-policy [ORGANISATION-ID] --> GET IAM POLICY FOR ORGANISATION
+
+gcloud resource-manager folders get-iam-policy [FOLDER-ID] --> GET IAM POLICY FOR FOLDER
+
+gcloud projects set-iam-policy [PROJECT-ID] [FILE-PATH]
+
+gcloud projects add-iam-policy-binding [PROJECT-ID] --member user:[EMAIL] --role roles/[ROLE-ID] --> ADD SINGLE IAM ROLE
+
+gcloud projects remove-iam-policy-binding [PROJECT-ID] --member user:[EMAIL] --role roles/[ROLE-ID] --> REMOVE SINGLE IAM ROLE
+
+gcloud compute instances list --sort-by=ZONE
+
+gcloud compute networks list
+
+gcloud logging logs list
+
+gcloud compute http-health-checks create [DESIRED-NAME]
+
+gcloud compute target-pools create [DESIRED-NAME] --region [REGION] --http-health-check [NAME]
+
+gcloud compute target-pools add-instances [DESIRED-NAME] --instances [INSTANCES LIST]
+
+gcloud compute forwarding-rules create [DESIRED-NAME] --region [REGION] --ports 80 --address [IP-ADDRESS] --target-pool [DESIRED-NAME]
+
+gcloud logging logs list --filter="compute"
+
+gcloud logging read "resource.type=gce_instance" --limit 5
+
+gcloud logging read "resource.type=gce_instance AND labels.instance_name='[INSTANCE NAME]'" --limit 5
+
+gcloud compute networks subnets list --sort-by=NETWORK OR --filter="network:[DESIRED-NETWORK]"
+
+gcloud compute networks subnets describe [SUBNET-NAME] --region=$REGION ---> get information about the desired subnet
+
+gcloud compute instances list --filter=name:[INSTANCE NAME] --format='value(EXTERNAL_IP)'
+
+gcloud compute firewall-rules list --sort-by=NETWORK
+
+gcloud compute networks create [NETWORK-NAME] --subnet-mode=[custom or auto]
+
+gcloud compute networks delete [DESIRED-NAME]
+
+gcloud compute instances describe [INSTANCE] --zone=$ZONE | grep natIP ---> retrieve the external ip of the instance
+
+gcloud container clusters update [CLUSTER-NAME] --enable-master-authorized-networks --master-authorized-networks [MY_EXTERNAL_RANGE] --zone=[zone] ---> run to authorise your external address range so that the cluster is accessible from it
+
+gcloud compute networks subnets create [SUBNETWORK-NAME] --network=[NETWORK-NAME] --region=[REGION-DESIRED] --range=[172.16.0.0/24 or 10.0.0.0/24 or 10.1.1.0/24 or 10.0.0.0/16] --enable-private-ip-google-access
+
+gcloud compute networks subnets create [SUBNET-NAME] --network default --range 10.0.4.0/22 --enable-private-ip-google-access --region=$REGION --secondary-range [DESIRED-NAME]=10.0.32.0/20,[DESIRED-NAME]=10.4.0.0/14 ---> creates a subnetwork in a specified region with a primary range and two secondary ranges
+
+gcloud beta container clusters create [CLUSTER-NAME] --enable-private-nodes --enable-ip-alias --master-ipv4-cidr 172.16.0.32/28 --subnetwork [SUBNETWORK-NAME] --services-secondary-range-name [RANGE-NAME] --cluster-secondary-range-name [RANGE-NAME] --zone=$ZONE ---> creates a private k8s cluster in the subnetwork specified and assigns the secondary ranges in the subnetwork to be used by services in the cluster and pods
+
+gcloud beta container clusters create [CLUSTER-NAME] --enable-private-nodes --master-ipv4-cidr 172.16.0.16/28 --enable-ip-alias --create-subnetwork "" ---> creates a private cluster which specifies a /28 CIDR range for the VMs that run the k8s master components. When you enable ip aliases, you let k8s engine automatically create a subnetwork for you
+
+gcloud compute firewall-rules create [DESIRED-NAME] --direction=[INGRESS OR EGRESS] --priority=[0 TO 65535] --network=[DESIRED-NETWORK] --action=[ALLOW OR DENY] --rules=[icmp,tcp:22,tcp:3389] --source-ranges=[0.0.0.0/0 or 10.0.0.0/8] --target-tags=[NAME-OF-DESIRED-TAG]
+
+tcp:0-65535,udp:0-65535,icmp --> traffic will be accepted on all ports
+
+gcloud compute routes list --project [PROJECT] ---> lists routes for all VPC networks for the project
+
+gcloud app deploy ---> deploy an app to an app engine standard environment
+
+gcloud compute firewall-rules update [FIREWALL-RULE-NAME] --priority [DESIRED-PRIORITY]
+
+gcloud compute instances add-tags [INSTANCE-NAME] --zone [ZONE-NAME] --tags=[TAG-NAME]
+
+gcloud compute firewall-rules delete -q [desired-name]
+
+gcloud compute instances create [INSTANCE-NAME] --zone=[DESIRED-ZONE] --machine-type=[DESIRED-TYPE] --subnet=[DESIRED-SUBNET] --network=[DESIRED-NETWORK]
+
+gcloud compute instances delete -q [name-of-vm] --zone [zone-vm-is-in] 
+
+gcloud compute zones list --> list the all of the available compute zones 
+
+gcloud auth list ---> list the active identity
+
+gcloud config list project --> list the current project
+
+gcloud services enable xxxxx.googleapis.com --> enable an api
+
+gcloud kms keyrings create [KEYRING_NAME] --location global/us/eu
+
+gcloud kms keys create $CRYPTOKEY_NAME --location global --keyring $KEYRING_NAME --purpose encryption
+
+gsutil kms encryption gs://[BUCKET NAME] ---> view the default encryption key for your bucket
+
+gsutil kms authorize -p $DEVSHELL_PROJECT_ID -k projects/$DEVSHELL_PROJECT_ID/locations/us/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_1_NAME ---> give your Cloud Storage service account permission to use a cloud kms key
+
+gsutil -o "GSUtil:encryption_key=projects/$DEVSHELL_PROJECT_ID/locations/us/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_2_NAME" cp [FILE NAME] gs://$DEVSHELL_PROJECT_ID-kms ---> encrypt an individual object with a Cloud KMS key (NOT THE DEFAULT KEY)
+
+gsutil ls -L gs://$[BUCKET NAME]/[FILE NAME] ---> get key details that was used for encryption using gsutil
+
+gcloud services list | grep -E 'name of api|name of api'  --> check that apis are indeed enabled
+
+gcloud compute instances create [DESIRED-NAME] --machine-type=[DESIRED-TYPE] --zone [DESIRED-ZONE] --network=[DESIRED-NETWORK] --subnet=[DESIRED-SUBNET] --tags=[DESIRED-TAG-NAME] --metadata=startup-script='#! /bin/bash apt-get update apt-get install apache2 -y echo "Page served from: [CHANGE-ME]" | tee /var/www/html/index.html
+systemctl restart apache2'
+
+gcloud dns managed-zones create [DESIRED-NAME] --description=[DESIRED-NAME] --dns-name=[SOMETHING.COM] --networks=[DESIRED-NETWORK] --visibility=[PRIVATE OR PUBLIC?]
+
+gcloud dns record-sets create [domain-to-be-created] --ttl=5 --type=A --zone=[desired-name] --routing-policy-type=GEO --routing-policy-data="us-east1=$US_WEB_IP;europe-west1=$EUROPE_WEB_IP"
+
+gcloud dns record-sets list --zone=[desired-name]
+
+gcloud dns record-sets delete [desired-name] --type=A --zone=example
+
+gcloud compute ssh [vm-name] --zone [zone-vm-is-in] --tunnel-through-iap
+
+gcloud dns managed-zones delete [desired-name]
+
+gcloud compute images list --project deeplearning-platform-release --format="value(NAME)" --no-standard-images
+
+gcloud storage buckets create -l [DESIRED-REGION] gs://$DEVSHELL_PROJECT_ID
+
+gcloud storage cp [FILE-OR-FOLDER] gs://$DEVSHELL_PROJECT_ID
+
+gcloud storage ls gs://$DEVSHELL_PROJECT_ID
+
+Create a custom role using the CLI and YAML file
+
+title: [ROLE_TITLE]
+description: [ROLE_DESCRIPTION]
+stage: [ALPHA]
+includedPermissions:
+- [PERMISSION_1]
+- [PERMISSION_2]
+
+gcloud iam roles create [ROLE-NAME] --project $DEVSHELL_PROJECT_ID --file [FILE-NAME]
+
+gcloud iam roles list --project $DEVSHELL_PROJECT_ID
+
+gcloud iam roles describe [ROLE-NAME] --project $DEVSHELL_PROJECT_ID
+
+gcloud iam roles update [ROLE-NAME] --project $DEVSHELL_PROJECT_ID --file [CHANGED-FILE-NAME]
+
+gcloud iam roles update [ROLE-NAME] --project $DEVSHELL_PROJECT_ID --stage DISABLED --> Disable a role
+
+gcloud iam roles delete [ROLE-NAME] --project $DEVSHELL_PROJECT_ID
+
+gcloud iam roles list --project $DEVSHELL_PROJECT_ID --show-deleted
+
+gcloud iam roles undelete [ROLE-NAME] --project $DEVSHELL_PROJECT_ID
+
+curl -s https://api.ipify.org will return the same results as curl -4 ipv4.icanhazip.com
+
+gcloud compute networks subnets update [NETWORK-NAME] --region [REGION-NAME] --enable-flow-logs --logging-metadata=include-all
+
+gcloud compute networks subnets delete [DESIRED-NAME] --region [DESIRED-REGION]
+
+gcloud compute instances describe [instance-name] --format='get(networkInterfaces[0].networkIP)'
+---> retrieve internal ip of instance
+
+gcloud compute instances describe instance-name --format='get(networkInterfaces[0].accessConfigs[0].natIP)'  ---> retrieve external ip
+
+gcloud compute networks subnets update [DESIRED-NETWORK] --region [DESIRED-REGION] --enable-flow-logs --logging-metadata=include-all ---> enable flow logging
+
+gcloud compute networks subnets update [NETWORK-NAME] --region [DESIRED-REGION] --no-enable-flow-logs ---> disable flow logs
+
+gcloud compute vpn-gateways create [GATEWAY-NAME] --network [NEWORK-NAME] --region [REGION-NAME]
+
+gcloud compute vpn-gateways describe [GATEWAY-NAME] --region [REGION-NAME]
+
+gcloud compute vpn-gateways delete [GATEWAY-NAME] --region [REGION-NAME]
+
+gcloud compute routers create [ROUTER-NAME] --region [REGION-NAME] --network [NEWORK-NAME] --asn 65001
+
+gcloud compute vpn-tunnels create [TUNNEL-NAME] --peer-gcp-gateway [PEER-GATEWAY-NAME] --region [DESIRED-REGION] --ike-version 2 --shared-secret [SHARED_SECRET] --router [ROUTER-CREATED-IN-VPC] --vpn-gateway [GATEWAY-NAME] --interface 0 	--> creates VPN tunnel on interface 0
+
+gcloud compute vpn-tunnels create [TUNNEL-NAME] --peer-gcp-gateway [PEER-GATEWAY-NAME] --region [DESIRED-REGION] --ike-version 2 --shared-secret [SHARED_SECRET] --router [ROUTER-CREATED-IN-VPC] --vpn-gateway [GATEWAY-NAME] --interface 1 	--> creates VPN tunnel on interface 1
+
+gcloud compute vpn-tunnels delete [TUNNEL-NAME]  --region [REGION-IT-IS-IN]
+
+gcloud compute vpn-tunnels describe [TUNNEL-NAME]  --region [REGION-IT-IS-IN]
+
+------------------------------------------------------------------------------
+configure BGP peering for each VPN tunnel created between networks
+------------------------------------------------------------------------------
+
+gcloud compute routers add-interface [ROUTER-NAME] --interface-name [NAME-DESIRED] --ip-address 169.254.0.1 --mask-length 30 --vpn-tunnel [VPN-TUNNEL-NAME] --region [DESIRED-REGION]   ---> Create the router interface for tunnel0 in the network
+
+gcloud compute routers add-bgp-peer [ROUTER-NAME] --peer-name [NAME-DESIRED] --interface [INTERFACE-NAME-FROM-ABOVE-COMMAND] --peer-ip-address 169.254.0.2 --peer-asn 65002 --region [DESIRED-REGION]	---> Create the BGP peer for tunnel0 in VPN created in desired network 
+
+gcloud compute routers remove-bgp-peer [ROUTER-NAME] --peer-name [NAME-DESIRED] --region [REGION-DESIRED]
+
+---------------------------------------------------------------------------------
+
+gcloud compute routers describe [ROUTER-NAME] --region [DESIRED-REGION]
+
+gcloud compute routers delete [ROUTER-NAME] --region [DESIRED-REGION]
+
+gcloud compute vpn-tunnels list
+
+gcloud compute vpn-tunnels describe [TUNNEL-NAME] --region [DESIRED-REGION]
+
+gcloud compute networks update [NETWORK-DESIRED] --bgp-routing-mode GLOBAL  ---> HA VPN is a regional resource and cloud router that by default only sees the routes in the region in which it is deployed. To reach instances in a different region than the cloud router, you need to enable global routing mode for the VPC. This allows the cloud router to see and advertise routes from other regions.
+
+gcloud compute networks describe [DESIRED-NETWORK]
+
+for i in {1..10}; do echo $i; curl [configured-domain-name]; sleep 6; done
+
+ 
+
+
+
+ 
+
+
+
+ 
