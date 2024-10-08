@@ -88,6 +88,10 @@ gcloud compute networks subnets update [SUBNET-NAME] --stack-type=IPV4_IPV6 --ip
 
 gcloud config set project [DESIRED-PROJECT]
 
+gcloud sql connect [db-name] --user=postgres --quiet
+
+gcloud sql users set-password root --host=% --instance=mysql-db --password=your-password-here
+
 gcloud artifacts repositories create [NAME DESIRED] --repository-format=[DOCKER/APT ETC] --location=[us-central1] --description="Docker repository"
 
 gcloud config get-value compute/region
