@@ -1,1 +1,1 @@
-# Cloud-Infrastructure-Deployments using terraform and gcloud utility
+# Cloud-Infrastructure-Deployments on GCP using terraform and gcloud utility
