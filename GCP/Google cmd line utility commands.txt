@@ -1,3 +1,6 @@
+for i in {1..15};do curl -s -w "%{time_total}\n" -o /dev/null http://(your-frontend-ip)/index.html; done
+
+    for i in {1..15};do curl -s -w "%{time_total}\n" -o /dev/null http://(your-frontend-ip)/page-2.html; done
 
 gsutil -m cp -r [FILE/FOLDER] gs://[BUCKET-NAME]   --> UPLOADS FILES TO BUCKET
 
@@ -87,6 +90,8 @@ gcloud compute networks update [NETWORK-NAME] --switch-to-custom-subnet-mode
 gcloud compute networks subnets update [SUBNET-NAME] --stack-type=IPV4_IPV6 --ipv6-access-type=[EXTERNAL OR INTERNAL] --region [DESIRED-REGION] ----> update subnet to dual stack
 
 gcloud config set project [DESIRED-PROJECT]
+
+gcloud compute images create [IMAGE-NAME] --family=webserver --source-disk=[DISK-NAME] --source-disk-zone=us-central1-a
 
 gcloud sql connect [db-name] --user=postgres --quiet
 
