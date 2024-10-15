@@ -93,6 +93,8 @@ gcloud config set project [DESIRED-PROJECT]
 
 gcloud compute images create [IMAGE-NAME] --family=webserver --source-disk=[DISK-NAME] --source-disk-zone=us-central1-a
 
+gcloud compute networks peerings create [PEERING-NAME] --network [NETWORK-NAME] --peer-network [NETWORK-NAME] --peer-project [PROJECT-ID]
+
 gcloud sql connect [db-name] --user=postgres --quiet
 
 gcloud sql users set-password root --host=% --instance=mysql-db --password=your-password-here
@@ -142,6 +144,9 @@ gcloud projects remove-iam-policy-binding [PROJECT-ID] --member user:[EMAIL] --r
 
 gcloud compute instances list --sort-by=ZONE
 
+gcloud compute scp [FILE-TO-COPY] [VM-NAME-TO-COPY-TO]:~ --zone=[VM-ZONE]
+
+
 gcloud compute networks list
 
 gcloud logging logs list
@@ -153,6 +158,8 @@ gcloud compute target-pools create [DESIRED-NAME] --region [REGION] --http-healt
 gcloud compute target-pools add-instances [DESIRED-NAME] --instances [INSTANCES LIST]
 
 gcloud compute forwarding-rules create [DESIRED-NAME] --region [REGION] --ports 80 --address [IP-ADDRESS] --target-pool [DESIRED-NAME]
+
+export PROJECT=$(gcloud info --format='value(config.project)')
 
 gcloud logging logs list --filter="compute"
 
