@@ -30,6 +30,12 @@ gsutil ls gs://$DEVSHELL_PROJECT_ID
 
 gsutil rm gs://YOUR-BUCKET-NAME/*
 
+gcloud auth configure-docker ${REGION}-docker.pkg.dev --> Configure Docker authentication for the Artifact Registry
+
+gcloud beta services identity create --service=sqladmin.googleapis.com --project=$PROJECT_ID -->  creates a cloud sql svc agent
+
+gcloud config list --format 'value(core.project)' --> get project id
+
 gcloud compute addresses list --> see a list of static addresses available to a project
 
 gcloud compute instances describe [INSTANCE-NAME] --zone=$ZONE | grep natIP ---> get the external ip of the instance
@@ -45,6 +51,8 @@ USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}
 gcloud compute target-vpn-gateways create [DESIRED-NAME] --network [NETWORK] --region [REGION] ---> creates a vpn gateway
 
 gcloud compute addresses create [DESIRED-NAME] --region [REGION] ---> create a static external ip address
+
+gcloud dns record-sets import --zone=(zone-name) --zone-file-format (path-to-import-file) --> command to import DNS records in BIND format
 
 gcloud compute addresses describe [DESIRED-NAME] --region [REGION] --format='value(address)' ---> retrieve gateway ip address 
 ----------------------------------------------------------------------------------------------------------------
@@ -90,6 +98,8 @@ gcloud compute networks update [NETWORK-NAME] --switch-to-custom-subnet-mode
 gcloud compute networks subnets update [SUBNET-NAME] --stack-type=IPV4_IPV6 --ipv6-access-type=[EXTERNAL OR INTERNAL] --region [DESIRED-REGION] ----> update subnet to dual stack
 
 gcloud config set project [DESIRED-PROJECT]
+
+
 
 gcloud compute images create [IMAGE-NAME] --family=webserver --source-disk=[DISK-NAME] --source-disk-zone=us-central1-a
 
@@ -161,6 +171,10 @@ gcloud compute forwarding-rules create [DESIRED-NAME] --region [REGION] --ports 
 
 export PROJECT=$(gcloud info --format='value(config.project)')
 
+export AUTHORIZED_IP=$(gcloud compute instances describe bastion-vm --zone=$ZONE --format 'value(networkInterfaces[0].accessConfigs.natIP)') ---> retrieve ip address of a vm
+
+export CLOUD_SHELL_IP=$(curl ifconfig.me) 
+
 gcloud logging logs list --filter="compute"
 
 gcloud logging read "resource.type=gce_instance" --limit 5
@@ -217,15 +231,24 @@ gcloud config list project --> list the current project
 
 gcloud services enable xxxxx.googleapis.com --> enable an api
 
+export PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format 'value(projectNumber)')
+
 gcloud kms keyrings create [KEYRING_NAME] --location global/us/eu
 
 gcloud kms keys create $CRYPTOKEY_NAME --location global --keyring $KEYRING_NAME --purpose encryption
+
+gcloud kms keys add-iam-policy-binding $KMS_KEY_ID --location=$REGION --keyring=$KMS_KEYRING_ID --member=serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-cloud-sql.iam.gserviceaccount.com \
+--role=roles/cloudkms.cryptoKeyEncrypterDecrypter --> binding a svc account to a key 
 
 gsutil kms encryption gs://[BUCKET NAME] ---> view the default encryption key for your bucket
 
 gsutil kms authorize -p $DEVSHELL_PROJECT_ID -k projects/$DEVSHELL_PROJECT_ID/locations/us/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_1_NAME ---> give your Cloud Storage service account permission to use a cloud kms key
 
+export KEY_NAME=$(gcloud kms keys describe $KMS_KEY_ID --keyring=$KMS_KEYRING_ID --location=$REGION --format 'value(name)')
+
 gsutil -o "GSUtil:encryption_key=projects/$DEVSHELL_PROJECT_ID/locations/us/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_2_NAME" cp [FILE NAME] gs://$DEVSHELL_PROJECT_ID-kms ---> encrypt an individual object with a Cloud KMS key (NOT THE DEFAULT KEY)
+
+gcloud sql instances create $CLOUDSQL_INSTANCE --project=$PROJECT_ID --authorized-networks=${AUTHORIZED_IP}/32,$CLOUD_SHELL_IP/32 --disk-encryption-key=$KEY_NAME --database-version=POSTGRES_13 --cpu=1 --memory=3840MB --region=$REGION --root-password=supersecret!
 
 gsutil ls -L gs://$[BUCKET NAME]/[FILE NAME] ---> get key details that was used for encryption using gsutil
 
