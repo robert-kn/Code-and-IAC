@@ -1,0 +1,9 @@
+I installed microsft visual studio (2022) build tools on my laptop in order to install the microsoft visual 
+C/C++ (MSVC) compiler on my device. 
+
+To verify compiler installation on windows after installing MVS build tools, open the developer command prompt
+for VS by typing 'developer' in the start menu. Check your MVSC installation by typing cl on the command prompt.
+You should see a copyright message with the version and basic usage description. 
+
+Note; to use the MSVC from the command line or VS code, you must run from a developer command prompt for VS. An ordinary shell such as powershell, Bash or the windows command prompt does not have the necessary path environment 
+variables set.

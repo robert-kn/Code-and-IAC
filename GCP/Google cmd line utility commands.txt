@@ -36,9 +36,26 @@ gcloud beta services identity create --service=sqladmin.googleapis.com --project
 
 gcloud config list --format 'value(core.project)' --> get project id
 
+gcloud compute addresses create [DESIRED-NAME] --region= --network-tier=PREMIUM --> Create static ip address
+
 gcloud compute addresses list --> see a list of static addresses available to a project
 
 gcloud compute instances describe [INSTANCE-NAME] --zone=$ZONE | grep natIP ---> get the external ip of the instance
+
+gcloud spanner databases ddl update [DATABASE-NAME] --instance=[SPANNER-INSTANCE-NAME] --ddl='ALTER TABLE [TABLE-NAME] ADD COLUMN [COLUMN-NAME] [DATA-TYPE];' --> adds a column to an existing table in a spanner database using gcloud cli command
+
+gcloud spanner instances create [INSTANCE-NAME] --config=regional-[REGION]  --description="XXXXXXXX" --nodes=2
+
+gcloud spanner databases create [DB-NAME] --instance=[SPANNER-INSTANCE-NAME]
+
+gcloud spanner instances update [INSTANCE-NAME] --nodes=1
+
+gcloud spanner instances delete [INSTANCE-NAME]
+
+gcloud spanner instances list
+
+gcloud spanner databases execute-sql [DB-NAME] --instance=[SPANNER-INSTANCE-NAME] \
+ --sql="INSERT INTO Customer (CustomerId, Name, Location) VALUES ('bdaaaa97-1b4b-4e58-b4ad-84030de92235', 'Richard Nelson', 'Ada Ohio')"
 
 gcloud project list --sort-by projectId
 
@@ -288,6 +305,13 @@ includedPermissions:
 
 gcloud iam roles create [ROLE-NAME] --project $DEVSHELL_PROJECT_ID --file [FILE-NAME]
 
+gcloud compute routes create nat-route \
+        --network my-network \
+        --destination-range 0.0.0.0/0 \
+        --next-hop-instance nat-gateway \
+        --next-hop-instance-zone europe-west2-a \
+        --tags no-ip --priority 800
+
 gcloud iam roles list --project $DEVSHELL_PROJECT_ID
 
 gcloud iam roles describe [ROLE-NAME] --project $DEVSHELL_PROJECT_ID
@@ -360,7 +384,23 @@ gcloud compute networks describe [DESIRED-NETWORK]
 for i in {1..10}; do echo $i; curl [configured-domain-name]; sleep 6; done
 
  
+-----------------------------------------------------------------------------------------
+When I create a vpn gateway followed by a tunnel on the console, the following commands 
+Can be run on a terminal to achieve the same result:
 
+gcloud compute target-vpn-gateways create [DESIRED-NAME] --project=  --region=  --network=
+
+gcloud compute forwarding-rules create [DESIRED-NAME] --project= --region= --address=[EXISTING-STATIC-IP-ADDRESS] --ip-protocol=ESP --target-vpn-gateway=[EXISTING-VPN-GATEWAY]
+
+gcloud compute forwarding-rules create vpn-gateway-1-rule-udp500 --project= --region= --address= [EXISTING-STATIC-IP-ADDRESS]--ip-protocol=UDP --ports=500 --target-vpn-gateway=[EXISTING-VPN-GATEWAY]
+
+gcloud compute forwarding-rules create vpn-gateway-1-rule-udp4500 --project= --region= --address=[EXISTING-STATIC-IP-ADDRESS] --ip-protocol=UDP --ports=4500 --target-vpn-gateway=[EXISTING-VPN-GATEWAY]
+
+gcloud compute vpn-tunnels create [DESIRED-NAME] --project= --region= --peer-address=[EXISTING-STATIC-IP-ADDRESS-ASSIGNED-TO-DIFFERENT-GATEWAY] --shared-secret=cpDK\+XvMCzZ6uR6qejxs4HEwdKm\+Ichk --ike-version=2 --local-traffic-selector=0.0.0.0/0 --remote-traffic-selector=0.0.0.0/0 --target-vpn-gateway=[EXISTING-VPN-GATEWAY]
+
+gcloud compute routes create [DESIRED-NAME] --project= --network= --priority= --destination-range= --next-hop-vpn-tunnel= --next-hop-vpn-tunnel-region=
+
+---------
 
 
  
