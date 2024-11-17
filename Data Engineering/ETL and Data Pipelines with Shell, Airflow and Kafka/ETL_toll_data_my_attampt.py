@@ -73,9 +73,9 @@ def transform_data():
     df.to_csv(transformed_file, index=False, header=False)
 
 default_args = {
-    "owner": "robertkn",
+    "owner": "your name",
     "start_date": days_ago(0),
-    "email": "tryo90@protonmail.com",
+    "email": "your email",
     "retries": 1,
     "retry_delay": timedelta(minutes=5),
 }

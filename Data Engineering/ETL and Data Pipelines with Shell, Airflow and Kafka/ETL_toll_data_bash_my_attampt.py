@@ -9,9 +9,9 @@ from airflow.operators.bash_operator import BashOperator
 
 
 default_args = {
-    "owner": "robertkn",
+    "owner": "your name",
     "start_date": days_ago(0),
-    "email": "tryo90@protonmail.com",
+    "email": "your name",
     "email_on_failure": True,
     "email_on_retry": True,
     "retries": 1,
