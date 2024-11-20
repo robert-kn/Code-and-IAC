@@ -230,6 +230,10 @@ gcloud compute routes list --project [PROJECT] ---> lists routes for all VPC net
 
 gcloud app deploy ---> deploy an app to an app engine standard environment
 
+gcloud deployment-manager deployments create [deployment-name] --config [config-file.yml]
+
+gcloud deployment-manager deployments delete [deployment-name]  
+
 gcloud compute firewall-rules update [FIREWALL-RULE-NAME] --priority [DESIRED-PRIORITY]
 
 gcloud compute instances add-tags [INSTANCE-NAME] --zone [ZONE-NAME] --tags=[TAG-NAME]
