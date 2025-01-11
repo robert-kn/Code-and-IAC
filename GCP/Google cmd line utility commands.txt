@@ -24,6 +24,8 @@ gsutil acl ch -u AllUsers:R gs://YOUR-BUCKET-NAME/* ---> GRANT ALL USERS READ PE
 
 gsutil acl ch -d AllUsers gs://YOUR-BUCKET-NAME/* -----> REMOVE ALL USERS READ PERMISSION FOR THE OBJECTS IN YOUR BUCKET
 
+gsutil defacl get gs://[BUCKET-NAME] ---> retrieves the default access control list for a bucket 
+
 gsutil mb gs://$DEVSHELL_PROJECT_ID
 
 gsutil ls gs://$DEVSHELL_PROJECT_ID
@@ -262,6 +264,10 @@ gcloud kms keys add-iam-policy-binding $KMS_KEY_ID --location=$REGION --keyring=
 --role=roles/cloudkms.cryptoKeyEncrypterDecrypter --> binding a svc account to a key 
 
 gsutil kms encryption gs://[BUCKET NAME] ---> view the default encryption key for your bucket
+
+gcloud kms encrypt --location [LOCATION] --keyring [KEYRING-NAME] --key [KEY-NAME] --plaintext-file [INPUT-FILE-NAME] --ciphertext-file [OUTPUT-FILE-NAME]
+
+gcloud kms encrypt --location [LOCATION] --keyring [KEYRING-NAME] --key [KEY-NAME] --ciphertext-file [INPUT-FILE-NAME] --ciphertext-file [OUTPUT-FILE-NAME]
 
 gsutil kms authorize -p $DEVSHELL_PROJECT_ID -k projects/$DEVSHELL_PROJECT_ID/locations/us/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_1_NAME ---> give your Cloud Storage service account permission to use a cloud kms key
 

@@ -10,9 +10,10 @@
  *  If you're compiling with MinGW, these lines will have no effect. You will need to link to these libraries 
  *  explicitly on the command line, for example, gcc win_list.c -o win_list.exe -liphlpapi -lws2_32.
  * 
- *  We then enter the main() function and initialize Winsock 2.2 using the WSAStartup() function which is called 
- *  with the requested version, Winsock 2.2 and a WSADATA structure. We check its return value to detect any errors.
- *  The WSAStartup() function returns 0 upon success, and non-zero upon failure.
+ *  We then enter the main() function (Whenever we are using Winsock, the first thing we must do is initialize it. 
+ * This is done with a call to WSAStartup()) and initialize Winsock 2.2 using the WSAStartup() function which is 
+ * called with the requested version, Winsock 2.2 and a WSADATA structure. We check its return value to detect any 
+ * errors. The WSAStartup() function returns 0 upon success, and non-zero upon failure.
  * 
  *  The WSADATA structure will be filled in by WSAStartup() with details about the Windows Sockets implementation.
  * 
@@ -132,7 +133,7 @@ int main()
             exit(EXIT_FAILURE);
         }
 
-    } while(!adapters);
+    } while(!adapters); /* could also be written as adapters == NULL */
 
     PIP_ADAPTER_ADDRESSES adapter = adapters;
 
