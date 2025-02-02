@@ -304,6 +304,14 @@ gcloud storage cp [FILE-OR-FOLDER] gs://$DEVSHELL_PROJECT_ID
 
 gcloud storage ls gs://$DEVSHELL_PROJECT_ID
 
+gcloud pubsub topics create [TOPIC-NAME]
+
+gcloud pubsub topics publish [TOPIC-NAME] --message=[INSERT MESSAGE HERE]
+
+gcloud pubsub subscriptions create [SUBSCRIBER-NAME] —-topic [TOPIC-NAME]
+
+gcloud pubsub subscriptions pull [SUBSCRIBER-NAME]
+
 Create a custom role using the CLI and YAML file
 
 title: [ROLE_TITLE]

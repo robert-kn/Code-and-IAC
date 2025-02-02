@@ -1,0 +1,273 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fnil\fcharset0 AndaleMono;\f2\fnil\fcharset0 HelveticaNeue-Bold;
+\f3\froman\fcharset0 Times-Roman;\f4\froman\fcharset0 Times-Italic;\f5\fnil\fcharset0 Menlo-Regular;
+}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red255\green255\blue255;\red15\green12\blue28;
+\red199\green199\blue224;\red251\green0\blue98;\red199\green199\blue224;\red0\green0\blue0;\red15\green112\blue1;
+\red45\green45\blue45;\red157\green0\blue210;\red144\green1\blue18;\red0\green0\blue255;\red101\green76\blue29;
+\red0\green0\blue109;\red19\green118\blue70;\red32\green108\blue135;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c100000\c100000\c100000;\cssrgb\c7451\c5882\c14510;
+\cssrgb\c81961\c82353\c90196;\cssrgb\c100000\c8627\c45882;\cssrgb\c81961\c82353\c90196;\cssrgb\c0\c0\c0;\cssrgb\c0\c50196\c0;
+\cssrgb\c23137\c23137\c23137;\cssrgb\c68627\c0\c85882;\cssrgb\c63922\c8235\c8235;\cssrgb\c0\c0\c100000;\cssrgb\c47451\c36863\c14902;
+\cssrgb\c0\c6275\c50196;\cssrgb\c3529\c52549\c34510;\cssrgb\c14902\c49804\c60000;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
+\deftab720
+\pard\pardeftab720\sa320\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+Description\cf3 \cb4 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb2 One of the most powerful aspects of the Cloud Functions service is its flexibility while working with other Google Cloud services, including some of the most advanced APIs. Not only can your function be triggered by multiple sources, you can include multiple functions all in the app. This lab illustrates a perfect example of that flexibility. Here, you will take a photo that has been uploaded, examine it for text, extract any text that is found, translate that text into various languages, and then store those translations for easy retrieval. Sounds like a lot, doesn\'92t it? Well, as you'll experience firsthand in this lab, Cloud Functions can handle it all.\cf5 \cb1 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural\partightenfactor0
+\cf0 \kerning1\expnd0\expndtw0 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb2 \expnd0\expndtw0\kerning0
+Cloud Functions has been renamed Cloud Run functions.\
+\
+Here is a workflow of what we will do in this lab.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic.png \width34200 \height19160 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+You can enable the APIs via the console by navigating to APIs then library or alternatively do it via command line as shown below:\
+\
+1. Enable necessary APIs \cb1 \kerning1\expnd0\expndtw0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural\partightenfactor0
+\cf0 \
+gcloud services enable cloudfunctions.googleapis.com\
+gcloud services enable cloudbuild.googleapis.com\
+gcloud services enable vision.googleapis.com\
+gcloud services enable translate.googleapis.com\
+\
+The command `gcloud services list` will output the APIs that are enabled in your project.\
+\
+2. Create cloud storage buckets\
+\
+gsutil mb -l us-east1 gs://$DEVSHELL_PROJECT_ID-input\
+gsutil mb -l us-east1 gs://$DEVSHELL_PROJECT_ID-output\
+\
+The command \'91gcloud storage ls` will list the buckets that have been created in the project\
+\
+3. Create the required pub/sub topics\
+\
+gcloud pubsub topics create acg-image-to-text-results\
+gcloud pubsub topics create acg-image-to-text-translation\
+\
+The command `gcloud pubsub topics list` will list all of the topics that have been created in a project.\
+\
+4. Retrieve files from repo and configure them\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs32 \cf6 \cb2 \expnd0\expndtw0\kerning0
+git clone https://github.com/pluralsight-cloud/gc-functions-deepdive
+\f0\fs48 \cf0 \cb1 \kerning1\expnd0\expndtw0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural\partightenfactor0
+\cf0 \
+cd gc-functions-deepdive/apis-lab/\
+\
+Open an editor in the above location and select the main.py. on line 29, replace the value of the project id variable with the actual project id you have created your resources in. likewise, replace the value assigned to the variable RESULT_BUCKET with the name of the second bucket you  created. In the requirements.txt file in the same folder, you will see the various api versions that will be called. Return to the main folder and change the value assigned to the variables RESULT_TOPIC and TRANSLATE_TOPIC accordingly.\
+\
+5. Create the first function\
+\
+Navigate to the cloud run functions page and click create function. Set the environment to first gen function. Give the function a memorable name such as 
+\f2\b\fs32 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec7 ocr-extract
+\f0\b0\fs48 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 , with region in us-east1, trigger type as cloud storage, event type as finalising/creating, for the bucket choose the first bucket that was created. In the `
+\f3\fs36 \cb3 \expnd0\expndtw0\kerning0
+Runtime, build, connections and security settings` 
+\f0\fs48 change the autoscaling as you deem fit (this will affect charges incurred). Click next. Choose desired runtime environment - I chose to run it in python 3.12 environment. Delete the contents of the main.py page and replace them with the contents of the main.py page from the earlier cloned repo. Change the entry point from the default to process_image. Lastly, delete the contents of the requirements.txt file and replace them with the contents of. The requirements.txt file from the earlier cloned repo. You are now ready to deploy the function.\
+\
+6. Create the second function\
+\
+Click copy from the first function that was deployed successfully. Change the name of the function to ocr-translate. Keep the region the same. Change the trigger type to pub/sub and select the topic 
+\f4\i\fs32 \cb2 acg-image-to-text-translation\
+
+\f0\i0\fs48 Finally set the entry point to the translate_text function and then deploy the function.\
+\
+7.\
+\
+As above but change the name of the function to ocr-save and the name of the topic to 
+\f4\i\fs32 acg-image-to-text-results. 
+\f0\i0\fs48 On the next page, change the entry point function to save_result and deploy the function.\
+\
+8. Test in cloud shell and review the results\
+\
+Navigate to cloud shell, in the repo you cloned, there should be an images folder in the directory containing the main.py file. Upload both images to the first bucket you created. This should then trigger the cloud run functions to be called. You can review the results in the output bucket.\
+\
+\
+This is the code that makes it all work\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f5\fs24 \cf9 \cb3 \outl0\strokewidth0 \strokec9 # [START functions_ocr_setup]\cf10 \cb1 \strokec10 \
+\cf11 \cb3 \strokec11 import\cf10 \strokec10  base64\cb1 \
+\cf11 \cb3 \strokec11 import\cf10 \strokec10  json\cb1 \
+\cf11 \cb3 \strokec11 import\cf10 \strokec10  os\cb1 \
+\
+\cf11 \cb3 \strokec11 from\cf10 \strokec10  google.cloud \cf11 \strokec11 import\cf10 \strokec10  pubsub_v1\cb1 \
+\cf11 \cb3 \strokec11 from\cf10 \strokec10  google.cloud \cf11 \strokec11 import\cf10 \strokec10  storage\cb1 \
+\cf11 \cb3 \strokec11 from\cf10 \strokec10  google.cloud \cf11 \strokec11 import\cf10 \strokec10  translate_v2 \cf11 \strokec11 as\cf10 \strokec10  translate\cb1 \
+\cf11 \cb3 \strokec11 from\cf10 \strokec10  google.cloud \cf11 \strokec11 import\cf10 \strokec10  vision\cb1 \
+\
+\cb3 vision_client \strokec8 =\strokec10  vision.ImageAnnotatorClient()\cb1 \
+\cb3 translate_client \strokec8 =\strokec10  translate.Client()\cb1 \
+\cb3 publisher \strokec8 =\strokec10  pubsub_v1.PublisherClient()\cb1 \
+\cb3 storage_client \strokec8 =\strokec10  storage.Client()\cb1 \
+\
+\cb3 project_id \strokec8 =\strokec10  \cf12 \strokec12 "powering-goo-68-42caf82f"\cf10 \cb1 \strokec10 \
+\
+\cf9 \cb3 \strokec9 # SET VARIABLES\cf10 \cb1 \strokec10 \
+\cb3 RESULT_TOPIC \strokec8 =\strokec10  \cf12 \strokec12 "acg-image-to-text-results"\cf10 \cb1 \strokec10 \
+\cb3 TRANSLATE_TOPIC \strokec8 =\strokec10  \cf12 \strokec12 "acg-image-to-text-translation"\cf10 \cb1 \strokec10 \
+\cb3 RESULT_BUCKET \strokec8 =\strokec10  \cf12 \strokec12 "powering-goo-68-42caf82f-output"\cf10 \cb1 \strokec10 \
+\cb3 TRANSLATE \strokec8 =\strokec10  \cf13 \strokec13 True\cf10 \cb1 \strokec10 \
+\cb3 TO_LANG \strokec8 =\strokec10  \cf12 \strokec12 "en fr es ar ru hi"\cf10 \cb1 \strokec10 \
+\
+\cf9 \cb3 \strokec9 # [START functions_ocr_detect]\cf10 \cb1 \strokec10 \
+\cf13 \cb3 \strokec13 def\cf10 \strokec10  \cf14 \strokec14 detect_text\cf10 \strokec10 (\cf15 \strokec15 bucket\cf10 \strokec10 , \cf15 \strokec15 filename\cf10 \strokec10 ):\cb1 \
+\cb3     \cf14 \strokec14 print\cf10 \strokec10 (\cf12 \strokec12 'Looking for text in image \cf13 \strokec13 \{\}\cf12 \strokec12 '\cf10 \strokec10 .format(filename))\cb1 \
+\
+\cb3     futures \strokec8 =\strokec10  []\cb1 \
+\
+\cb3     image \strokec8 =\strokec10  vision.Image(\cb1 \
+\cb3         \cf15 \strokec15 source\cf10 \strokec8 =\strokec10 vision.ImageSource(\cf15 \strokec15 gcs_image_uri\cf10 \strokec8 =\cf13 \strokec13 f\cf12 \strokec12 "gs://\cf13 \strokec13 \{\cf10 \strokec10 bucket\cf13 \strokec13 \}\cf12 \strokec12 /\cf13 \strokec13 \{\cf10 \strokec10 filename\cf13 \strokec13 \}\cf12 \strokec12 "\cf10 \strokec10 )\cb1 \
+\cb3     )\cb1 \
+\cb3     text_detection_response \strokec8 =\strokec10  vision_client.text_detection(\cf15 \strokec15 image\cf10 \strokec8 =\strokec10 image)\cb1 \
+\cb3     annotations \strokec8 =\strokec10  text_detection_response.text_annotations\cb1 \
+\cb3     \cf11 \strokec11 if\cf10 \strokec10  \cf14 \strokec14 len\cf10 \strokec10 (annotations) \strokec8 >\strokec10  \cf16 \strokec16 0\cf10 \strokec10 :\cb1 \
+\cb3         text \strokec8 =\strokec10  annotations[\cf16 \strokec16 0\cf10 \strokec10 ].description\cb1 \
+\cb3     \cf11 \strokec11 else\cf10 \strokec10 :\cb1 \
+\cb3         text \strokec8 =\strokec10  \cf12 \strokec12 ''\cf10 \cb1 \strokec10 \
+\cb3     \cf14 \strokec14 print\cf10 \strokec10 (\cf12 \strokec12 'Extracted text \cf13 \strokec13 \{\}\cf12 \strokec12  from image (\cf13 \strokec13 \{\}\cf12 \strokec12  chars).'\cf10 \strokec10 .format(text, \cf14 \strokec14 len\cf10 \strokec10 (text)))\cb1 \
+\
+\cb3     detect_language_response \strokec8 =\strokec10  translate_client.detect_language(text)\cb1 \
+\cb3     src_lang \strokec8 =\strokec10  detect_language_response[\cf12 \strokec12 'language'\cf10 \strokec10 ]\cb1 \
+\cb3     \cf14 \strokec14 print\cf10 \strokec10 (\cf12 \strokec12 'Detected language \cf13 \strokec13 \{\}\cf12 \strokec12  for text \cf13 \strokec13 \{\}\cf12 \strokec12 .'\cf10 \strokec10 .format(src_lang, text))\cb1 \
+\
+\cb3     \cf9 \strokec9 # Submit a message to the bus for each target language\cf10 \cb1 \strokec10 \
+\cb3     \cf11 \strokec11 for\cf10 \strokec10  target_lang \cf11 \strokec11 in\cf10 \strokec10  TO_LANG.split():\cb1 \
+\cb3         topic_name \strokec8 =\strokec10  TRANSLATE_TOPIC\cb1 \
+\cb3         \cf11 \strokec11 if\cf10 \strokec10  src_lang \strokec8 ==\strokec10  target_lang \cf13 \strokec13 or\cf10 \strokec10  src_lang \strokec8 ==\strokec10  \cf12 \strokec12 "und"\cf10 \strokec10 :\cb1 \
+\cb3             topic_name \strokec8 =\strokec10  RESULT_TOPIC\cb1 \
+\cb3         message \strokec8 =\strokec10  \{\cb1 \
+\cb3             \cf12 \strokec12 "text"\cf10 \strokec10 : text,\cb1 \
+\cb3             \cf12 \strokec12 "filename"\cf10 \strokec10 : filename,\cb1 \
+\cb3             \cf12 \strokec12 "lang"\cf10 \strokec10 : target_lang,\cb1 \
+\cb3             \cf12 \strokec12 "src_lang"\cf10 \strokec10 : src_lang,\cb1 \
+\cb3         \}\cb1 \
+\cb3         message_data \strokec8 =\strokec10  json.dumps(message).encode(\cf12 \strokec12 "utf-8"\cf10 \strokec10 )\cb1 \
+\cb3         topic_path \strokec8 =\strokec10  publisher.topic_path(project_id, topic_name)\cb1 \
+\cb3         future \strokec8 =\strokec10  publisher.publish(topic_path, \cf15 \strokec15 data\cf10 \strokec8 =\strokec10 message_data)\cb1 \
+\cb3         futures.append(future)\cb1 \
+\cb3     \cf11 \strokec11 for\cf10 \strokec10  future \cf11 \strokec11 in\cf10 \strokec10  futures:\cb1 \
+\cb3         future.result()\cb1 \
+\cf9 \cb3 \strokec9 # [END functions_ocr_detect]\cf10 \cb1 \strokec10 \
+\
+\
+\cf9 \cb3 \strokec9 # [START message_validatation_helper]\cf10 \cb1 \strokec10 \
+\cf13 \cb3 \strokec13 def\cf10 \strokec10  \cf14 \strokec14 validate_message\cf10 \strokec10 (\cf15 \strokec15 message\cf10 \strokec10 , \cf15 \strokec15 param\cf10 \strokec10 ):\cb1 \
+\cb3     var \strokec8 =\strokec10  message.get(param)\cb1 \
+\cb3     \cf11 \strokec11 if\cf10 \strokec10  \cf13 \strokec13 not\cf10 \strokec10  var:\cb1 \
+\cb3         \cf11 \strokec11 raise\cf10 \strokec10  \cf17 \strokec17 ValueError\cf10 \strokec10 (\cb1 \
+\cb3             \cf12 \strokec12 "\cf13 \strokec13 \{\}\cf12 \strokec12  is not provided. Make sure you have \cf13 \strokec13 \\\cf10 \cb1 \strokec10 \
+\cf12 \cb3 \strokec12                           property \cf13 \strokec13 \{\}\cf12 \strokec12  in the request"\cf10 \strokec10 .format(\cb1 \
+\cb3                 param, param\cb1 \
+\cb3             )\cb1 \
+\cb3         )\cb1 \
+\cb3     \cf11 \strokec11 return\cf10 \strokec10  var\cb1 \
+\cf9 \cb3 \strokec9 # [END message_validatation_helper]\cf10 \cb1 \strokec10 \
+\
+\
+\cf9 \cb3 \strokec9 # [START functions_ocr_process]\cf10 \cb1 \strokec10 \
+\cf13 \cb3 \strokec13 def\cf10 \strokec10  \cf14 \strokec14 process_image\cf10 \strokec10 (\cf15 \strokec15 file\cf10 \strokec10 , \cf15 \strokec15 context\cf10 \strokec10 ):\cb1 \
+\cb3     \cf12 \strokec12 """Cloud Function triggered by Cloud Storage when a file is changed.\cf10 \cb1 \strokec10 \
+\cf12 \cb3 \strokec12     Args:\cf10 \cb1 \strokec10 \
+\cf12 \cb3 \strokec12         file (dict): Metadata of the changed file, provided by the triggering\cf10 \cb1 \strokec10 \
+\cf12 \cb3 \strokec12                                  Cloud Storage event.\cf10 \cb1 \strokec10 \
+\cf12 \cb3 \strokec12         context (google.cloud.functions.Context): Metadata of triggering event.\cf10 \cb1 \strokec10 \
+\cf12 \cb3 \strokec12     Returns:\cf10 \cb1 \strokec10 \
+\cf12 \cb3 \strokec12         None; the output is written to stdout and Stackdriver Logging\cf10 \cb1 \strokec10 \
+\cf12 \cb3 \strokec12     """\cf10 \cb1 \strokec10 \
+\cb3     bucket \strokec8 =\strokec10  validate_message(\strokec8 file\strokec10 , \cf12 \strokec12 'bucket'\cf10 \strokec10 )\cb1 \
+\cb3     name \strokec8 =\strokec10  validate_message(\strokec8 file\strokec10 , \cf12 \strokec12 'name'\cf10 \strokec10 )\cb1 \
+\
+\cb3     detect_text(bucket, name)\cb1 \
+\
+\cb3     \cf14 \strokec14 print\cf10 \strokec10 (\cf12 \strokec12 'File \cf13 \strokec13 \{\}\cf12 \strokec12  processed.'\cf10 \strokec10 .format(\strokec8 file\strokec10 [\cf12 \strokec12 'name'\cf10 \strokec10 ]))\cb1 \
+\cf9 \cb3 \strokec9 # [END functions_ocr_process]\cf10 \cb1 \strokec10 \
+\
+\
+\cf9 \cb3 \strokec9 # [START functions_ocr_translate]\cf10 \cb1 \strokec10 \
+\cf13 \cb3 \strokec13 def\cf10 \strokec10  \cf14 \strokec14 translate_text\cf10 \strokec10 (\cf15 \strokec15 event\cf10 \strokec10 , \cf15 \strokec15 context\cf10 \strokec10 ):\cb1 \
+\cb3     \cf11 \strokec11 if\cf10 \strokec10  event.get(\cf12 \strokec12 'data'\cf10 \strokec10 ):\cb1 \
+\cb3         message_data \strokec8 =\strokec10  base64.b64decode(event[\cf12 \strokec12 'data'\cf10 \strokec10 ]).decode(\cf12 \strokec12 'utf-8'\cf10 \strokec10 )\cb1 \
+\cb3         message \strokec8 =\strokec10  json.loads(message_data)\cb1 \
+\cb3     \cf11 \strokec11 else\cf10 \strokec10 :\cb1 \
+\cb3         \cf11 \strokec11 raise\cf10 \strokec10  \cf17 \strokec17 ValueError\cf10 \strokec10 (\cf12 \strokec12 'Data sector is missing in the Pub/Sub message.'\cf10 \strokec10 )\cb1 \
+\
+\cb3     text \strokec8 =\strokec10  validate_message(message, \cf12 \strokec12 'text'\cf10 \strokec10 )\cb1 \
+\cb3     filename \strokec8 =\strokec10  validate_message(message, \cf12 \strokec12 'filename'\cf10 \strokec10 )\cb1 \
+\cb3     target_lang \strokec8 =\strokec10  validate_message(message, \cf12 \strokec12 'lang'\cf10 \strokec10 )\cb1 \
+\cb3     src_lang \strokec8 =\strokec10  validate_message(message, \cf12 \strokec12 'src_lang'\cf10 \strokec10 )\cb1 \
+\
+\cb3     \cf14 \strokec14 print\cf10 \strokec10 (\cf12 \strokec12 'Translating text into \cf13 \strokec13 \{\}\cf12 \strokec12 .'\cf10 \strokec10 .format(target_lang))\cb1 \
+\cb3     translated_text \strokec8 =\strokec10  translate_client.translate(\cb1 \
+\cb3         text, \cf15 \strokec15 target_language\cf10 \strokec8 =\strokec10 target_lang, \cf15 \strokec15 source_language\cf10 \strokec8 =\strokec10 src_lang)\cb1 \
+\cb3     topic_name \strokec8 =\strokec10  RESULT_TOPIC\cb1 \
+\cb3     message \strokec8 =\strokec10  \{\cb1 \
+\cb3         \cf12 \strokec12 'text'\cf10 \strokec10 : translated_text[\cf12 \strokec12 'translatedText'\cf10 \strokec10 ],\cb1 \
+\cb3         \cf12 \strokec12 'filename'\cf10 \strokec10 : filename,\cb1 \
+\cb3         \cf12 \strokec12 'lang'\cf10 \strokec10 : target_lang,\cb1 \
+\cb3     \}\cb1 \
+\cb3     message_data \strokec8 =\strokec10  json.dumps(message).encode(\cf12 \strokec12 'utf-8'\cf10 \strokec10 )\cb1 \
+\cb3     topic_path \strokec8 =\strokec10  publisher.topic_path(project_id, topic_name)\cb1 \
+\cb3     future \strokec8 =\strokec10  publisher.publish(topic_path, \cf15 \strokec15 data\cf10 \strokec8 =\strokec10 message_data)\cb1 \
+\cb3     future.result()\cb1 \
+\cf9 \cb3 \strokec9 # [END functions_ocr_translate]\cf10 \cb1 \strokec10 \
+\
+\
+\cf9 \cb3 \strokec9 # [START functions_ocr_save]\cf10 \cb1 \strokec10 \
+\cf13 \cb3 \strokec13 def\cf10 \strokec10  \cf14 \strokec14 save_result\cf10 \strokec10 (\cf15 \strokec15 event\cf10 \strokec10 , \cf15 \strokec15 context\cf10 \strokec10 ):\cb1 \
+\cb3     \cf11 \strokec11 if\cf10 \strokec10  event.get(\cf12 \strokec12 'data'\cf10 \strokec10 ):\cb1 \
+\cb3         message_data \strokec8 =\strokec10  base64.b64decode(event[\cf12 \strokec12 'data'\cf10 \strokec10 ]).decode(\cf12 \strokec12 'utf-8'\cf10 \strokec10 )\cb1 \
+\cb3         message \strokec8 =\strokec10  json.loads(message_data)\cb1 \
+\cb3     \cf11 \strokec11 else\cf10 \strokec10 :\cb1 \
+\cb3         \cf11 \strokec11 raise\cf10 \strokec10  \cf17 \strokec17 ValueError\cf10 \strokec10 (\cf12 \strokec12 'Data sector is missing in the Pub/Sub message.'\cf10 \strokec10 )\cb1 \
+\
+\cb3     text \strokec8 =\strokec10  validate_message(message, \cf12 \strokec12 'text'\cf10 \strokec10 )\cb1 \
+\cb3     filename \strokec8 =\strokec10  validate_message(message, \cf12 \strokec12 'filename'\cf10 \strokec10 )\cb1 \
+\cb3     lang \strokec8 =\strokec10  validate_message(message, \cf12 \strokec12 'lang'\cf10 \strokec10 )\cb1 \
+\
+\cb3     \cf14 \strokec14 print\cf10 \strokec10 (\cf12 \strokec12 'Received request to save file \cf13 \strokec13 \{\}\cf12 \strokec12 .'\cf10 \strokec10 .format(filename))\cb1 \
+\
+\cb3     bucket_name \strokec8 =\strokec10  RESULT_BUCKET\cb1 \
+\cb3     result_filename \strokec8 =\strokec10  \cf12 \strokec12 '\cf13 \strokec13 \{\}\cf12 \strokec12 _\cf13 \strokec13 \{\}\cf12 \strokec12 .txt'\cf10 \strokec10 .format(filename, lang)\cb1 \
+\cb3     bucket \strokec8 =\strokec10  storage_client.get_bucket(bucket_name)\cb1 \
+\cb3     blob \strokec8 =\strokec10  bucket.blob(result_filename)\cb1 \
+\
+\cb3     \cf14 \strokec14 print\cf10 \strokec10 (\cf12 \strokec12 'Saving result to \cf13 \strokec13 \{\}\cf12 \strokec12  in bucket \cf13 \strokec13 \{\}\cf12 \strokec12 .'\cf10 \strokec10 .format(result_filename,\cb1 \
+\cb3                                                      bucket_name))\cb1 \
+\
+\cb3     theHeader \strokec8 =\strokec10  \cf13 \strokec13 f\cf12 \strokec12 "content_type='text/plain'; charset='utf-8'; content_lang='\cf13 \strokec13 \{\cf10 \strokec10 lang\cf13 \strokec13 \}\cf12 \strokec12 '"\cf10 \cb1 \strokec10 \
+\cb3     blob.upload_from_string(text, theHeader)\cb1 \
+\
+\cb3     \cf14 \strokec14 print\cf10 \strokec10 (\cf12 \strokec12 'File saved.'\cf10 \strokec10 )\cb1 \
+\cf9 \cb3 \strokec9 # [END functions_ocr_save]\
+\
+\
+
+\f0\fs48 \cf0 \cb2 Libraries needed\
+\
+
+\f5\fs24 \cf17 \cb3 \strokec17 google-cloud-pubsub\cf10 \strokec8 ==\cf16 \strokec16 2.19.0\cf10 \cb1 \strokec10 \
+\cf17 \cb3 \strokec17 google-cloud-storage\cf10 \strokec8 ==\cf16 \strokec16 2.13.0\cf10 \cb1 \strokec10 \
+\cf17 \cb3 \strokec17 google-cloud-translate\cf10 \strokec8 ==\cf16 \strokec16 3.13.0\cf10 \cb1 \strokec10 \
+\cf17 \cb3 \strokec17 google-cloud-vision\cf10 \strokec8 ==\cf16 \strokec16 3.5.0\cf10 \cb1 \strokec10 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+}
