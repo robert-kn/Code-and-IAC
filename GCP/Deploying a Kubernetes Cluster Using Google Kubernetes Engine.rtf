@@ -1,0 +1,44 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fnil\fcharset0 .SFNS-Regular_wdth_opsz110000_GRAD_wght1F40000;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red15\green12\blue28;
+\red199\green199\blue224;\red251\green0\blue98;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c7451\c5882\c14510;
+\cssrgb\c81961\c82353\c90196;\cssrgb\c100000\c8627\c45882;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 In this lab, you will be creating a Kubernetes cluster using Google Kubernetes Engine (GKE). You will create the cluster through Google's Cloud Shell.\
+You will learn how to easily create a cluster with just a few commands.\
+Understanding how to create your cluster through the command line will give you the advantage of having granular control over your cluster and understanding exactly what's going on under the hood.\
+For this lab, you should have a basic understanding of Kubernetes. This way, you have the basic knowledge and skills to comprehend what you will be achieving in this lab.
+\f1\fs32 \cf3 \cb4 \
+\
+
+\f0\fs48 \cf0 \cb2 1. enable APIs\
+\
+gcloud services enable container.googleapis.com\
+\
+2. Create the cluster\
+\
+gcloud container clusters create test-cluster --zone us-central1-c --enable-autoscaling  --num-nodes 1 --max-nodes 2 --min-nodes 1 --node-locations us-central1-b,us-central1-c\
+\
+3. Retrieve cluster credentials\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb2 \outl0\strokewidth0 gcloud container clusters get-credentials test-cluster --zone us-central1-c\cb2 \outl0\strokewidth0 \strokec3 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+4. Copy the following YAML into a file named deploy.yaml\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \strokec6 apiVersion: v1 kind: Service metadata: name: vote-service labels: app: vote spec: selector: app: vote ports: - name: http port: 80 targetPort: 80 - name: udp port: 5000 targetPort: 5000 type: LoadBalancer --- apiVersion: apps/v1 kind: Deployment metadata: labels: app: vote name: vote spec: replicas: 2 selector: matchLabels: app: vote template: metadata: labels: app: vote spec: containers: - image: dockersamples/examplevotingapp_vote name: vote ports: - containerPort: 80 name: vote --- apiVersion: apps/v1 kind: Deployment metadata: labels: app: worker name: worker spec: replicas: 1 selector: matchLabels: app: worker template: metadata: labels: app: worker spec: containers: - image: dockersamples/examplevotingapp_worker name: worker --- apiVersion: apps/v1 kind: Deployment metadata: labels: app: db name: db spec: replicas: 1 selector: matchLabels: app: db template: metadata: labels: app: db spec: containers: - image: postgres:15-alpine name: postgres env: - name: POSTGRES_USER value: postgres - name: POSTGRES_PASSWORD value: postgres ports: - containerPort: 5432 name: postgres volumeMounts: - mountPath: /var/lib/postgresql/data name: db-data volumes: - name: db-data emptyDir: \{\} --- apiVersion: v1 kind: Service metadata: labels: app: db name: db spec: type: ClusterIP ports: - name: "db-service" port: 5432 targetPort: 5432 selector: app: db --- apiVersion: apps/v1 kind: Deployment metadata: labels: app: redis name: redis spec: replicas: 1 selector: matchLabels: app: redis template: metadata: labels: app: redis spec: containers: - image: redis:alpine name: redis ports: - containerPort: 6379 name: redis volumeMounts: - mountPath: /data name: redis-data volumes: - name: redis-data emptyDir: \{\} --- apiVersion: v1 kind: Service metadata: labels: app: redis name: redis spec: type: ClusterIP ports: - name: "redis-service" port: 6379 targetPort: 6379 selector: app: redis --- apiVersion: apps/v1 kind: Deployment metadata: labels: app: result name: result spec: replicas: 1 selector: matchLabels: app: result template: metadata: labels: app: result spec: containers: - image: dockersamples/examplevotingapp_result name: result ports: - containerPort: 80 name: result --- apiVersion: v1 kind: Service metadata: labels: app: result name: result spec: type: LoadBalancer ports: - name: http port: 80 targetPort: 80 - name: udp port: 5001 targetPort: 5001 selector: app: result\
+\
+5. Deploy the resources in the YAML\
+\
+kubectl apply -f deploy.yaml\
+\
+\
+\
+}
