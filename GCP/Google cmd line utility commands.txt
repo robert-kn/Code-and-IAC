@@ -63,6 +63,19 @@ gcloud project list --sort-by projectId
 
 gcloud organizations list 
 
+gcloud init --no-launch-browser
+
+gcloud iam roles list | grep "name:"
+
+gcloud iam roles describe roles/compute.instanceAdmin
+
+gcloud config configurations activate default
+
+echo "export PROJECTID2=qwiklabs-gcp-01-fe1c1f9202f6" >> ~/.bashrc
+
+. ~/.bashrc
+gcloud config set project $PROJECTID2
+
 gcloud secrets versions access 1 --secret="[SECRET NAME]" ---> retrieve secret version 1 from project
 
 USER_EMAIL=$(gcloud auth list --limit=1 2>/dev/null | grep '@' | awk '{print $2}') ---> get the current authorised user
