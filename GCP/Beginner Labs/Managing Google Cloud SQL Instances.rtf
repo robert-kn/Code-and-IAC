@@ -1,0 +1,50 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red0\green0\blue0;
+\red36\green43\blue141;\red24\green25\blue27;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c0\c0\c0;
+\cssrgb\c18824\c24706\c62353;\cssrgb\c12549\c12941\c14118;\cssrgb\c100000\c100000\c100000;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 When working with Cloud SQL on any scale, you\'92ll need to manage multiple instances: creating, cloning, starting, stopping, restarting, and \'97 eventually \'97 deleting them. This hands-on lab gives you the experience of performing all those tasks so you\'92ll be familiar with the steps necessary to handle Cloud SQL instances completely.\
+\
+1. Create an instance\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb1 \strokec4 gcloud services enable sqladmin.googleapis.com\cb2 \strokec3 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb1 \strokec4 gcloud sql instances create myinstance \\\
+--tier=\cb2 \strokec5 db-f1-micro\cb1 \strokec4  \\\
+--edition=ENTERPRISE \\\
+--region=us-central1 \\
+\f1\fs26 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \outl0\strokewidth0 --storage-type=HDD \\\
+--storage-size=10 \\\
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+gcloud sql users create root --instance=myinstance --password=root\
+\
+2. Create a database\
+\
+gcloud sql databases create mydb --instance=myinstance\
+\
+3. Clone the instance\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \outl0\strokewidth0 \strokec4 gcloud sql instances clone \outl0\strokewidth0 myinstance\outl0\strokewidth0 \strokec4  \outl0\strokewidth0 myinstance\outl0\strokewidth0 \strokec4 -cloned \strokec4 --preferred-zone\cf6 \cb7 \strokec6 =europe-west1\
+\
+4. Delete an instance\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb1 \outl0\strokewidth0 gcloud sql instances delete myinstance\
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+}

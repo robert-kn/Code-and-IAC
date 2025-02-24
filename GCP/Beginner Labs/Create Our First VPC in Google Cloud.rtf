@@ -1,0 +1,20 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 In Google Cloud, we have to start our learning process at the foundation! This is where Virtual Private Cloud networks (VPCs) come into play. Virtual Private Cloud networks help you build the house for all your resources, and help provide the networking for all of your services.\
+\
+1. Create a VPC\
+\
+gcloud compute networks create my-net --subnet-mode=custom\
+\
+gcloud compute networks subnets create my-sub --network my-net --region us-central1 --range 10.0.1.0/24\
+\
+gcloud compute networks list\
+\
+gcloud compute networks subnets list --network my-net}

@@ -1,0 +1,118 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red54\green54\blue57;\red42\green55\blue62;
+\red0\green0\blue0;\red251\green0\blue98;\red24\green112\blue43;\red53\green59\blue63;\red24\green25\blue27;
+\red255\green255\blue255;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c27451\c27451\c29020;\cssrgb\c21569\c27843\c30980;
+\cssrgb\c0\c0\c0;\cssrgb\c100000\c8627\c45882;\cssrgb\c9412\c50196\c21961;\cssrgb\c26667\c29804\c31373;\cssrgb\c12549\c12941\c14118;
+\cssrgb\c100000\c100000\c100000\c94902;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh15200\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+In this lab, we get hands-on with Google's Cloud SQL basics by creating a MySQL database and then securely connecting to the database with a service account. We also upload some pre-generated data and run some simple queries.\
+\
+1. Enable API\
+\
+gcloud services enable sqladmin.googleapis.com\
+\
+gcloud config set compute/zone us-centra1-a\
+\
+gcloud config set compute/region us-central1\
+\
+ZONE=us-central1-a\
+\
+REGION=us-central1\
+\
+2. Create a MySQL 2nd Generation Cloud SQL Instance\
+\
+2nd get machines start with db. You can see a list using the command\
+\
+gcloud sql tiers list\
+\
+Choose a tier and then run the below command\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb1 gcloud sql instances create forumndb \\\
+--tier=\cb2 db-f1-micro\cb1  \\\
+--edition=ENTERPRISE \\\
+--database-version=\cb2 MYSQL_8_0\cb1  \\\
+--region=$REGION \\
+\f1\fs26 \
+
+\f0\fs48 --storage-type=HDD \\\
+--storage-size=10\cb2 \
+\
+Set the instance id to forumndb with the password as root. Change the machine type to 1 vcpu 3.75 GB\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 gcloud sql users list --instance forumndb \
+\
+Set the default password for the root user\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 gcloud sql users set-password root --instance forumndb --host=% --password=root\
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+2. Create vm to run a secure mysql client \
+\
+Find appropriate boot disk by running\
+\
+\pard\pardeftab720\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/sdk/gcloud/reference/compute/disk-types/list"}}{\fldrslt \cf5 gcloud compute disk-types list}}\
+\
+gcloud compute instances create mysql-client --zone $ZONE --machine-type e2-small --image=projects/debian-cloud/global/images/debian-12-bookworm-v20250212\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf7 \cb1 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+3. Create the service account used to connect with cloud sql securely \
+\
+gcloud iam service-accounts create forumndb-access --display-name forumn \
+\
+gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID --member serviceAccount:`(gcloud iam service-accounts list --filter="NAME:forumn" --format="get(email)")` --role roles/cloudsql.client\cf9 \cb10 \
+\
+gcloud iam service-accounts keys create key.json --iam-account=`(gcloud iam service-accounts list --filter="NAME:forumn" --format="get(email)")`\cf0 \cb2 \
+\
+4. Upload key file in the mysql-client that was created\
+\
+gcloud compute instances describe mysql-client --zone $ZONE\
+\
+5. Upload the sql data that was downloaded\
+\
+6. Update the packages in the mysql-client VM\
+\
+sudo apt update -y\
+\
+7. Install mysql client in the mysql-client VM\
+\
+sudo apt install default-mysql-client\
+\
+8. Download the cloud sql proxy from google\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb1 \outl0\strokewidth0 \strokec5 curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.14.3/cloud-sql-proxy.linux.amd64\
+\
+9. Make it executable\
+\
+chmod +x cloud-sql-proxy\
+\
+10. Run the cloud sql proxy to create a secure connection to the database using the service account created earlier \
+\
+./cloud-sql-proxy creating-a-g-225-a76ae495:us-central1:forumndb --credentials-file=key.json --address 35.193.214.225 --port 3306\
+\
+Yields the following error \
+\
+2025/02/19 10:29:42 Authorizing with the credentials file at "key.json"\
+2025/02/19 10:29:42 [creating-a-g-225-a76ae495:us-central1:forumndb] could not listen to address 35.193.214.225:3306: listen tcp 35.193.214.225:3306: bind: cannot assign requested address\
+2025/02/19 10:29:42 Error starting proxy: [creating-a-g-225-a76ae495:us-central1:forumndb] Unable to mount socket: listen tcp 35.193.214.225:3306: bind: cannot assign requested address\
+2025/02/19 10:29:42 The proxy has encountered a terminal error: unable to start: [creating-a-g-225-a76ae495:us-central1:forumndb] Unable to mount socket: listen tcp 35.193.214.225:3306: bind: cannot assign requested address\
+\
+\
+\cb2 \outl0\strokewidth0 \
+}

@@ -1,22 +1,19 @@
 {\rtf1\ansi\ansicpg1252\cocoartf2821
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;}
-{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red199\green199\blue224;
-}
-{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c81961\c82353\c90196;
-}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;}
 \paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
 \f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec3 In this hands-on lab, you\'92ll walk through the process of establishing a Cloud Spanner instance, creating a populated database, querying the data, and then exporting it to Google Cloud Storage.\
+In this hands-on lab, you\'92ll walk through the process of establishing a Cloud Spanner instance, creating a populated database, querying the data, and then exporting it to Google Cloud Storage.\
 \
 1. Enable APIs\
 \
 gcloud services enable spanner.googleapis.com\
 gcloud services enable dataflow.googleapis.com\
-\pard\pardeftab720\partightenfactor0
-\cf0 \cb2 \outl0\strokewidth0 gcloud services enable storage.googleapis.com\
+gcloud services enable storage.googleapis.com\
 \
 2. Create cloud spanner instance\
 \
@@ -26,8 +23,7 @@ gcloud spanner databases create my-db --instance la-spanner-1 --database-dialect
 \
 Where my file.sql contains the DDL statement:\
 \
-\pard\pardeftab720\partightenfactor0
-\cf0 \cb2 \outl0\strokewidth0 \strokec3 CREATE TABLE Artists ( ArtistId INT64 NOT NULL, FirstName STRING(1024), LastName STRING(1024), BirthDate DATE ) PRIMARY KEY(ArtistId);\
+CREATE TABLE Artists ( ArtistId INT64 NOT NULL, FirstName STRING(1024), LastName STRING(1024), BirthDate DATE ) PRIMARY KEY(ArtistId);\
 \
 3. Populate the table with data\
 \
@@ -40,7 +36,7 @@ gcloud spanner databases execute-sql --instance la-spanner-1 my-db --sql "SELECT
 \
 5. Create bucket and export data\
 \
-gsutil mb -l us-central1 gs://la-spanner-ecport-1\
+gsutil mb -l us-central1 gs://la-spanner-export-1\
 \
-gcloud dataflow jobs run my-export-job   --gcs-location='gs://dataflow-templates/latest/Cloud_Spanner_to_GCS_Avro'   --region=us-central1   --parameters='instanceId=la-spanner-1,databaseId=my-db,outputDir=gs://la-spanner-ecport-1'   --max-workers=10\
+gcloud dataflow jobs run my-export-job   --gcs-location='gs://dataflow-templates/latest/Cloud_Spanner_to_GCS_Avro'   --region=us-central1   --parameters='instanceId=la-spanner-1,databaseId=my-db,outputDir=gs://la-spanner-export-1'   --max-workers=10\
 }

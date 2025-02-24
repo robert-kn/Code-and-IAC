@@ -1,0 +1,46 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;\red199\green199\blue224;
+}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\csgray\c100000;\cssrgb\c81961\c82353\c90196;
+}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh18520\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec4 You work for Acloud Medical Center as an engineer. They have a lot of customer files that will need to be stored and retained in compliance with the federal government's requirements. Your team wants you to use cloud storage and create a scenario where, when they upload their objects, the objects in the bucket cannot be deleted at all for the time specified. This is a huge project, and you need to make sure your setup actually works before any customer files are uploaded.\
+\
+1. Create bucket \
+\
+gsutil mb gs://$GOOGLE_CLOUD_PROJECT\
+\
+2. Set 1 day retention policy on bucket\
+\
+gsutil retention set 1d gs://$GOOGLE_CLOUD_PROJECT\
+\
+3. Clone the following repo\
+\
+git clone https://github.com/ACloudGuru-Resources/content-gcp-cost-optimization-lab-resources.git\
+\
+4. Upload the contents of the downloaded repo to the created bucket \
+\
+gsutil cp -R content-gcp-cost-optimization-lab-resources/ gs://$GOOGLE_CLOUD_PROJECT\
+\
+5. Try to delete an object in the bucket \
+\
+gsutil rm gs://$GOOGLE_CLOUD_PROJECT/content-gcp-cost-optimization-lab-resources/.git/objects/pack/pack-0047d2ad352c1945be5820bddf7ab02ed61eb8c3.idx\
+\
+Result\
+\
+AccessDeniedException: 403 Object 'creating-a-c-301-b14dfd7c/content-gcp-cost-optimization-lab-resources/.git/objects/pack/pack-0047d2ad352c1945be5820bddf7ab02ed61eb8c3.idx' is subject to bucket's retention policy or object retention and cannot be deleted or overwritten until 2025-02-15T12:25:37.928351-08:00\
+\
+Try to delete the bucket\
+\
+gsutil rb gs://$GOOGLE_CLOUD_PROJECT\
+\
+Result \
+\
+Removing gs://creating-a-c-301-b14dfd7c/...\
+NotEmptyException: 409 BucketNotEmpty (creating-a-c-301-b14dfd7c)\
+}
