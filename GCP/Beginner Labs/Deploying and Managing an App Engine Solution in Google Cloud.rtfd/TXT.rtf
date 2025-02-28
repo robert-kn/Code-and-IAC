@@ -1,0 +1,68 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red0\green0\blue0;
+\red251\green0\blue98;\red251\green0\blue98;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c0\c0\c0;
+\cssrgb\c100000\c8627\c45882;\cssrgb\c100000\c8627\c45882;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Your team wants you to use a python application to deploy through Google Cloud App Engine. From there, they would like for you to deliver two different versions to the end-users to establish a Blue/Green test.\
+\
+{{\NeXTGraphic Pasted Graphic.png \width31120 \height17280 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+1. Spin up an app engine instance\
+\
+gcloud app create\
+\
+2. View the resources that were created when the app engine instances was created\
+\
+gcloud iam service-accounts list (will list all service accounts one of which will be the app engine default svc account)\
+\
+svc_acc=`gcloud iam service-accounts list --filter="NAME:App" --format="get(email)\'94`  \
+\
+gcloud storage ls (list the buckets created when the service was deployed)\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb2 \outl0\strokewidth0 Add the app engine standard environment svc agent and the storage admin role to the app engine default svc account saved in the variable svc_acc\
+\
+3. Clone repository \
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 \cb2 \outl0\strokewidth0 \strokec5 git clone https://github.com/GoogleCloudPlatform/python-docs-samples\
+\
+4. Change directory \
+\
+cd python-docs-samples/appengine/standard_python3/hello_world/\
+\
+ls\
+\
+5. Deploy the application\
+\
+gcloud app deploy\
+\
+Retry again if failure occurs. It fails because the IAM propagation on GCP takes a while.\
+\
+6. View the app\
+\
+gcloud app browse\
+\
+7. Make changes to the app\
+\
+Change the Hello world string in the main.py file to something else\
+\
+8. Deploy the app again\
+\
+\pard\pardeftab720\partightenfactor0
+\cf4 \cb2 \outl0\strokewidth0 gcloud app deploy\
+\
+9. View the app again\
+\
+gcloud app browse\
+\
+10. Split the traffic between the two apps that were deployed\
+\
+Navigate to app engine on the console, click versions on the left tab, click split traffic, enter 50 for the active tab of the deployed version that is currently receiving all the traffic, click save }
