@@ -1,0 +1,122 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fnil\fcharset0 .SFNS-Regular_wdth_opsz110000_GRAD_wght1F40000;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red199\green199\blue224;
+\red251\green0\blue98;\red15\green12\blue28;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c81961\c82353\c90196;
+\cssrgb\c100000\c8627\c45882;\cssrgb\c7451\c5882\c14510;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid101\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid201\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid3}
+{\list\listtemplateid4\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid301\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid4}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Running workloads with their own unique service identity in GCP allows you to exercise the security principle of least privilege: granting only the granular permissions required by a workload, and limiting the blast radius should it become compromised. With GKE Workload Identity, Kubernetes service accounts can be mapped to GCP service accounts to enable service identity authorisation for requests to Google APIs and other services. In this lab, we will create a secret Cloud Run service and then map a service account to allow a GKE workload to access it.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic.png \width33960 \height15960 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0\cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 1. \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 enable the required apis\
+\pard\tx720\pardeftab720\partightenfactor0
+\cf0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\cf0 gcloud services enable container.googleapis.com containerregistry.googleapis.com cloudbuild.googleapis.com run.googleapis.com\kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\
+2. Clone GitHub repository\
+\
+git clone https://github.com/linuxacademy/content-google-certified-pro-cloud-developer\
+\
+3. Change directory\
+\
+cd content-google-certified-pro-cloud-developer/gke-workload-identity/secret-service/\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 \
+\
+4. Build the secret service container\
+\
+gcloud builds submit --tag gcr.io/$DEVSHELL_PROJECT_ID/secret-service \
+\
+5. Deploy the container to cloud run \
+\
+gcloud run deploy secret-service --image gcr.io/$DEVSHELL_PROJECT_ID/secret-service --no-allow-unauthenticated \
+--platform managed --region us-central1\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls2\ilvl0\cf0 \strokec3 After the service is deployed, try accessing the Service URL provided in the terminal. You should receive a\'a0Forbidden\'a0error message, as you do not have permission to access the service without the correct identity.\
+\
+6. Create a GKE cluster with workload identity enabled\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\cf0 gcloud beta container --project $DEVSHELL_PROJECT_ID clusters create "cluster-1" --region "us-central1" --tier "standard" --no-enable-basic-auth --cluster-version "1.31.5-gke.1233000" --release-channel "regular" --machine-type "e2-medium" --image-type "COS_CONTAINERD" --disk-type "pd-balanced" --disk-size "100" --metadata disable-legacy-endpoints=true --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" --num-nodes "1" --logging=SYSTEM,WORKLOAD --monitoring=SYSTEM,STORAGE,POD,DEPLOYMENT,STATEFULSET,DAEMONSET,HPA,CADVISOR,KUBELET --enable-ip-alias --network "projects/\cb2 \outl0\strokewidth0 $DEVSHELL_PROJECT_ID\cb2 \outl0\strokewidth0 \strokec3 /global/networks/default" --subnetwork "projects/\cb2 \outl0\strokewidth0 $DEVSHELL_PROJECT_ID\cb2 \outl0\strokewidth0 \strokec3 /regions/us-central1/subnetworks/default" --no-enable-intra-node-visibility --default-max-pods-per-node "110" --enable-ip-access --security-posture=standard --workload-vulnerability-scanning=disabled --no-enable-google-cloud-access --addons HorizontalPodAutoscaling,HttpLoadBalancing,GcePersistentDiskCsiDriver --enable-autoupgrade --enable-autorepair --max-surge-upgrade 1 --max-unavailable-upgrade 0 --binauthz-evaluation-mode=DISABLED --enable-managed-prometheus --workload-pool "\cb2 \outl0\strokewidth0 $DEVSHELL_PROJECT_ID\cb2 \outl0\strokewidth0 \strokec3 .svc.id.goog" --enable-shielded-nodes --shielded-integrity-monitoring --no-shielded-secure-boot\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls3\ilvl0\cf0 \
+7. Connect to the cluster\
+\
+gcloud container clusters get-credentials cluster-1 --zone us-central1 --project $DEVSHELL_PROJECT_ID\
+\
+8. Create google service account and assign it the correct role\
+\
+gcloud iam service-accounts create secret-agent\
+\
+svc_acc=$(gcloud iam service-accounts list --filter="name:secret-agent" --format="get(email)")\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\cf0 \
+gcloud run services add-iam-policy-binding secret-service --member="serviceAccount:$svc_acc" --role="roles/run.invoker" --platform managed --region us-central1\
+\
+9 change directory\
+\
+cd ../secret-agent/\
+\
+10. Create gke service account \
+\
+kubectl apply -f serviceaccount.yaml\
+\
+11. Allow Kubernetes service account to impersonate google service account \
+\
+gcloud iam service-accounts add-iam-policy-binding --role roles/iam.workloadIdentityUser --member "serviceAccount:$DEVSHELL_PROJECT_ID.svc.id.goog[default/secret-agent]" $svc_acc\
+\
+12. Annotate the Kubernetes service account to complete the mapping \
+\
+kubectl annotate serviceaccount --namespace default secret-agent iam.gke.io/gcp-service-account=$svc_acc\
+\
+13. Create env vars\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \strokec3 export PROJECT_ID=$(gcloud config list project --format "value(core.project)")\
+\
+export SECRET_URL=$(gcloud run services describe secret-service --platform managed --region us-central1 --format 'value(status.url)')\
+\
+14. Create the agent pod manifest\
+\
+envsubst < pod-template.yaml > agent-pod.yaml\
+\
+15. Build then secret agent container \
+\
+gcloud builds submit --tag gcr.io/$DEVSHELL_PROJECT_ID/secret-agent\
+\
+16. Deploy the secret agent pod to GKE\
+\
+kubectl apply -f agent-pod.yaml\
+\
+17. After the Pod is in a Running state, you should be able to observe that it can successfully connect to the Secret service Cloud Run service by viewing its logs:\
+\
+kubectl logs secret-agent\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \strokec3 The agent contacts the Secret service every 5 seconds and logs the results to\'a0\strokec5 STDOUT\strokec3 . It uses the GCP metadata server to generate a valid JWT token in order to identify itself as the service account you created earlier. This service account, and only this service account, is permitted to invoke the Cloud Run service.\
+Note that the JWT token generated by the agent workload will expire after an hour, after which the Pod will log a\'a0Forbidden\'a0error, which is expected.
+\f1\fs32 \cf3 \cb6 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \strokec3 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls4\ilvl0
+\f1\fs32 \cf3 \cb1 \strokec3 \
+}
