@@ -1,0 +1,50 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 .AppleSystemUIFontMonospaced-Regular;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17120\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf0 In this lab, we'll deploy an image gallery app that makes an external API call to display a quote of the day. The API call will require a secret key, which we will store securely in Secret Manager and retrieve during an automated deployment with Cloud Build. You should be familiar with the GCP console and Cloud Shell to perform this hands-on lab. Some experience with Python will be beneficial.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic.png \width32260 \height17020 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 \
+1. Enable APIs\
+\
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com firestore.googleapis.com secretmanager.googleapis.com\
+\
+2. Clone git repository\
+\
+git clone https://github.com/ACloudGuru-Resources/content-google-cloud-run-deep-dive.git\
+\
+3. Create an account in favqs.com and proceed to generate an api key\
+\
+4. Store api key in secret manager\
+\
+5. Create a firestore database in native mode in region that you stored your secret in\
+\
+6. Create cloud storage bucket in same region that secret was stored in\
+\
+gcloud storage buckets create gs://$DEVSHELL_PROJECT_ID -l us-east1\
+\
+7. Navigate to cloud build on the UI. Access the settings section in cloud build and enable the cloud run api. This will assign the cloud run admin role and service account user role to the cloud build service account.\
+\
+8. Navigate to the IAM section and add the secret manager accessor role to the cloud build service account.\
+\
+9. Navigate to cloud shell, open the editor and go to image-gallery/4-secrets and open up the app.py file where you will input the name of the bucket you created in the appropriate field\
+\
+10. Bring up the cloud shell again and navigate to the directory 4-secrets directory\
+\
+11. Deploy using cloud build\
+\
+gcloud builds submit --config cloudbuild.yaml .\
+\
+12. I had to add the secret manager accessor role to the compute engine svc account in order for the build to complete\
+\
+13. If you cannot access the URL when you navigate to cloud run, you will have to navigate to the security tab in deployment and select Allow unauthenticated invocations and then save. \
+\
+}
