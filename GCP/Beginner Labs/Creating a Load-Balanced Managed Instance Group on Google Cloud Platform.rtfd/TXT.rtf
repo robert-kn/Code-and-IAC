@@ -1,0 +1,55 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 .AppleSystemUIFontMonospaced-Regular;\f1\fmodern\fcharset0 CourierNewPSMT;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red24\green25\blue27;
+}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c12549\c12941\c14118;
+}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17120\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+In this hands-on lab, we are going to experience creating a managed instance group using an instance template, creating an HTTP load balancer to act as the instance group frontend, and then updating our instance group from a 'version 1' to 'version 2' website.\
+\
+{{\NeXTGraphic Pasted Graphic.png \width33940 \height17120 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+Assumes you already have two instances running. You can create both instances using the gcloud compute instances create command. Both can be created as n2-standard-2 machines.\
+\
+1. Stop the running instances using the command\
+\
+gcloud compute instances stop [instance-name] --zone [zone-name]\
+\
+2. Create custom images from both instances\
+\
+gcloud compute images create web-v1 --family=webserver --source-disk=web-1 --source-disk-zone=us-central1-a\
+\
+gcloud compute images create web-v2 --family=webserver --source-disk=web-2 --source-disk-zone=us-central1-a\
+\
+3. Verify that images were created \
+\
+gcloud compute images list\
+\
+4. Create an instance template for web-v1\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1 \cf0 gcloud beta compute instance-templates create web-v1-instance-template-20250321-082440 --project=creating-a-l-60-59b9fc00 --machine-type=e2-micro --instance-template-region=us-central1 --tags=http-server,https-server image=projects/debian-cloud/global/images/debian-12-bookworm-v20250311\
+\
+Use gcloud compute firewall-rules create command to create two firewall rules. One for http and the other for https\
+\
+5. Create a managed instance group\
+\
+gcloud beta compute health-checks create tcp http-health-check --port=80 --no-enable-logging --check-interval=10 --timeout=10 --unhealthy-threshold=3 --healthy-threshold=2 \
+\
+gcloud beta compute instance-groups managed create web-group --base-instance-name=web-group --template=projects/creating-a-l-60-59b9fc00/regions/us-central1/instanceTemplates/web-v1instance-template-20250321-082440 --size=3 --zone=us-central1-c \
+\
+gcloud beta compute instance-groups managed set-autoscaling web-group --zone=us-central1-c --mode=on --min-num-replicas=3 --max-num-replicas=5 --target-cpu-utilization=0.6 --cpu-utilization-predictive-method=none --cool-down-period=60\
+\
+6. Create a http(s) load balancer that accepts connections from the internet. For front end config, ensure protocol tcp on port 80. For backend set the type to instance group and select the group created earlier. create a similar health check to the one created earlier for the back end.\
+\
+7. View the load balanced website.\
+\
+8. Challenge: create a new instance template using web-v2 custom image and modify the instance group to use the new template and update the VMs. \
+\
+}

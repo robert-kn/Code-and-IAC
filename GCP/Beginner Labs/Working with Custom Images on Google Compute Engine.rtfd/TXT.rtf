@@ -1,0 +1,47 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red199\green199\blue224;
+}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c81961\c82353\c90196;
+}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17120\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 In this hands-on lab, we are going to practice creating custom images from two versions of a web server (which will be provided for you), add both images to the same image family, describe the image family, deprecate an image, and create a new web server from our custom images.\
+\
+Assumes that there are already two instances running in the project. You can create them using the gcloud compute create instances command. Use machine type n2-standard-2.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic.png \width30020 \height14060 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+1. Create an image from the base apache image \
+\
+gcloud compute instances stop base-apache --zone us-central1-a\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb2 \outl0\strokewidth0 gcloud compute images create webserver-base --family=webserver --source-disk=base-apache --source-disk-zone=us-central1-a\
+\
+2. Create an image from the custom-webpage instance using cloud shell\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 gcloud compute instances stop custom-webpage --zone us-central1-a\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 gcloud compute images create custom-webpage --family=webserver --source-disk=custom-webpage --source-disk-zone=us-central1-a\
+\
+3. View the images created\
+\
+gcloud compute images describe-from-family webserver\
+\
+4. Deprecate the webserver-base image \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 gcloud compute images deprecate webserver-base --state DEPRECATED  \
+\
+5. Create a new web server from the custom-webpage image \
+\
+gcloud compute instances create new-webserver --zone=us-central1-c --machine-type=e2-micro --tags=http-server --image=projects/debian-cloud/global/images/debian-12-bookworm-v20250311}
