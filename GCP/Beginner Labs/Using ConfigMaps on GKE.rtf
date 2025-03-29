@@ -1,0 +1,83 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red199\green199\blue224;
+}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c81961\c82353\c90196;
+}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17120\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Part of good cloud-native application design is separating configuration from the deployable artefact \'97 i.e., the container image. In this lab, you will deploy a web app that can be dynamically reconfigured based on the existence of both environment variables and a configuration file. The variables and the file can be added at runtime with the use of Kubernetes ConfigMaps.\
+\
+1. Enable APIs and assign IAM role\
+\
+gcloud services enable container.googleapis.com cloudbuild.googleapis.com\
+\
+compute_svc_account=`gcloud iam service-accounts list --filter="name:compute" --format="value(email)\'94`\
+\
+gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID --member serviceAccount:$compute_svc_account --role roles/cloudbuild.serviceAgent\
+\
+2. Create and connect to a GKE cluster\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb2 \outl0\strokewidth0 gcloud container clusters create test-cluster --zone us-central1-c --enable-autoscaling  --num-nodes 1 --max-nodes 2 --min-nodes 1 --node-locations us-central1-b,us-central1-c\cb2 \outl0\strokewidth0 \strokec3 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb2 \outl0\strokewidth0 gcloud container clusters get-credentials test-cluster --zone us-central1-c\
+\cb2 \outl0\strokewidth0 \strokec3 \
+\pard\pardeftab720\partightenfactor0
+\cf0 3. Build the container and create the deployment\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb2 git clone https://github.com/linuxacademy/content-google-certified-pro-cloud-developer.git\
+\
+cd content-google-certified-pro-cloud-developer/flask-configmaps\
+\
+gcloud builds submit --tag gcr.io/$DEVSHELL_PROJECT_ID/flask-configmaps\
+\
+Create a deployment.yaml file in your cloud shell home directory and paste in the following contents (replace your project id)\
+\
+apiVersion: apps/v1\
+kind: Deployment\
+metadata:\
+  name: flask-deployment\
+spec:\
+  selector:\
+    matchLabels:\
+      app: flask\
+  template:\
+    metadata:\
+      labels:\
+        app: flask\
+    spec:\
+      containers:\
+      - name: flask\
+        image: gcr.io/using-config-239-51111f73/flask-configmaps\
+        ports:\
+        - containerPort: 8080 \cb2 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+kubectl apply -f deployment.yaml \
+\
+kubectl expose deployment flask-deployment --port 80 --target-port 8080 --type LoadBalancer \
+\
+4. Use a configmap to add environment variables\
+\
+Update flask-deployment to add env vars\
+\
+5. Use a configmap to add a configuration file\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb2 \outl0\strokewidth0 Create a animals.cfg file and add the following \
+\
+catfood=kibble\
+dogfood=mixer\
+fussy_dog=derek\
+latest_feed=10pm\
+\
+kubectl create configmap animal-configfile --from-file=animals.cfg\
+\
+Update flask-deployment to add configmap }
