@@ -1,0 +1,60 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fnil\fcharset0 .SFNS-Regular_wdth_opsz110000_GRAD_wght1F40000;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17120\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+Detecting when a shot changes in a video is a foundational step when it comes to video indexing. Google Cloud Video Intelligence API is capable of processing digital video to output the beginning and ending time code, demarking individual moments taken by a single camera and representing a continuous time and space. In this lab, you'll use a Python script to process a digital video with the Video Intelligence API's annotate function to output a series of individual shots and then compare the timestamps to the original video.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 Your company has been awarded a government contract to establish search capabilities for a large video archive. You have been asked to validate the output of the Video Intelligence API when applied to a sample video.\
+Resources:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0\cf0 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+GitHub repository:\'a0{\field{\*\fldinst{HYPERLINK "https://github.com/linuxacademy/content-google-cloud-certified-professional-machine-learning-engineer"}}{\fldrslt \ul https://github.com/linuxacademy/content-google-cloud-certified-professional-machine-learning-engineer}}\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Video sample:\'a0{\field{\*\fldinst{HYPERLINK "https://storage.googleapis.com/cloud-samples-data/video/JaneGoodall.mp4"}}{\fldrslt \ul https://storage.googleapis.com/cloud-samples-data/video/JaneGoodall.mp4}}
+\f1\fs32 \cf3 \cb1 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic.png \width35540 \height19460 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+1. Enable API\
+\
+gcloud services enable videointelligence.googleapis.com\
+\
+2. Retrieve the working files\
+\
+git clone https://github.com/linuxacademy/content-google-cloud-certified-professional-machine-learning-engineer.git\
+\
+cd content-google-cloud-certified-professional-machine-learning-engineer/detect-shot-change\
+\
+3. Set up service account\
+\
+gcloud iam service-accounts create video-intelligence --display-name vid-intell\
+\
+gcloud iam service-accounts keys create key.json --iam-account video-intelligence@detecting-sh-321-58640022.iam.gserviceaccount.com\
+\
+gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID --member serviceAccount:video-intelligence@d\
+etecting-sh-321-58640022.iam.gserviceaccount.com --role roles/serviceusage.serviceUsageConsumer\
+\
+export GOOGLE_APPLICATION_CREDENTIALS=key.json\
+\
+4. Send request to video intelligence API\
+\
+python shotchange.py gs://cloud-samples-data/video/JaneGoodall.mp4 or\
+\
+python shotchange.py https://storage.googleapis.com/cloud-samples-data/video/JaneGoodall.mp4\
+\
+5. Verify API\
+\
+}
