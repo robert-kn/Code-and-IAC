@@ -1,0 +1,77 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 .AppleSystemUIFontMonospaced-Regular;\f1\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red22\green79\blue199;
+\red255\green255\blue255;\red24\green25\blue27;\red0\green0\blue0;\red24\green112\blue43;\red159\green77\blue4;
+\red46\green49\blue51;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c9804\c40392\c82353;
+\cssrgb\c100000\c100000\c100000;\cssrgb\c12549\c12941\c14118;\cssrgb\c0\c0\c0;\cssrgb\c9412\c50196\c21961;\cssrgb\c69020\c37647\c0;
+\cssrgb\c23529\c25098\c26275;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17060\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 In this hands-on lab, we'll use BigQuery\'97GCP's powerful data warehousing, analysis, and machine learning tool\'97to gain deeper insight into a dataset. We'll analyze the breadth and depth of the data and then look for patterns and surprising or interesting values.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic.png \width33220 \height19140 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+1. Access bQ\
+\
+2. Add the Chicago taxi trips dataset\
+\
+Add dataset -> public datasets -> search for taxi -> select Chicago taxi trips -> view the data set (might need to enable big query api)\
+\
+3. Examine the dataset schema\
+\
+Expand Chicago taxi trips and select taxi trips table and have a look at the number of features and their data types.\
+\
+4. Examine the dataset details\
+\
+5. Query the data\
+\
+E.g. 
+\f1\fs24 \cf4 \cb5 \strokec4 SELECT\cf6 \strokec6   \strokec7 trip_miles\strokec6 , \strokec7 fare\strokec6 , \strokec7 trip_seconds\strokec6 , \strokec7 pickup_community_area\strokec6  \cf4 \strokec4 FROM\cf6 \strokec6  \cf8 \strokec8 `bigquery-public-data.chicago_taxi_trips.taxi_trips`\cf6 \strokec6  \cf4 \strokec4 LIMIT\cf6 \strokec6  \cf9 \strokec9 100\cf6 \strokec6 ;\cb1 \
+
+\f0\fs48 \cf0 \cb2 \strokec3 \
+6. Count rows where fare is not null\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf4 \cb5 \strokec4 SELECT\cf6 \strokec6   \cf4 \strokec4 count\cf10 \cb5 \strokec10 (*)\cf6 \cb5 \strokec6  \cf4 \strokec4 FROM\cf6 \strokec6  \cf8 \strokec8 `bigquery-public-data.chicago_taxi_trips.taxi_trips`\cf6 \strokec6  \cf4 \strokec4 where\cf6 \strokec6  \strokec7 fare\strokec6  \cf4 \strokec4 is\cf6 \strokec6  \cf4 \strokec4 not\cf6 \strokec6  \cf4 \strokec4 NULL\cf6 \strokec6 ;
+\f0\fs48 \cf0 \cb2 \strokec3 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+7. Find correlations between fare and other columns\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf4 \cb5 \strokec4 SELECT\cf6 \cb1 \strokec6 \
+\cb5   \cf4 \strokec4 CORR\cf10 \cb5 \strokec10 (\cf6 \cb5 \strokec7 trip_miles\strokec6 , \strokec7 fare\cf10 \cb5 \strokec10 )\cf6 \cb5 \strokec6  \cf4 \strokec4 AS\cf6 \strokec6  \strokec7 correlation_trip_miles_with_fare\strokec6 ,\cb1 \
+\cb5   \cf4 \strokec4 CORR\cf10 \cb5 \strokec10 (\cf6 \cb5 \strokec7 trip_seconds\strokec6 , \strokec7 fare\cf10 \cb5 \strokec10 )\cf6 \cb5 \strokec6  \cf4 \strokec4 AS\cf6 \strokec6  \strokec7 correlation_trip_seconds_with_fare\strokec6 ,\cb1 \
+\cb5   \cf4 \strokec4 CORR\cf10 \cb5 \strokec10 (\cf6 \cb5 \strokec7 tips\strokec6 , \strokec7 fare\cf10 \cb5 \strokec10 )\cf6 \cb5 \strokec6  \cf4 \strokec4 AS\cf6 \strokec6  \strokec7 correlation_tips_with_fare\cb1 \strokec6 \
+\cf4 \cb5 \strokec4 FROM\cf6 \strokec6  \cf8 \strokec8 `bigquery-public-data.chicago_taxi_trips.taxi_trips`\cf6 \strokec6 ;\cb1 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \strokec3 \
+\
+8. Find average fare\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf4 \cb5 \strokec4 SELECT\cf6 \strokec6  \cb1 \
+\pard\pardeftab720\partightenfactor0
+\cf6 \cb5   \cf4 \strokec4 EXTRACT\cf10 \cb5 \strokec10 (\cf6 \cb5 \strokec7 DAYOFWEEK\strokec6  \cf4 \strokec4 FROM\cf6 \strokec6  \strokec7 trip_start_timestamp\cf10 \cb5 \strokec10 )\cf6 \cb5 \strokec6  \cf4 \strokec4 AS\cf6 \strokec6  \strokec7 day_of_week\strokec6 ,\cb1 \
+\cb5   \cf4 \strokec4 AVG\cf10 \cb5 \strokec10 (\cf6 \cb5 \strokec7 fare\cf10 \cb5 \strokec10 )\cf6 \cb5 \strokec6  \cf4 \strokec4 AS\cf6 \strokec6  \strokec7 average_fare\cb1 \strokec6 \
+\pard\pardeftab720\partightenfactor0
+\cf4 \cb5 \strokec4 FROM\cf6 \strokec6  \cf8 \strokec8 `bigquery-public-data.chicago_taxi_trips.taxi_trips`\cf6 \cb1 \strokec6 \
+\cf4 \cb5 \strokec4 WHERE\cf6 \strokec6  \strokec7 fare\strokec6  \cf4 \strokec4 IS\cf6 \strokec6  \cf4 \strokec4 NOT\cf6 \strokec6  \cf4 \strokec4 NULL\cf6 \cb1 \strokec6 \
+\cf4 \cb5 \strokec4 GROUP\cf6 \strokec6  \cf4 \strokec4 BY\cf6 \strokec6  \strokec7 day_of_week\cb1 \strokec6 \
+\cf4 \cb5 \strokec4 ORDER\cf6 \strokec6  \cf4 \strokec4 BY\cf6 \strokec6  \strokec7 day_of_week\strokec6 ;\cb1 \
+\
+\
+\cf4 \cb5 \strokec4 SELECT\cf6 \strokec6  \cf4 \strokec4 AVG\cf10 \cb5 \strokec10 (\cf6 \cb5 \strokec7 fare\cf10 \cb5 \strokec10 )\cf6 \cb5 \strokec6  \cf4 \strokec4 AS\cf6 \strokec6  \strokec7 AVG_FARE\cb1 \strokec6 \
+\cf4 \cb5 \strokec4 FROM\cf6 \strokec6  \cf8 \strokec8 `bigquery-public-data.chicago_taxi_trips.taxi_trips`\cf6 \strokec6  \cf4 \strokec4 LIMIT\cf6 \strokec6  \cf9 \strokec9 10000\cf6 \cb1 \strokec6 \
+}

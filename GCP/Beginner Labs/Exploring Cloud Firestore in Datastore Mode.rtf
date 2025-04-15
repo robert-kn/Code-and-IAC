@@ -1,15 +1,15 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2821
+{\rtf1\ansi\ansicpg1252\cocoartf2822
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fmodern\fcharset0 Courier;}
 {\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red21\green21\blue24;
-\red21\green21\blue24;\red0\green0\blue0;}
+\red0\green0\blue0;}
 {\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c10588\c10588\c12157;
-\cssrgb\c10588\c10588\c12157;\cssrgb\c0\c0\c0;}
+\cssrgb\c0\c0\c0;}
 \paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh16960\viewkind0
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
 \f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec3 Data comes in all shapes, sizes, and use cases. A relational database service like Cloud SQL isn't always the answer. Cloud Datastore is a NoSQL database service, ideal for semi-structured data that needs to be highly scalable and available. Cloud Firestore is the next generation of Datastore with enhanced features, and in this hands-on lab, you'll see how to build a Firestore NoSQL database in Cloud Datastore mode for the best of both worlds.\
+Data comes in all shapes, sizes, and use cases. A relational database service like Cloud SQL isn't always the answer. Cloud Datastore is a NoSQL database service, ideal for semi-structured data that needs to be highly scalable and available. Cloud Firestore is the next generation of Datastore with enhanced features, and in this hands-on lab, you'll see how to build a Firestore NoSQL database in Cloud Datastore mode for the best of both worlds.\
 \
 1. Enable apis\
 \
@@ -18,14 +18,13 @@ gcloud services enable datastore.googleapis.com\
 2. Create the database\
 \
 \pard\pardeftab720\partightenfactor0
-\cf0 \strokec4 gcloud firestore databases create \cb2 \outl0\strokewidth0 --data\cb2 \outl0\strokewidth0 \strokec4 base \cb2 \outl0\strokewidth0 my-store\cb2 \outl0\strokewidth0 \strokec4  \'97location us-east1 --type datastore-mode\strokec3 \
+\cf0 gcloud firestore databases create --database my-store \'97location us-east1 --type datastore-mode\
 \
 \pard\pardeftab720\partightenfactor0
-\cf0 \cb1 \strokec6 gcloud firestore databases list
+\cf0 \cb1 gcloud firestore databases list
 \f1\fs26 \
 \
-\pard\pardeftab720\partightenfactor0
 
-\f0\fs48 \cf0 \strokec6 gcloud firestore databases update --database=my-store --delete-protection\
+\f0\fs48 gcloud firestore databases update --database=my-store --delete-protection\
 \
 At this point in, if you want to add data and query it, you will need to do it via the UI or one of the client libraries. }

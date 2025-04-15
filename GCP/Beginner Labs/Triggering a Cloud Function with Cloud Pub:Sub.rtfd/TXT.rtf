@@ -1,24 +1,24 @@
 {\rtf1\ansi\ansicpg1252\cocoartf2822
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;}
 {\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red24\green25\blue27;
-\red216\green164\blue255;\red216\green164\blue255;}
+\red216\green164\blue255;\red251\green0\blue98;}
 {\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c12549\c12941\c14118;
-\cssrgb\c88235\c71765\c100000;\cssrgb\c88235\c71765\c100000;}
+\cssrgb\c88235\c71765\c100000;\cssrgb\c100000\c8627\c45882;}
 \paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17060\viewkind0
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
 \f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec3 Basically, Cloud Functions can either be triggered directly via HTTP or indirectly via a cloud event. One of the most frequently used services for cloud events is Cloud Pub/Sub, Google Cloud\'92s platform-wide messaging service. Here, Cloud Functions becomes a direct subscriber to a specific Cloud Pub/Sub topic, which allows code to be run whenever a message is received on a specific topic. In this hands-on lab, we\'92ll walk through the entire experience, from setup to confirmation using both the console and the command line.\
+Basically, Cloud Functions can either be triggered directly via HTTP or indirectly via a cloud event. One of the most frequently used services for cloud events is Cloud Pub/Sub, Google Cloud\'92s platform-wide messaging service. Here, Cloud Functions becomes a direct subscriber to a specific Cloud Pub/Sub topic, which allows code to be run whenever a message is received on a specific topic. In this hands-on lab, we\'92ll walk through the entire experience, from setup to confirmation using both the console and the command line.\
 \
 \pard\pardeftab720\partightenfactor0
 \cf0 {{\NeXTGraphic Pasted Graphic.png \width34960 \height16480 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
-\pard\pardeftab720\partightenfactor0
+}¬}\pard\pardeftab720\partightenfactor0
 \cf0 \
+\
 1. Enable required APIs\
 \
-gcloud services enable pubsub.googleapis.com cloudfunctions.googleapis.com cloudbuild.googleapis.com \strokec4 eventarc.googleapis.com\strokec3 \
+gcloud services enable pubsub.googleapis.com cloudfunctions.googleapis.com cloudbuild.googleapis.com eventarc.googleapis.com run.googleapis.com\
 \
 2. Create pub/sub topic \
 \
@@ -26,10 +26,10 @@ gcloud pubsub topics create greetings\
 \
 3. Create a cloud function\
 \
-Create \cb2 \outl0\strokewidth0 main\cb2 \outl0\strokewidth0 \strokec3 .py and enter the below\
+Create main.py and enter the below\
 \
 \pard\pardeftab720\partightenfactor0
-\cf0 \strokec5 import base64 \
+\cf0 import base64 \
 \
 def greetings_pubsub(data, context): \
 	if 'data' in data: \
@@ -38,13 +38,10 @@ def greetings_pubsub(data, context): \
 		name = 'folks' \
 	print('Greetings \{\} from Linux Academy!'.format(name))\
 \
-\pard\pardeftab720\partightenfactor0
-\cf0 \cb2 \outl0\strokewidth0 gcloud functions deploy acg-pubsub-function --no-gen2 --region us-east1 --allow-unauthenticated --entry-point greetings_pubsub --runtime python310 --trigger-topic greetings\
+gcloud functions deploy acg-pubsub-function --region us-east1 --allow-unauthenticated --entry-point greetings_pubsub --runtime python310 --trigger-topic greetings --max-instances 1 --min-instances 1\
 \
-\pard\pardeftab720\partightenfactor0
-\cf0 gcloud functions add-iam-policy-binding acg-pubsub-function --region=us-east1 --member=allUsers --role=roles/cloudfunctions.invoker\
-\pard\pardeftab720\partightenfactor0
-\cf0 \
+gcloud functions add-iam-policy-binding acg-pubsub-function --region=us-east1 --member=allUsers --role=roles/cloudfunctions.invoker \'97> might not be needed\
+\
 4. Publish message to topic from console\
 \
 gcloud pubsub topics publish greetings --message=\'93everyone around the world\'94\
@@ -54,5 +51,11 @@ gcloud pubsub topics publish greetings --message=\'93everyone around the world\'
 Navigate to the cloud function and click on its name. Click logs and locate the most recent log to confirm function execution\
 \
 6. Trigger cloud function directly from command line\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb2 \outl0\strokewidth0 \strokec6 DATA=$(printf 'my friends' | base64) gcloud functions call acg-pubsub-function --data '\{"data":"'$DATA'"\}'\cb2 \outl0\strokewidth0 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+To read about the difference between gen1 and gen2 cloud functions navigate to https://cloud.google.com/functions/docs/concepts/overview\
 \
 }

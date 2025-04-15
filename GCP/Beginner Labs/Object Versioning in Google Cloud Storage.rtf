@@ -1,0 +1,54 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red199\green199\blue224;
+}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c81961\c82353\c90196;
+}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17060\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 In this hands-on lab, we will enable versioning in a Cloud Storage bucket that is already created for you. We will then experiment with archiving objects, converting archived objects to a live status, and working with managing multiple versions of the same file.\
+\
+1. Enable versioning\
+\
+gsutil ls \
+\
+gsutil versioning get gs://$DEVSHELL_PROJECT_ID-versioning-lab\
+\
+gsutil versioning set on gs://$DEVSHELL_PROJECT_ID-versioning-lab\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb2 \outl0\strokewidth0 gsutil versioning get gs://$DEVSHELL_PROJECT_ID-versioning-lab\cb2 \outl0\strokewidth0 \strokec3 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+2. Promote an archived object to live status\
+\
+touch emptyfile\
+\
+gsutil cp emptyfile gs://$DEVSHELL_PROJECT_ID-versioning-lab\
+\
+gsutil rm gs://\cb2 \outl0\strokewidth0 $DEVSHELL_PROJECT_ID-versioning-lab/emptyfile\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 gsutil ls gs://$DEVSHELL_PROJECT_ID-versioning-lab\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 gsutil ls -a gs://$DEVSHELL_PROJECT_ID-versioning-lab\
+\
+gsutil mv gs://(PROJECT-ID)-versioning-lab/emptyfile#(GENERATION_NUMBER) gs://(PROJECT-ID)-versioning-lab/emptyfile\
+\
+gsutil ls gs://$DEVSHELL_PROJECT_ID-versioning-lab\
+\
+gsutil ls -a gs://$DEVSHELL_PROJECT_ID-versioning-lab\cb2 \outl0\strokewidth0 \strokec3 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+3. Manage multiple object versions\
+\
+vim file.txt (proceed to add version 1 in the file)\
+\
+gsutil cp file.txt gs://$DEVSHELL_PROJECT_ID-versioning-lab\
+\
+gsutil ls -a gs://$DEVSHELL_PROJECT_ID-versioning-lab\
+}
