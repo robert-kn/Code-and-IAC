@@ -1,0 +1,736 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\froman\fcharset0 Times-Roman;\f2\fswiss\fcharset0 Helvetica-Bold;
+\f3\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red24\green25\blue27;\red255\green255\blue255;\red0\green0\blue0;
+\red23\green90\blue226;}
+{\*\expandedcolortbl;;\cssrgb\c12549\c12941\c14118;\cssrgb\c100000\c100000\c100000;\cssrgb\c0\c0\c0;
+\cssrgb\c10196\c45098\c90980;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid101\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid201\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}
+{\list\listtemplateid4\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid301\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid4}
+{\list\listtemplateid5\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid401\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid5}
+{\list\listtemplateid6\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid501\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid6}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}{\listoverride\listid5\listoverridecount0\ls5}{\listoverride\listid6\listoverridecount0\ls6}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17060\viewkind0
+\deftab720
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0\fs48 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 1.\'a0Introduction\'a0\
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 A Private Service Connect interface is a resource that lets a producer Virtual Private Cloud (VPC) network initiate connections to various destinations in a consumer VPC network. Producer and consumer networks can be in different projects and organizations.\
+If a network attachment accepts a connection from a Private Service Connect interface, Google Cloud allocates the interface an IP address from a consumer subnet that's specified by the network attachment. The consumer and producer networks are connected and can communicate by using internal IP addresses.\
+A connection between a network attachment and a Private Service Connect interface is similar to the connection between a Private Service Connect endpoint and a service attachment, but it has two key differences:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls1\ilvl0\cf2 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 A network attachment lets a producer network initiate connections to a consumer network (managed service egress), while an endpoint lets a consumer network initiate connections to a producer network (managed service ingress).\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 A Private Service Connect interface connection is transitive. This means that a producer network can communicate wit\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 h other networks that are connected to the consumer network.\cb1 \
+\pard\pardeftab720\sa480\partightenfactor0
+
+\fs48 \cf2 \cb3 \
+What you'll build\
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 In this tutorial, you're going to build a comprehensive Private Service Connect (PSC) Interface architecture that utilises Cloud Firewall rules to allow and deny connectivity from the producer to the consumer's compute as illustrated in Figure 1.\
+Figure 1\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf0 \cb1 \strokec4 {{\NeXTGraphic d39bf35e55bdf9e6.png \width37000 \height19000 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\
+\
+\
+\pard\pardeftab720\sa320\partightenfactor0
+
+\f0\fs32 \cf2 \cb3 \strokec2 You'll create a single psc-network-attachment in the consumer VPC resulting in the following use cases:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls2\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	1	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Create a Cloud Firewall rule to allow access from bear to lion\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	2	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Create a Cloud Firewall rule deny access from bear to tiger\cb1 \
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	3	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Create a Cloud Firewall rule to allow access from cosmo to bear\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\cf2 \
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f2\b\fs48 \cf2 \cb3 \strokec2 What you'll learn
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls3\ilvl0
+\fs32 \cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 How to create a network attachment\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 How a producer can use a network attachment to create a PSC interface\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 How to establish communication from the producer to the consumer\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 How to allow access from the producer VM (bear) to the consumer VM (lion)\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 How to block access from the producer VM (bear) to the consumer VM (tiger)\cb1 \
+\ls3\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 How to allow access from the consumer VM (cosmo) to the producer VM (bear)\
+\pard\tx720\pardeftab720\sa240\partightenfactor0
+\cf2 \cb1 \
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f2\b\fs48 \cf2 \cb3 What you'll need
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls4\ilvl0
+\fs32 \cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Google Cloud Project\cb1 \
+\ls4\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 IAM Permissions\cb1 \
+\ls4\ilvl0\cf5 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/iam/docs/understanding-roles#compute.networkAdmin"}}{\fldrslt \expnd0\expndtw0\kerning0
+\ul \outl0\strokewidth0 \strokec5 Compute Network Admin\'a0}}\cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 (roles/compute.networkAdmin)\cb1 \
+\ls4\ilvl0\cf5 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/iam/docs/understanding-roles#compute.instanceAdmin"}}{\fldrslt \expnd0\expndtw0\kerning0
+\ul \outl0\strokewidth0 \strokec5 Compute Instance Admin\'a0}}\cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 (roles/compute.instanceAdmin)\cb1 \
+\ls4\ilvl0\cf5 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/iam/docs/understanding-roles#compute.securityAdmin"}}{\fldrslt \expnd0\expndtw0\kerning0
+\ul \outl0\strokewidth0 \strokec5 Compute Security Admin}}\cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 \'a0(roles/compute.securityAdmin)\cb1 \
+\pard\tx720\pardeftab720\sa240\partightenfactor0
+\cf2 \strokec2 \
+The lab is completed using both gcloud commands and terraform. The terraform code can be found here:\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\fs48 \cf2 \cb3 \strokec2 2.\'a0Before you begin\
+\pard\pardeftab720\partightenfactor0
+
+\f1 \cf0 \cb1 \strokec4 gcloud config list project\
+gcloud config set project [YOUR-PROJECT-NAME]\
+projectid=YOUR-PROJECT-NAME\
+echo $projectid\
+
+\f0\fs32 \cf2 \strokec2 \
+\pard\pardeftab720\sa480\partightenfactor0
+
+\fs48 \cf2 \cb3 \strokec2 3.\'a0Consumer Setup\'a0\
+
+\f2\b \cf2 \cb3 \strokec2 Create the Consumer VPC
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+
+\f1 \cf0 \cb1 \strokec4 gcloud compute networks create consumer-vpc --project=$projectid --subnet-mode=custom\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f2\b \cf2 \cb3 \strokec2 Create the consumer subnets
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf0 \cb1 \strokec4 gcloud compute networks subnets create lion-subnet-1 --project=$projectid --range=192.168.20.0/28 --network=consumer-vpc --region=us-central1\
+\
+gcloud compute networks subnets create tiger-subnet-1 --project=$projectid --range=192.168.30.0/28 --network=consumer-vpc --region=us-central1\
+\
+gcloud compute networks subnets create cosmo-subnet-1 --project=$projectid --range=192.168.40.0/28 --network=consumer-vpc --region=us-central1\
+
+\fs24 \
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f2\b\fs48 \cf2 \cb3 \strokec2 Create the Private Service Connect Network Attachment subnet
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf0 \cb1 \strokec4 gcloud compute networks subnets create intf-subnet --project=$projectid --range=192.168.10.0/28 --network=consumer-vpc --region=us-central1\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0 \cf2 \cb3 \strokec2 Cloud Router and NAT configuration\
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 Cloud NAT is used in the tutorial for software package installation because the VM instance does not have a public IP address. Cloud NAT enables VMs with private IP addresses to access the internet.\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs48 \cf0 \cb1 \strokec4 gcloud compute routers create cloud-router-for-nat --network consumer-vpc --region us-central1
+\fs24 \
+\
+\
+\
+
+\fs48 gcloud compute routers nats create cloud-nat-us-central1 --router=cloud-router-for-nat --auto-allocate-nat-external-ips --nat-all-subnet-ip-ranges --region us-central1
+\fs24 \
+\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0\fs48 \cf2 \cb3 \strokec2 4.\'a0Enable IAP\'a0\
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 To allow IAP to connect to your VM instances, create a firewall rule that:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls5\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Applies to all VM instances that you want to be accessible by using IAP.\cb1 \
+\ls5\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Allows ingress traffic from the IP range 35.235.240.0/20. This range contains all IP addresses that IAP uses for TCP forwarding.\cb1 \
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs24 \cf0 \strokec4 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \strokec4 gcloud compute firewall-rules create ssh-iap-consumer \\\
+    --network consumer-vpc \\\
+    --allow tcp:22 \\\
+    --source-ranges=35.235.240.0/20\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0 \cf2 \cb3 \strokec2 5.\'a0Create consumer VM instances\'a0\
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf0 \cb1 \strokec4 gcloud compute instances create lion 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --project=$projectid 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --machine-type=e2-micro 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --image-family debian-11 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --no-address 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --image-project debian-cloud 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --zone us-central1-a 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --subnet=lion-subnet-1 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --metadata startup-script="#! /bin/bash
+\f1 \strokec4 \
+
+\f3 \strokec4       sudo apt-get update
+\f1 \strokec4 \
+
+\f3 \strokec4       sudo apt-get install tcpdump
+\f1 \strokec4 \
+
+\f3 \strokec4       sudo apt-get install apache2 -y
+\f1 \strokec4 \
+
+\f3 \strokec4       sudo service apache2 restart
+\f1 \strokec4 \
+
+\f3 \strokec4       echo 'Welcome to the lion app server !!' | tee /var/www/html/index.html
+\f1 \strokec4 \
+
+\f3 \strokec4       EOF"\
+\
+\
+\
+gcloud compute instances create tiger 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --project=$projectid 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --machine-type=e2-micro 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --image-family debian-11 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --no-address 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --image-project debian-cloud 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --zone us-central1-a 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --subnet=tiger-subnet-1 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --metadata startup-script="#! /bin/bash
+\f1 \strokec4 \
+
+\f3 \strokec4       sudo apt-get update
+\f1 \strokec4 \
+
+\f3 \strokec4       sudo apt-get install tcpdump
+\f1 \strokec4 \
+
+\f3 \strokec4       sudo apt-get install apache2 -y
+\f1 \strokec4 \
+
+\f3 \strokec4       sudo service apache2 restart
+\f1 \strokec4 \
+
+\f3 \strokec4       echo 'Welcome to the tiger app server !!' | tee /var/www/html/index.html
+\f1 \strokec4 \
+
+\f3 \strokec4       EOF"\
+\
+\
+gcloud compute instances create cosmo 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --project=$projectid 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --machine-type=e2-micro 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --image-family debian-11 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --no-address 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --image-project debian-cloud 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --zone us-central1-a 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --subnet=cosmo-subnet-1 
+\f1 \strokec4 \\\
+
+\f3 \strokec4     --metadata startup-script="#! /bin/bash
+\f1 \strokec4 \
+
+\f3 \strokec4       sudo apt-get update
+\f1 \strokec4 \
+
+\f3 \strokec4       sudo apt-get install tcpdump
+\f1 \strokec4 \
+
+\f3 \strokec4       sudo apt-get install apache2 -y
+\f1 \strokec4 \
+
+\f3 \strokec4       sudo service apache2 restart
+\f1 \strokec4 \
+
+\f3 \strokec4       echo 'Welcome to the cosmo app server !!' | tee /var/www/html/index.html
+\f1 \strokec4 \
+
+\f3 \strokec4       EOF"\
+
+\fs24 \
+\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 \cb3 \strokec2 Obtain and store the IP Addresses of the instances:\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \cb1 \strokec4 gcloud compute instances describe lion --zone=us-central1-a | grep  networkIP:\
+\
+gcloud compute instances describe tiger --zone=us-central1-a | grep  networkIP:\
+\
+gcloud compute instances describe cosmo --zone=us-central1-a | grep  networkIP:
+\f3\fs24 \strokec4 \
+\
+\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0\fs48 \cf2 \cb3 \strokec2 6.\'a0Private Service Connect network attachment\'a0\
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 Network attachments are regional resources that represent the consumer side of a Private Service Connect interface. You associate a single subnet with a network attachment, and the producer assigns IPs to the Private Service Connect interface from that subnet. The subnet must be in the same region as the network attachment. A network attachment must be in the same region as the producer service.\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\fs48 \cf2 Create the network attachment\
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf0 \cb1 \strokec4 gcloud compute network-attachments create psc-network-attachment \\
+\f1 \strokec4 \
+
+\f3 \strokec4     --region=us-central1 \\
+\f1 \strokec4 \
+
+\f3 \strokec4     --connection-preference=ACCEPT_MANUAL \\
+\f1 \strokec4 \
+
+\f3 \strokec4     --producer-accept-list=$projectid \\
+\f1 \strokec4 \
+
+\f3 \strokec4     --subnets=intf-subnet
+\fs24 \
+\
+\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f2\b\fs48 \cf2 \cb3 \strokec2 List the network attachments
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+
+\f1 \cf0 \cb1 \strokec4 gcloud compute network-attachments list
+\f3\fs24 \strokec4 \
+\
+\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f2\b\fs48 \cf2 \cb3 \strokec2 Describe the network attachments
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf0 \cb1 \strokec4 gcloud compute network-attachments describe psc-network-attachment --region=us-central1
+\fs24 \
+\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 \cb3 \strokec2 Make note of the psc-network-attachment URI that will be used by the producer when creating the Private Service Connect Interface. Example below:\
+\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs48 \cf0 \cb1 \strokec4 user@cloudshell$ gcloud compute network-attachments describe psc-network-attachment --region=us-central1 
+\f1 \strokec4 \
+
+\f3 \strokec4 connectionPreference: ACCEPT_MANUAL
+\f1 \strokec4 \
+
+\f3 \strokec4 creationTimestamp: '2023-06-06T20:57:12.623-07:00'
+\f1 \strokec4 \
+
+\f3 \strokec4 fingerprint: 4Yq6xAfaRO0=
+\f1 \strokec4 \
+
+\f3 \strokec4 id: '3235195049527328503'
+\f1 \strokec4 \
+
+\f3 \strokec4 kind: compute#networkAttachment
+\f1 \strokec4 \
+
+\f3 \strokec4 name: psc-network-attachment
+\f1 \strokec4 \
+
+\f3 \strokec4 network: https://www.googleapis.com/compute/v1/projects/$projectid/global/networks/consumer-vpc
+\f1 \strokec4 \
+
+\f3 \strokec4 producerAcceptLists:
+\f1 \strokec4 \
+
+\f3 \strokec4 - $projectid
+\f1 \strokec4 \
+
+\f3 \strokec4 region: https://www.googleapis.com/compute/v1/projects/$projectid/regions/us-central1
+\f1 \strokec4 \
+
+\f3 \strokec4 selfLink: https://www.googleapis.com/compute/v1/projects/$projectid/regions/us-central1/networkAttachments/psc-network-attachment
+\f1 \strokec4 \
+
+\f3 \strokec4 subnetworks:
+\f1 \strokec4 \
+
+\f3 \strokec4 - https://www.googleapis.com/compute/v1/projects/$projectid/regions/us-central1/subnetworks/intf-subnet\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0 \cf2 \cb3 \strokec2 7.\'a0Producer Setup\'a0\
+
+\f2\b \cf2 \cb3 \strokec2 Create the producer VPC network
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+
+\f1 \cf0 \cb1 \strokec4 gcloud compute networks create producer-vpc --project=$projectid --subnet-mode=custom\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f2\b \cf2 \cb3 \strokec2 Create the producer subnets
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf0 \cb1 \strokec4 gcloud compute networks subnets create prod-subnet --project=$projectid --range=10.20.1.0/28 --network=producer-vpc --region=us-central1\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0 \cf2 \cb3 \strokec2 8.\'a0Enable IAP\'a0\
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 To allow IAP to connect to your VM instances, create a firewall rule that:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls6\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Applies to all VM instances that you want to be accessible by using IAP.\cb1 \
+\ls6\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Allows ingress traffic from the IP range 35.235.240.0/20. This range contains all IP addresses that IAP uses for TCP forwarding.\cb1 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \strokec4 gcloud compute firewall-rules create ssh-iap-producer \\\
+    --network producer-vpc \\\
+    --allow tcp:22 \\\
+    --source-ranges=35.235.240.0/20\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0 \cf2 \cb3 \strokec2 9.\'a0Create the Private Service Connect Interface\'a0\
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 A Private Service Connect interface is a resource that lets a producer Virtual Private Cloud (VPC) network initiate connections to various destinations in a consumer VPC network. Producer and consumer networks can be in different projects and organizations.\
+If a network attachment accepts a connection from a Private Service Connect interface, Google Cloud allocates the interface an IP address from a consumer subnet that's specified by the network attachment. The consumer and producer networks are connected and can communicate by using internal IP addresses.\
+Inside Cloud Shell, create the Private Service Connect interface (bear) and insert the previously identified\'a0
+\f2\b \cf2 \cb3 \strokec2 psc-network-attachment UR
+\f0\b0 \cf2 \cb3 \strokec2 I from the network attachment describe output.\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs48 \cf0 \cb1 \strokec4 gcloud compute instances create bear --zone us-central1-a --machine-type=f1-micro --can-ip-forward --network-interface subnet=prod-subnet,network=producer-vpc,no-address --network-interface network-attachment=https://www.googleapis.com/compute/v1/projects/$projectid/regions/us-central1/networkAttachments/psc-network-attachment\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f2\b \cf2 \cb3 \strokec2 Multi-nic validation
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 Validate the PSC interface is configured with the appropriate IP Address. vNIC0 will use the producer prod-subnet (10.20.1.0/28) and vNIC1 will use the consumer intf-subnet (192.168.10.0/28).\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \cb1 \strokec4 gcloud compute instances describe bear --zone=us-central1-a | grep networkIP:\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0 \cf2 \cb3 \strokec2 10.\'a0Update consumer firewall rules\'a0\
+
+\f2\b \cf2 \cb3 \strokec2 Create a Cloud Firewall rule to allow access from bear to lion
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+
+\fs32 \cf2 \cb3 \strokec2 create a higher priority rule that allows egress from the IP address range of attachment-subnet (intf-subnet) to destinations in the address range of lion-subnet-1.\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \cb1 \strokec4 gcloud compute firewall-rules create allow-limited-egress-to-lion \\\
+    --network=consumer-vpc \\\
+    --action=ALLOW \\\
+    --rules=ALL \\\
+    --direction=EGRESS \\\
+    --priority=1000 \\\
+    --source-ranges="192.168.10.0/28" \\\
+    --destination-ranges="192.168.20.0/28" \\\
+    --enable-logging
+\f3 \strokec4 \
+
+\f0\fs32 \cf2 \strokec2 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 \cb3 \strokec2 create an ingress allow rule that overrides the implied deny ingress rule for traffic from psc-network-attachment subnet.\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \cb1 \strokec4 gcloud compute firewall-rules create allow-ingress \\\
+--network=consumer-vpc \\\
+--action=ALLOW \\\
+--rules=ALL \\\
+--direction=INGRESS \\\
+--priority=1000 \\\
+--source-ranges="192.168.10.0/28" \\\
+--enable-logging\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f2\b \cf2 \cb3 \strokec2 Create a Cloud Firewall rule deny access from bear to all ranges (tiger included)
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+
+\fs32 \cf2 \cb3 \strokec2 create a low-priority rule that denies all egress traffic from the IP address range of the network attachment's subnet, intf-subnet.\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \cb1 \strokec4 gcloud compute firewall-rules create deny-all-egress \\\
+    --network=consumer-vpc \\\
+    --action=DENY \\\
+    --rules=ALL \\\
+    --direction=EGRESS \\\
+    --priority=65534 \\\
+    --source-ranges="192.168.10.0/28" \\\
+    --destination-ranges="0.0.0.0/0" \\\
+    --enable-logging
+\f0 \cf2 \strokec2 \
+\
+\pard\pardeftab720\partightenfactor0
+
+\f2\b\fs32 \cf2 \cb3 \strokec2 Create a Cloud Firewall rule to allow access from cosmo to bear\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0 \cf2 \cb3 \strokec2 create an ingress allow rule that overrides the implied deny ingress rule for traffic from psc-network-attachment subnet.\
+\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \cb1 \strokec4 gcloud compute firewall-rules create vm-subnet-allow-ingress \\\
+    --network=consumer-vpc \\\
+    --action=ALLOW \\\
+    --rules=ALL \\\
+    --direction=INGRESS \\\
+    --priority=1000 \\\
+    --source-ranges="192.168.40.0/28" \\\
+    --destination-ranges="192.168.10.0/28" \\\
+    --enable-logging\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0 \cf2 \cb3 \strokec2 11.\'a0Create linux routes for the PSC interface\'a0\
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 From the PSC interface instance, configure linux routes to allow producer communication to the consumer subnets.\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f2\b\fs48 \cf2 \cb3 \strokec2 Find the guest OS name of your Private Service Connect interface
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 To configure routing, you need to know the guest OS name of your Private Service Connect interface, which is different than the interface's name in Google Cloud.\
+\pard\pardeftab720\partightenfactor0
+\cf2 \cb3 \strokec2 Log into the psc-interface vm, bear, using IAP in Cloud Shell.\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \cb1 \strokec4 gcloud compute ssh bear --project=$projectid --zone=us-central1-a --tunnel-through-iap\
+\
+Once logged into the instance, obtain the Nic addresses of the instances using the following command\
+\
+ip a\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f2\b \cf2 \cb3 \strokec2 Find the gateway IP of your PSC interface
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 In the list of network interfaces, find and store the interface name that is associated with your Private Service Connect interface's IP address\'97for example, ens5 (vNIC1)\
+To configure routing, you need to know the IP address of your Private Service Connect interface's default gateway\
+\pard\pardeftab720\partightenfactor0
+\cf2 \cb3 \strokec2 we will use\'a0
+\f2\b \cf2 \cb3 \strokec2 1
+\f0\b0 \cf2 \cb3 \strokec2 \'a0since the PSC interface is associated with vNIC1.\
+\
+\pard\pardeftab720\sa320\partightenfactor0
+
+\f1\fs48 \cf0 \cb1 \strokec4 curl http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/1/gateway -H "Metadata-Flavor: Google" && echo\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f2\b \cf2 \cb3 \strokec2 Add routes for consumer subnets
+\f0\b0 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 You must add a route to your Private Service Connect interface's default gateway for each consumer subnet that connects to your Private Service Connect interface. This ensures that traffic that is bound for the consumer network egresses from the Private Service Connect interface.\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \cb1 \strokec4 sudo ip route add 192.168.20.0/28 via 192.168.10.1 dev ens5\
+sudo ip route add 192.168.30.0/28 via 192.168.10.1 dev ens5\
+sudo ip route add 192.168.40.0/28 via 192.168.10.1 dev ens5\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0 \cf2 \cb3 \strokec2 Validate route table\
+\pard\pardeftab720\partightenfactor0
+
+\f1 \cf0 \cb1 \strokec4 ip route show
+\f0\fs32 \cf2 \cb3 \strokec2 \
+\pard\pardeftab720\sa320\partightenfactor0
+\cf2 \cb3 \strokec2 \
+\pard\pardeftab720\sa480\partightenfactor0
+
+\fs48 \cf2 12.\'a0Validate successful bear to lion connectivity\'a0\
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 Let's confirm that the producer VM instance, bear, can communicate with the consumer instance, lion by performing a curl.\
+\pard\pardeftab720\partightenfactor0
+\cf2 \cb3 \strokec2 From the bear instance, perform a curl against lion's IP Address identified earlier in the tutorial from the bear instance.\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \cb1 \strokec4 curl -v <lions IP Address>\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0 \cf2 \cb3 \strokec2 13.\'a0Validate bear to tiger connectivity is blocked\'a0\
+\pard\pardeftab720\partightenfactor0
+
+\fs32 \cf2 \cb3 \strokec2 From the bear instance, perform a curl against tiger's IP Address identified earlier in the tutorial from the bear instance. The curl will eventually time out.\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \cb1 \outl0\strokewidth0 curl -v <tiger\'92s IP Address>
+\f0\fs32 \cf2 \cb3 \outl0\strokewidth0 \strokec2 \
+\pard\pardeftab720\sa320\partightenfactor0
+\cf2 \cb3 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \cb3 \strokec2 confirm the egress firewall rule is blocking access from bear to tiger by viewing firewall logs.\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\fs48 \cf2 \cb3 \strokec2 14.\'a0Validate cosmo to bear connectivity is successful\'a0\
+\pard\pardeftab720\partightenfactor0
+
+\f1 \cf0 \cb1 \strokec4 gcloud compute ssh cosmo --project=$projectid --zone=us-central1-a --tunnel-through-iap
+\fs24 \
+\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 \cb3 \strokec2 In the Shell perform a ping against bear's IP vNIV1 IP Address identified earlier in the tutorial\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs48 \cf0 \cb1 \strokec4 ping <bears vNIC1 IP Address>\
+\
+\pard\pardeftab720\sa480\partightenfactor0
+
+\f0 \cf2 \cb3 \strokec2 15.\'a0Clean up\'a0\
+\pard\pardeftab720\sa320\partightenfactor0
+
+\fs32 \cf2 From Cloud Shell, delete tutorial components.\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs48 \cf0 \cb1 \strokec4 gcloud compute instances delete bear --zone=us-central1-a --quiet
+\f1 \strokec4 \
+\
+
+\f3 \strokec4 gcloud compute instances delete lion --zone=us-central1-a --quiet
+\f1 \strokec4 \
+\
+
+\f3 \strokec4 gcloud compute instances delete tiger --zone=us-central1-a --quiet
+\f1 \strokec4 \
+\
+
+\f3 \strokec4 gcloud compute instances delete cosmo --zone=us-central1-a --quiet
+\f1 \strokec4 \
+\
+
+\f3 \strokec4 gcloud compute network-attachments delete psc-network-attachment --region=us-central1 --quiet
+\f1 \strokec4 \
+\
+
+\f3 \strokec4 gcloud compute firewall-rules delete allow-ingress allow-limited-egress-to-lion deny-all-egress ssh-iap-consumer ssh-iap-producer vm-subnet-allow-ingress --quiet
+\f1 \strokec4 \
+\
+
+\f3 \strokec4 gcloud compute networks subnets delete cosmo-subnet-1 intf-subnet lion-subnet-1 prod-subnet tiger-subnet-1 --region=us-central1 --quiet
+\f1 \strokec4 \
+\
+
+\f3 \strokec4 gcloud compute routers delete cloud-router-for-nat --region=us-central1 --quiet 
+\f1 \strokec4 \
+\
+
+\f3 \strokec4 gcloud compute networks delete consumer-vpc --quiet
+\f1 \strokec4 \
+\
+
+\f3 \strokec4 gcloud compute networks delete producer-vpc --quiet
+\f0\fs32 \cf2 \cb3 \strokec2 \
+}
