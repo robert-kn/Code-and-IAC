@@ -1,0 +1,132 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 .AppleSystemUIFontMonospaced-Regular;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17060\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Learning how to configure complex environments with Terraform is a must-have skill. In this hands-on lab, we will provision an autoscaling group with a load balancer.\
+\
+Assumes that a GCE instance has been deployed in a zone with terraform installed\
+\
+1. Create a service account \
+\
+gcloud iam service-accounts create my-svc --display-name my-service \
+\
+gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID --member serviceAccount:[SERVICE-ACCOUNT] --role roles/owner\
+\
+2. Login to the host instance and ensure terraform is installed\
+\
+Use root privileges - sudo -i\
+\
+Change to the root directory - cd /\
+\
+Input the path to communicate with terraform into the /etc/profile file using the following command\
+\
+echo "PATH='$PATH:/downloads/'" >> /etc/profile\
+\
+Run the following command to make the changes permanent in this session\
+\
+source /etc/profile\
+\
+3. Create a service account key within the instance\
+\
+gcloud iam service-accounts keys create /downloads/auto-scaling.json --iam-account [SA]\
+\
+4. Create the configuration file in main.tf (sed -i 's/<PROJECT_NAME>/using-terraf-159-4b5794cc/g' main.tf)\
+\
+provider "google" \{\
+  version = "3.20.0"\
+\
+  credentials = file("/downloads/auto-scaling.json")\
+\
+  project = "using-terraf-159-4b5794cc"\
+  region  = "us-central1"\
+  zone    = "us-central1-c"\
+\}\
+\
+resource "google_compute_network" "vpc_network" \{\
+  name = "new-terraform-network"\
+\}\
+resource "google_compute_autoscaler" "foobar" \{\
+  name   = "my-autoscaler"\
+  project = "using-terraf-159-4b5794cc"\
+  zone   = "us-central1-c"\
+  target = google_compute_instance_group_manager.foobar.self_link\
+\
+  autoscaling_policy \{\
+    max_replicas    = 5\
+    min_replicas    = 2\
+    cooldown_period = 60\
+\
+    cpu_utilization \{\
+      target = 0.5\
+    \}\
+  \}\
+\}\
+\
+resource "google_compute_instance_template" "foobar" \{\
+  name           = "my-instance-template"\
+  machine_type   = "n1-standard-1"\
+  can_ip_forward = false\
+  project = "using-terraf-159-4b5794cc"\
+  tags = ["foo", "bar", "allow-lb-service"]\
+\
+  disk \{\
+    source_image = data.google_compute_image.centos_9.self_link\
+  \}\
+\
+  network_interface \{\
+    network = google_compute_network.vpc_network.name\
+  \}\
+\
+  metadata = \{\
+    foo = "bar"\
+  \}\
+\
+  service_account \{\
+    scopes = ["userinfo-email", "compute-ro", "storage-ro"]\
+  \}\
+\}\
+\
+resource "google_compute_target_pool" "foobar" \{\
+  name = "my-target-pool"\
+  project = "using-terraf-159-4b5794cc"\
+  region = "us-central1"\
+\}\
+\
+resource "google_compute_instance_group_manager" "foobar" \{\
+  name = "my-igm"\
+  zone = "us-central1-c"\
+  project = "using-terraf-159-4b5794cc"\
+  version \{\
+    instance_template  = google_compute_instance_template.foobar.self_link\
+    name               = "primary"\
+  \}\
+\
+  target_pools       = [google_compute_target_pool.foobar.self_link]\
+  base_instance_name = "terraform"\
+\}\
+\
+data "google_compute_image" "centos_9" \{\
+  family  = "centos-stream-9"\
+  project = "centos-cloud"\
+\}\
+\
+module "lb" \{\
+  source  = "GoogleCloudPlatform/lb/google"\
+  version = "2.2.0"\
+  region       = "us-central1"\
+  name         = "load-balancer"\
+  service_port = 80\
+  target_tags  = ["my-target-pool"]\
+  network      = google_compute_network.vpc_network.name\
+\}\
+\
+5. Deploy the configuration file\
+\
+terraform init\
+\
+terraform apply \'97auto-approve}
