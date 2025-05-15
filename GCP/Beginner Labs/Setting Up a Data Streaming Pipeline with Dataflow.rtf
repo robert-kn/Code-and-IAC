@@ -1,0 +1,71 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 CourierNewPSMT;\f1\fnil\fcharset0 .SFNS-Regular_wdth_opsz110000_GRAD_wght1F40000;\f2\fmodern\fcharset0 Courier;
+}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red199\green199\blue224;\red21\green18\blue39;
+\red251\green0\blue98;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgray\c100000;\cssrgb\c81961\c82353\c90196;\cssrgb\c10588\c9412\c20392;
+\cssrgb\c100000\c8627\c45882;\cssrgb\c100000\c100000\c100000;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww33100\viewh17000\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 One of the primary benefits of Dataflow is that it can handle both streaming and batch data processing in a serverless, fast, and cost-effective manner. In this hands-on lab, you\'92ll establish the necessary infrastructure \'97 including a Cloud Storage bucket, a Pub/Sub topic, and a BiqQuery dataset \'97 to execute a Dataflow template on real-time streaming data from New York City\'92s ever-busy taxi service.\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 Your company has a new client, New York City. You have been tasked with the responsibility of establishing a way to analyze ongoing data from the city\'92s taxi cabs. You decide to use a Dataflow template to stream the data into a Pub/Sub topic and output, properly formatted, to a BigQuery dataset.\
+\
+Use the following schema for your BigQuery dataset table:
+\f1\fs32 \cf3 \cb4 \strokec3 \
+\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \strokec5 ride_id:string,point_idx:integer,latitude:float,longitude:float,timestamp:timestamp,meter_reading:float,meter_increment:float,ride_status:string,passenger_count:integer\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \strokec3 In the dataset template, set the Pub/Sub topic to:\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \strokec5 projects/pubsub-public-data/topics/taxirides-realtime\strokec3 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+1. Enable the necessary APIs\
+\
+gcloud services enable dataflow.googleapis.com storage.googleapis.com bigquery.googleapis.com pubsub.googleapis.com cloudresourcemanager.googleapis.com\
+\
+2. Create a storage bucket\
+\
+gsutil mb gs://$DEVSHELL_PROJECT_ID\
+\
+3. Create a dataset and table\
+\
+gcloud alpha bq datasets create my_dataset\
+\
+Save the following schema in a file named schema\
+\
+[\{"name":"ride_id", "type":"string"\},\
+\{"name":"point_idx", "type":"integer"\},\
+\{"name":"latitude", "type":"float"\},\
+\{"name":"longitude", "type":"float"\},\
+\{"name":"timestamp", "type":"timestamp"\},\
+\{"name":"meter_reading", "type":"float"\},\
+\{"name":"meter_increment", "type":"float"\},\
+\{"name":"ride_status", "type":"string"\},\
+\{"name":"passenger_count", "type":"integer"\}]\
+\
+bq mk --schema=./schema --table my_dataset.my_table\
+\
+\
+4. Run a pub/sub to bigQuery dataflow job\
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb6 \strokec7 gcloud dataflow jobs run taxirides --gcs-location gs://dataflow-templates-us-east1/latest/PubSub_Subscription_to_BigQuery --region us-east1 --max-workers 2 --num-workers 2 --worker-machine-type n1-standard-1 --staging-location gs://setting-up-a-286-889a9264/tmp --additional-experiments streaming_mode_exactly_once --parameters outputTableSpec=setting-up-a-286-889a9264:my_dataset.my_table,inputSubscription=projects/setting-up-a-286-889a9264/subscriptions/my_topic,javascriptTextTransformReloadIntervalMinutes=0
+\f2\fs26 \cb1 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs48 \cf0 \cb2 \strokec3 \
+\
+5. Query the resulting dataset\
+\
+\pard\pardeftab720\partightenfactor0
+\cf7 \strokec5 SELECT * FROM `setting-up-a-YOURPROJECT.taxirides.realtime` WHERE `timestamp` > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY) LIMIT 1000}
