@@ -29,6 +29,10 @@
 #define CLOSESOCKET(s) closesocket(s) 
 #define GETSOCKETERRNO() (WSAGetLastError())
 
+#if !defined(IPV6_V6ONLY)
+#define IPV6_V6ONLY 27
+#endif
+
 #else
 #define ISVALIDSOCKET(s) ((s) >= 0) 
 #define CLOSESOCKET(s) close(s)
@@ -90,7 +94,7 @@ int main()
     printf("Configuring local address...\n");
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_INET;
+    hints.ai_family = AF_INET6;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
     struct addrinfo *bind_address;
@@ -120,6 +124,14 @@ macro is used to retrieve the error number in a cross-platform way. */
     {
         fprintf(stderr, "socket() failed. (%d)\n", GETSOCKETERRNO());
         exit(EXIT_FAILURE);
+    }
+
+    int option = 0;
+
+    if (setsockopt(socket_listen, IPPROTO_IPV6, IPV6_V6ONLY, (void*)&option, sizeof(option)))
+    {
+        fprintf(stderr, "setsockopt() failed. (%d)\n", GETSOCKETERRNO());
+        return 1;
     }
 
 /**
