@@ -131,7 +131,7 @@ macro is used to retrieve the error number in a cross-platform way. */
     if (setsockopt(socket_listen, IPPROTO_IPV6, IPV6_V6ONLY, (void*)&option, sizeof(option)))
     {
         fprintf(stderr, "setsockopt() failed. (%d)\n", GETSOCKETERRNO());
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
 /**
