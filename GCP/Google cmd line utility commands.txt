@@ -2,6 +2,18 @@ for i in {1..15};do curl -s -w "%{time_total}\n" -o /dev/null http://(your-front
 
     for i in {1..15};do curl -s -w "%{time_total}\n" -o /dev/null http://(your-frontend-ip)/page-2.html; done
 
+gsutil rsync -r [DIRECTORY] gs://[BUCKET_NAME] --> sync a local directory to a bucket
+
+gsutil versioning get gs://[BUCKET_NAME] --> verify whether versioning is enabled
+
+gsutil versioning set on gs://[BUCKET_NAME]
+
+gsutil lifecycle get gs://[BUCKET_NAME]
+
+gsutil rewrite -k gs://[BUCKET_NAME]/[file you want to target] --> rewrite a file using a new key 
+
+gsutil lifecycle set [json file with lifecycle policies] gs://[BUCKET_NAME]
+
 gsutil -m cp -r [FILE/FOLDER] gs://[BUCKET-NAME]   --> UPLOADS FILES TO BUCKET
 
 gsutil iam ch user:[USER-EMAIL]:[ROLE1, ROLE2] gs://[BUCKET-NAME]   --> ASSIGN IAM ROLE TO BUCKET
