@@ -91,7 +91,7 @@ int main()
                 } 
             }//if FD_ISSET
         } //for i to max_socket
-    } //while(1)
+    } //while(true)
 
     printf("Closing listening socket...\n");     
     CLOSESOCKET(socket_listen);

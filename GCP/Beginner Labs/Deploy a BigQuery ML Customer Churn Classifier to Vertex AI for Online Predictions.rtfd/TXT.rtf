@@ -1,7 +1,7 @@
 {\rtf1\ansi\ansicpg1252\cocoartf2822
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Bold;\f1\froman\fcharset0 Times-Roman;\f2\froman\fcharset0 Times-Italic;
-\f3\fnil\fcharset0 HelveticaNeue;\f4\fmodern\fcharset0 Courier;\f5\fswiss\fcharset0 Arial-BoldMT;
-\f6\fswiss\fcharset0 ArialMT;}
+\f3\fnil\fcharset0 HelveticaNeue;\f4\froman\fcharset0 TimesNewRomanPS-BoldMT;\f5\fmodern\fcharset0 Courier;
+\f6\fswiss\fcharset0 Arial-BoldMT;\f7\fswiss\fcharset0 ArialMT;}
 {\colortbl;\red255\green255\blue255;\red24\green25\blue27;\red255\green255\blue255;\red41\green72\blue138;
 \red0\green0\blue0;\red254\green246\blue217;\red24\green24\blue24;\red227\green236\blue254;\red0\green0\blue0;
 }
@@ -21,27 +21,28 @@
 \pard\pardeftab720\sa640\partightenfactor0
 
 \f0\b\fs60 \cf2 \cb3 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Overview\
+Overview\
 \pard\pardeftab720\sa480\partightenfactor0
 
-\f1\b0\fs32 \cf2 In this lab, you will train, tune, evaluate, explain, and generate batch and online predictions with a BigQuery ML XGBoost model. You will use a Google Analytics 4 dataset from a real mobile application, Flood it! ({\field{\*\fldinst{HYPERLINK "https://play.google.com/store/apps/details?id=com.labpixies.flood"}}{\fldrslt \cf4 \strokec4 Android app}},\'a0{\field{\*\fldinst{HYPERLINK "https://itunes.apple.com/us/app/flood-it%21/id476943146?mt=8"}}{\fldrslt \cf4 \strokec4 iOS app}}), to determine the likelihood of users returning to the application. You will generate batch predictions with your BigQuery ML model as well as export and deploy it to\'a0
+\f1\b0\fs32 \cf2 In this lab, you will train, tune, evaluate, explain, and generate batch and online predictions with a BigQuery ML XGBoost model. You will use a Google Analytics 4 dataset from a real mobile application, Flood it! ({\field{\*\fldinst{HYPERLINK "https://play.google.com/store/apps/details?id=com.labpixies.flood"}}{\fldrslt \cf4 Android app}},\'a0{\field{\*\fldinst{HYPERLINK "https://itunes.apple.com/us/app/flood-it%21/id476943146?mt=8"}}{\fldrslt \cf4 iOS app}}), to determine the likelihood of users returning to the application. You will generate batch predictions with your BigQuery ML model as well as export and deploy it to\'a0
 \f0\b Vertex AI
 \f1\b0 \'a0for online predictions using the Vertex AI Python SDK.\
 \pard\pardeftab720\sa480\partightenfactor0
-{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/bigquery-ml/docs/introduction"}}{\fldrslt \cf4 \strokec4 BigQuery ML}}\'a0lets you train and do batch inference with machine learning models in BigQuery using standard SQL queries faster by eliminating the need to move data with fewer lines of code.\
+{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/bigquery-ml/docs/introduction"}}{\fldrslt \cf4 BigQuery ML}}\'a0lets you train and do batch inference with machine learning models in BigQuery using standard SQL queries faster by eliminating the need to move data with fewer lines of code.\
 \pard\pardeftab720\sa480\partightenfactor0
-{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/vertex-ai"}}{\fldrslt \cf4 \strokec4 Vertex AI}}\'a0is Google Cloud's complimentary next generation, unified platform for machine learning development. By developing and deploying BigQuery ML machine learning solutions on Vertex AI, you can leverage a scalable online prediction service and MLOps tools for model retraining and monitoring to significantly enhance your development productivity, the ability to scale your workflow and decision making with your data, and accelerate time to value.\
+{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/vertex-ai"}}{\fldrslt \cf4 Vertex AI}}\'a0is Google Cloud's complimentary next generation, unified platform for machine learning development. By developing and deploying BigQuery ML machine learning solutions on Vertex AI, you can leverage a scalable online prediction service and MLOps tools for model retraining and monitoring to significantly enhance your development productivity, the ability to scale your workflow and decision making with your data, and accelerate time to value.\
 \pard\pardeftab720\partightenfactor0
 
-\fs24 \cf0 \cb1 \strokec5 {{\NeXTGraphic pkJ0xATamv62qQLq4yzUNpplBXLNAxeaKliuTn5TcLs=.png \width15980 \height8920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\fs24 \cf0 \cb1 {{\NeXTGraphic pkJ0xATamv62qQLq4yzUNpplBXLNAxeaKliuTn5TcLs=.png \width15980 \height8920 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 \pard\pardeftab720\sa480\partightenfactor0
 
-\f2\i\fs32 \cf2 \cb3 \strokec2 Note: BQML is now BigQuery ML.
-\f1\i0 \cf2 \cb3 \strokec2 \
-This lab is inspired by and extends\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/blog/topics/developers-practitioners/churn-prediction-game-developers-using-google-analytics-4-ga4-and-bigquery-ml"}}{\fldrslt \cf4 \cb3 \strokec4 Churn prediction for game developers using Google Analytics 4 (GA4) and BigQuery ML}}. Read the blog post and accompanying tutorial for additional depth on this use case and BigQuery ML.\
-In this lab, you will go one step further and focus on how Vertex AI extends BigQuery ML's capabilities through online prediction so you can incorporate both customer churn predictions into decision making UIs such as\'a0{\field{\*\fldinst{HYPERLINK "https://looker.com/google-cloud"}}{\fldrslt \cf4 \cb3 \strokec4 Looker dashboards}}\'a0but also online predictions directly into customer applications to power targeted interventions such as targeted incentives.\
+\f2\i\fs32 \cf2 \cb3 Note: BQML is now BigQuery ML.
+\f1\i0 \
+This lab is inspired by and extends\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/blog/topics/developers-practitioners/churn-prediction-game-developers-using-google-analytics-4-ga4-and-bigquery-ml"}}{\fldrslt \cf4 Churn prediction for game developers using Google Analytics 4 (GA4) and BigQuery ML}}. Read the blog post and accompanying tutorial for additional depth on this use case and BigQuery ML.\
+In this lab, you will go one step further and focus on how Vertex AI extends BigQuery ML's capabilities through online prediction so you can incorporate both customer churn predictions into decision making UIs such as\'a0{\field{\*\fldinst{HYPERLINK "https://looker.com/google-cloud"}}{\fldrslt \cf4 Looker dashboards}}\'a0but also online predictions directly into customer applications to power targeted interventions such as targeted incentives.\
 \pard\pardeftab720\sa640\partightenfactor0
 
 \f0\b\fs60 \cf2 Objectives\
@@ -49,32 +50,32 @@ In this lab, you will go one step further and focus on how Vertex AI extends Big
 
 \f1\b0\fs32 \cf2 In this lab, you learn how to:\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls1\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Explore and preprocess a\'a0{\field{\*\fldinst{HYPERLINK "https://support.google.com/analytics/answer/7029846"}}{\fldrslt \cf4 \strokec4 Google Analytics 4}}\'a0data sample in\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/bigquery"}}{\fldrslt \cf4 \strokec4 BigQuery}}\'a0for machine learning.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Train a\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/bigquery/docs/bqml-introduction"}}{\fldrslt \cf4 \strokec4 BigQuery ML}}\'a0{\field{\*\fldinst{HYPERLINK "https://xgboost.readthedocs.io/en/latest/"}}{\fldrslt \cf4 \strokec4 XGBoost}}\'a0classifier to predict user churn on a mobile gaming application.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Tune a BigQuery ML XGBoost classifier using\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-boosted-tree"}}{\fldrslt \cf4 \strokec4 BigQuery ML hyperparameter tuning features}}.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Evaluate the performance of a BigQuery ML XGBoost classifier.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Explain your XGBoost model with\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-xai-overview"}}{\fldrslt \cf4 \strokec4 BigQuery ML Explainable AI}}\'a0global feature attributions.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Generate batch predictions with your BigQuery ML XGBoost model.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Export a BigQuery ML XGBoost model to a\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/storage"}}{\fldrslt \cf4 \strokec4 Google Cloud Storage}}\'a0bucket.\cb1 \
-\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Upload and deploy a BigQuery ML XGBoost model to a\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/vertex-ai/docs/predictions/getting-predictions"}}{\fldrslt \cf4 \strokec4 Vertex AI Prediction}}\'a0Endpoint for online predictions.\cb1 \
+\ls1\ilvl0\cf2 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Explore and preprocess a\'a0{\field{\*\fldinst{HYPERLINK "https://support.google.com/analytics/answer/7029846"}}{\fldrslt \cf4 Google Analytics 4}}\'a0data sample in\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/bigquery"}}{\fldrslt \cf4 BigQuery}}\'a0for machine learning.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Train a\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/bigquery/docs/bqml-introduction"}}{\fldrslt \cf4 BigQuery ML}}\'a0{\field{\*\fldinst{HYPERLINK "https://xgboost.readthedocs.io/en/latest/"}}{\fldrslt \cf4 XGBoost}}\'a0classifier to predict user churn on a mobile gaming application.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Tune a BigQuery ML XGBoost classifier using\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-boosted-tree"}}{\fldrslt \cf4 BigQuery ML hyperparameter tuning features}}.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Evaluate the performance of a BigQuery ML XGBoost classifier.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Explain your XGBoost model with\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-xai-overview"}}{\fldrslt \cf4 BigQuery ML Explainable AI}}\'a0global feature attributions.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Generate batch predictions with your BigQuery ML XGBoost model.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Export a BigQuery ML XGBoost model to a\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/storage"}}{\fldrslt \cf4 Google Cloud Storage}}\'a0bucket.\cb1 \
+\ls1\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Upload and deploy a BigQuery ML XGBoost model to a\'a0{\field{\*\fldinst{HYPERLINK "https://cloud.google.com/vertex-ai/docs/predictions/getting-predictions"}}{\fldrslt \cf4 Vertex AI Prediction}}\'a0Endpoint for online predictions.\cb1 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \cf2 \
 \
 \pard\pardeftab720\sa640\partightenfactor0
 
-\f0\b\fs60 \cf2 \cb3 \strokec2 Task 1. Create a Vertex AI Workbench instance\
+\f0\b\fs60 \cf2 \cb3 Task 1. Create a Vertex AI Workbench instance\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\sa480\partightenfactor0
 \ls2\ilvl0
-\f1\b0\fs32 \cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	1	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 In the Google Cloud console, from the\'a0
+\f1\b0\fs32 \cf2 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+In the Google Cloud console, from the\'a0
 \f0\b Navigation menu
 \f1\b0 \'a0(
 \f3\fs22 \cb1 {{\NeXTGraphic tkgw1TDgj4Q+YKQUW4jUFd0O5OEKlUMBRYbhlCrF0WY=.png \width300 \height260 \appleattachmentpadding0 \appleembedtype0 \appleaqc
@@ -82,148 +83,156 @@ In this lab, you will go one step further and focus on how Vertex AI extends Big
 \f1\fs32 \cb3 ), select\'a0
 \f0\b Vertex AI > Dashboard
 \f1\b0 .\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	2	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Click\'a0
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+Click\'a0
 \f0\b Enable All Recommended APIs
 \f1\b0 .\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	3	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 On the left-hand side, click\'a0
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+On the left-hand side, click\'a0
 \f0\b Workbench
 \f1\b0 .\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	4	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 At the top of the Workbench page, ensure you are in the\'a0
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	4	}\expnd0\expndtw0\kerning0
+At the top of the Workbench page, ensure you are in the\'a0
 \f0\b Instances
 \f1\b0 \'a0view.\cb1 \
-\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	5	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Click\'a0
+\ls2\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	5	}\expnd0\expndtw0\kerning0
+Click\'a0
 \f3\fs22 \cb1 {{\NeXTGraphic HQyUcFMAfKlIqKrZHc4akIou7AGrAWnJ1AXcmQyzoI0=.png \width400 \height400 \appleattachmentpadding0 \appleembedtype0 \appleaqc
 }¬}
 \f0\b\fs32 \cb3 Create New
 \f1\b0 .\cb1 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\sa480\partightenfactor0
 \ls2\ilvl0
-\f0\b \cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	6	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Configure the Instance
+\f0\b \cf2 \cb3 \kerning1\expnd0\expndtw0 {\listtext	6	}\expnd0\expndtw0\kerning0
+Configure the Instance
 \f1\b0 :\cb1 \
 \pard\tx940\tx1440\pardeftab720\li1440\fi-1440\sa360\partightenfactor0
 \ls2\ilvl1
-\f0\b \cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Name
+\f0\b \cf2 \cb3 \kerning1\expnd0\expndtw0 {\listtext	
+\f4 \uc0\u9702 
+\f0 	}\expnd0\expndtw0\kerning0
+Name
 \f1\b0 : lab-workbench\cb1 \
 \ls2\ilvl1
-\f0\b \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Region
+\f0\b \cb3 \kerning1\expnd0\expndtw0 {\listtext	
+\f4 \uc0\u9702 
+\f0 	}\expnd0\expndtw0\kerning0
+Region
 \f1\b0 : Set the region to\'a0
-\f4 \cb6 Region
+\f5 \cb6 Region
 \f1 \cb1 \
 \ls2\ilvl1
-\f0\b \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Zone
+\f0\b \cb3 \kerning1\expnd0\expndtw0 {\listtext	
+\f4 \uc0\u9702 
+\f0 	}\expnd0\expndtw0\kerning0
+Zone
 \f1\b0 : Set the zone to\'a0
-\f4 \cb6 Zone
+\f5 \cb6 Zone
 \f1 \cb1 \
 \pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
 \ls2\ilvl1
-\f0\b \cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Advanced Options
+\f0\b \cf2 \cb3 \kerning1\expnd0\expndtw0 {\listtext	
+\f4 \uc0\u9702 
+\f0 	}\expnd0\expndtw0\kerning0
+Advanced Options
 \f1\b0 \'a0(Optional): If needed, click "Advanced Options" for further customization (e.g., machine type, disk size)\cb1 \
 \pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
 \cf2 \
 \pard\pardeftab720\partightenfactor0
 
-\fs24 \cf0 \strokec5 {{\NeXTGraphic GqOFqM3buYPqGNyDO6rGozQxUTX8kZkgibuvC99mH9c=.png \width16620 \height7940 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+\fs24 \cf0 {{\NeXTGraphic GqOFqM3buYPqGNyDO6rGozQxUTX8kZkgibuvC99mH9c=.png \width16620 \height7940 \appleattachmentpadding0 \appleembedtype0 \appleaqc
 }¬}\pard\pardeftab720\partightenfactor0
-\cf0 \strokec5 \
+\cf0 \
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls3\ilvl0
-\fs32 \cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	7	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Click\'a0
+\fs32 \cf2 \cb3 \kerning1\expnd0\expndtw0 {\listtext	7	}\expnd0\expndtw0\kerning0
+Click\'a0
 \f0\b Create
 \f1\b0 .\
 \pard\tx720\pardeftab720\partightenfactor0
 \cf2 \cb1 \
 \pard\pardeftab720\partightenfactor0
 
-\f5\b\fs24 \AppleTypeServices\AppleTypeServicesF65539 \cf7 \cb8 \strokec7 Note:
-\f6\b0 \AppleTypeServices\AppleTypeServicesF65539 \'a0
+\f6\b\fs24 \AppleTypeServices\AppleTypeServicesF65539 \cf7 \cb8 Note:
+\f7\b0 \AppleTypeServices\AppleTypeServicesF65539 \'a0
 \f1 \AppleTypeServices The instance will take a few minutes to create. A green checkmark will appear next to its name when it's ready.\
-\pard\pardeftab720\partightenfactor0
 
-\f6 \AppleTypeServices\AppleTypeServicesF65539 \cf7 \
+\f7 \AppleTypeServices\AppleTypeServicesF65539 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls4\ilvl0
-\f1\fs32 \AppleTypeServices \cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	8	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Click\'a0
+\f1\fs32 \AppleTypeServices \cf2 \cb3 \kerning1\expnd0\expndtw0 {\listtext	8	}\expnd0\expndtw0\kerning0
+Click\'a0
 \f0\b Open JupyterLab
 \f1\b0 \'a0next to the instance name to launch the JupyterLab interface. This will open a new tab in your browser.\cb1 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\cf2 \strokec2 \
+\cf2 \
 \pard\pardeftab720\partightenfactor0
 
-\fs24 \cf0 \strokec5 {{\NeXTGraphic Dmr9EnG36PSqWiVw6IvQRj3xqgoOLSFg18HrBLX4XjY=.png \width34400 \height15240 \appleattachmentpadding0 \appleembedtype0 \appleaqc
-}¬}\
+\fs24 \cf0 {{\NeXTGraphic Dmr9EnG36PSqWiVw6IvQRj3xqgoOLSFg18HrBLX4XjY=.png \width34400 \height15240 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\pardeftab720\partightenfactor0
+\cf0 \
 \
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls5\ilvl0
-\fs32 \cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	9	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Click the\'a0
+\fs32 \cf2 \cb3 \kerning1\expnd0\expndtw0 {\listtext	9	}\expnd0\expndtw0\kerning0
+Click the\'a0
 \f0\b Terminal
 \f1\b0 \'a0icon to open a terminal window.\cb1 \
 \pard\pardeftab720\partightenfactor0
-\cf2 \strokec2 \
+\cf2 \
 \pard\pardeftab720\partightenfactor0
 
-\fs24 \cf0 \strokec5 {{\NeXTGraphic sA5BM2ag=.png \width20960 \height12600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+\fs24 \cf0 {{\NeXTGraphic sA5BM2ag=.png \width20960 \height12600 \appleattachmentpadding0 \appleembedtype0 \appleaqc
 }¬}\pard\pardeftab720\partightenfactor0
-\cf0 \strokec5 \
+\cf0 \
 \
 \
 \pard\pardeftab720\partightenfactor0
 
-\fs32 \cf2 \cb3 \strokec2 Your terminal window will open in a new tab. You can now run commands in the terminal to interact with your Workbench instance.\
+\fs32 \cf2 \cb3 Your terminal window will open in a new tab. You can now run commands in the terminal to interact with your Workbench instance.\
 \
 \pard\pardeftab720\partightenfactor0
 
-\fs24 \cf0 \cb1 \strokec5 {{\NeXTGraphic fSxaQce0h1uPvQT5v8=.png \width19160 \height7480 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+\fs24 \cf0 \cb1 {{\NeXTGraphic fSxaQce0h1uPvQT5v8=.png \width19160 \height7480 \appleattachmentpadding0 \appleembedtype0 \appleaqc
 }¬}\pard\pardeftab720\partightenfactor0
-\cf0 \strokec5 \
+\cf0 \
 \
 \
 \pard\pardeftab720\sa640\partightenfactor0
 
-\f0\b\fs60 \cf2 \cb3 \strokec2 Task 2. Copy the notebook from a Cloud Storage bucket\
+\f0\b\fs60 \cf2 \cb3 Task 2. Copy the notebook from a Cloud Storage bucket\
 \pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
 \ls6\ilvl0
-\f1\b0\fs32 \cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	1	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 In your notebook, Copy the below path.\cb1 \
+\f1\b0\fs32 \cf2 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+In your notebook, Copy the below path.\cb1 \
 \pard\pardeftab720\partightenfactor0
-\cf2 \strokec2 \
-gcloud storage cp "GCS PATH"\
+\cf2 \
+gcloud storage cp gs://qwiklabs-gcp-04-ceec15c0e25d-labconfig-bucket/lab_exercise-v1.0.0.ipynb .\
 \
 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\sa480\partightenfactor0
-\ls7\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	2	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Open the notebook file\'a0
+\ls7\ilvl0\cf2 \cb3 \kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+Open the notebook file\'a0
 \f0\b lab_exercise.ipynb
 \f1\b0 .\cb1 \
-\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	3	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 In the\'a0
+\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+In the\'a0
 \f0\b Select Kernel
 \f1\b0 \'a0dialog, choose\'a0
 \f0\b TensorFlow 2-11
 \f1\b0 \'a0from the list of available kernels.\cb1 \
-\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	4	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 In the\'a0
+\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	4	}\expnd0\expndtw0\kerning0
+In the\'a0
 \f0\b Define constants
 \f1\b0 \'a0section, update your\'a0
-\f4\fs30 \cb9 REGION
+\f5\fs30 \cb9 REGION
 \f1\fs32 \cb3 \'a0variable with the\'a0
-\f4 \cb6 Region
+\f5 \cb6 Region
 \f1 \cb3 .\cb1 \
-\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	5	}\expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 Continue the lab in the notebook, and run each cell by clicking the\'a0
+\ls7\ilvl0\cb3 \kerning1\expnd0\expndtw0 {\listtext	5	}\expnd0\expndtw0\kerning0
+Continue the lab in the notebook, and run each cell by clicking the\'a0
 \f0\b Run
 \f1\b0 \'a0(
 \f3\fs22 \cb1 {{\NeXTGraphic ce7vgTfxzuXzLobQDculFAHEKM4mONtYKqH5CIHX9xs=.png \width560 \height480 \appleattachmentpadding0 \appleembedtype0 \appleaqc
@@ -232,12 +241,12 @@ gcloud storage cp "GCS PATH"\
 \f0\b SHIFT + ENTER
 \f1\b0 .\cb1 \
 \pard\pardeftab720\sa480\partightenfactor0
-\cf2 \cb3 \strokec2 Read the narrative and make sure you understand what's happening in each cell. As you progress through the lab notebook, return back to these instructions to complete the graded exercises.\
+\cf2 \cb3 Read the narrative and make sure you understand what's happening in each cell. As you progress through the lab notebook, return back to these instructions to complete the graded exercises.\
 \pard\pardeftab720\partightenfactor0
-\cf2 \cb1 \strokec2 \
+\cf2 \cb1 \
 \pard\pardeftab720\sa640\partightenfactor0
 
-\f0\b\fs60 \cf2 \cb3 \strokec2 Task 3. Create a BigQuery dataset\
+\f0\b\fs60 \cf2 \cb3 Task 3. Create a BigQuery dataset\
 Task 4. Create a BigQuery ML XGBoost churn propensity model\
 Task 5. Evaluate your BigQuery ML model\
 Task 6. Batch predict user churn with your BigQuery ML model}
