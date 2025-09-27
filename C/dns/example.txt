@@ -1,0 +1,78 @@
+Configuring remote address...
+Creating socket...
+Sent 29 bytes.
+ID = AB CD
+QR = 0 query
+OPCODE = 0 standard
+AA = 0 
+TC = 0 
+RD = 1 recursion desired
+QDCOUNT = 1
+ANCOUNT = 0
+NSCOUNT = 0
+ARCOUNT = 0
+Query  1
+  name: example.com
+  type: 1
+ class: 1
+
+Received 125 bytes.
+ID = AB CD
+QR = 1 response
+OPCODE = 0 standard
+AA = 0 
+TC = 0 
+RD = 1 recursion desired
+RCODE = 0 success
+QDCOUNT = 1
+ANCOUNT = 6
+NSCOUNT = 0
+ARCOUNT = 0
+Query  1
+  name: example.com
+  type: 1
+ class: 1
+Answer  1
+  name:  (pointer 12) example.com
+  type: 1
+ class: 1
+   ttl: 290
+ rdlen: 4
+Address 23.215.0.138
+Answer  2
+  name:  (pointer 12) example.com
+  type: 1
+ class: 1
+   ttl: 290
+ rdlen: 4
+Address 23.220.75.245
+Answer  3
+  name:  (pointer 12) example.com
+  type: 1
+ class: 1
+   ttl: 290
+ rdlen: 4
+Address 23.192.228.84
+Answer  4
+  name:  (pointer 12) example.com
+  type: 1
+ class: 1
+   ttl: 290
+ rdlen: 4
+Address 23.220.75.232
+Answer  5
+  name:  (pointer 12) example.com
+  type: 1
+ class: 1
+   ttl: 290
+ rdlen: 4
+Address 23.215.0.136
+Answer  6
+  name:  (pointer 12) example.com
+  type: 1
+ class: 1
+   ttl: 290
+ rdlen: 4
+Address 23.192.228.80
+
+
