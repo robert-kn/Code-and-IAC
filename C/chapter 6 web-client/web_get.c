@@ -177,8 +177,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
 
-            /*printf("Received (%d bytes): '%.*s'",
-                    bytes_received, bytes_received, p);*/
+            printf("Received (%d bytes): '%.*s'", bytes_received, bytes_received, p);
 
             p += bytes_received;
             *p = 0;
@@ -190,7 +189,8 @@ int main(int argc, char *argv[]) {
                 printf("Received Headers:\n%s\n", response);
 
                 q = strstr(response, "\nContent-Length: ");
-                if (q) {
+                if (q) 
+                {
                     encoding = length;
                     q = strchr(q, ' ');
                     q += 1;
