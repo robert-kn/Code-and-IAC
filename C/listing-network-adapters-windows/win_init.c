@@ -149,7 +149,7 @@ int main()
 
             char ap[100];
 
-            getnameinfo(address->Address.lpSockaddr, address->Address.iSockaddrLength, ap, sizeof(ap), 0, 0, NI_NUMERICHOST);
+            getnameinfo(address->Address.lpSockaddr, address->Address.iSockaddrLength, ap, sizeof(ap), 0, 0,NI_NUMERICHOST);
 
             printf("\t%s\n", ap);
 
@@ -161,7 +161,7 @@ int main()
 
     free(adapters);
     WSACleanup(); /* When a Winsock program is finished, it should call WSACleanup(). */
-    printf("ok. \n");
+    printf("ok.\n");
     exit(EXIT_SUCCESS);
 }
 
