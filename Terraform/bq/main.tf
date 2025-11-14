@@ -30,7 +30,7 @@ resource "google_compute_subnetwork" "prod-subnet" {
 
 resource "google_bigquery_dataset" "dbt-dataset" {
   dataset_id                  = "dbt_practice"
-  location                    = var.region
+  location                    = "US"
   project = var.project_id
   depends_on = [ google_compute_network.producer_vpc, google_compute_subnetwork.prod-subnet ]
 }
