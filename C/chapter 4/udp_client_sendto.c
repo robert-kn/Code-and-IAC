@@ -46,5 +46,4 @@ int main() {
 #endif
     printf("Finished.\n");
     return EXIT_SUCCESS;
-
 }
